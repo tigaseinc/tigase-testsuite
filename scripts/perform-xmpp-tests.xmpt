@@ -1,0 +1,307 @@
+# Script version number
+-version = "2.0.0"
+
+# Additional global settings
+
+-output-format  = html
+-output-file    = "www/performance-tests.html"
+-output-history = no
+# Only valid values for setting below are: 5 or 7
+# 7 means:
+# "Test name", "Result", "Total time", "OK", "Average", "Description" [, "History" ]
+# 5 means:
+# "Test name", "Result", "Test time", "Description" [, "History" ]
+# History column is optional if -output-history is "true | yes | 1 | on | tak"
+-output-cols    = 7
+-title          = "XMPP Server performance tests."
+
+# Other global settings
+-debug-on-error
+
+-serverip    = "127.0.0.1"
+-host        = localhost-2
+-socket-wait = 5000
+-base-ns     = "jabber:client"
+
+$(repeats)      = 1000
+$(daemon-users) = 1
+$(messages)     = 10
+
+-loop                 = $(repeats)
+-keys-file-password   = keystore
+-trusts-file-password = truststore
+-keys-file            = "certs/keystore"
+-trusts-file          = "certs/client_truststore"
+-def-auth             = auth-plain
+
+-user-name = all-xmpp-test
+-user-pass = all-xmpp-test-password
+-user_resr = xmpp-test
+
+# Now tell TestLoader how to obtain server version and
+# get server statistics.
+# It can detect test with names: Version and Statistics
+Version@iq-version: { -loop = 1 } >> Get server version <<
+Statistics@iq-stats: { -loop = 1 -user-name=stats -user-pass=stats } >> Get server statistics <<
+
+# This is not actual test. This is container for all common variables
+# and parameters for other tests which inherits this settings.
+Global settings:
+{
+
+# Initialization section, this tests are rather cleanup tasks
+# To prepare server environment before real tests.
+# For example remove user accounts which will be created during
+# later tests. Otherwise we will get errors
+
+  Warm up prep@user-register: { -no-record -loop = 1 }
+  >> Create user acc for server warm up <<
+
+  Server warm up 1@ssl-init;msg-send:
+  Send $(repeats) messages to self user over SSL
+  {
+    $(repeats) = 100
+
+#    -no-record
+
+    -messages  = 1
+    -loop      = $(repeats)
+    -port      = 5223
+    -to-jid    = $(self)
+  }
+  >> Send $(repeats) messages to self user over SSL and don\'t wait for
+  response <<
+
+
+  Server warm up 2@ssl-init;msg-send:
+  Send $(repeats) messages to self user over SSL on one connection
+  {
+    $(repeats) = 100
+
+    -no-record
+    -on-one-socket
+
+    -messages  = 1
+    -loop      = $(repeats)
+    -port      = 5223
+    -to-jid    = $(self)
+  }
+  >> Send $(repeats) messages to self user over SSL and don\'t wait for
+  response on one connection <<
+
+# Real tests section
+
+  Test 0@xmpp-session:
+  Bind XMPP session over TLS $(repeats) times
+  >> Bind XMPP session over TLS $(repeats) times <<
+
+  Init 1@user-unregister: Remove test account { -no-record -loop = 1 }
+  >> Remove test account - just in case if there is already such account <<
+
+  Test 1@user-register;user-unregister: Add and remove account $(repeats) times
+  !! Remove user@user-unregister: { -loop = 1 }
+  >> Add and remove user account over plain socket $(repeats) times <<
+
+  Test 2@user-register: Register $(repeats) user accounts
+  {
+    -on-one-socket
+
+    -user-name = "all-xmpp-test$(loop)"
+  }
+  >> Add $(repeats) number of user accounts over plain socket <<
+
+  Test 3@user-unregister: Unregister $(repeats) user accounts
+  {
+    -user-name = "all-xmpp-test$(loop)"
+  }
+  !! Remove user@user-unregister: { -loop = 1 }
+  >> Remove $(repeats) number of user accounts over plain socket <<
+
+  Daemon users 10: Tests for $(daemon-users) daemon users {
+    $(daemon-users) = 10
+
+    Prep 1@user-register: Create $(daemon-users) user account {
+      -no-record
+      -on-one-socket
+
+      -loop          = $(daemon-users)
+      -user-name     = "all-xmpp-test_1_$(loop)"
+    }
+    >> Create $(daemon-users) user account <<
+
+    Prep 2@msg-listen: Setup $(daemon-users) user daemon wating for messages {
+      -daemon
+      -no-record
+
+      -socket-wait = 100
+      -delay       = 1000
+      -loop        = $(daemon-users)
+      -user-name   = "all-xmpp-test_1_$(loop)"
+    }
+    >> Setup $(daemon-users) user daemon wating for messages <<
+
+    Prep 3@user-register: Create test user account { -no-record -loop = 1 }
+    >> Create test user account for using by later tests  <<
+
+    Test 4@msg-send:
+    Test message send $(repeats) * $(messages) * 2 times with $(daemon-users) active connections
+    {
+      -on-one-socket
+
+      -loop     = $(repeats)
+      -to-jid   = $(daemons)
+      -messages = $(messages)
+    }
+    >> Make $(repeats) connections to server, on each connection send $(messages)
+    messages and wait for response message with active $(daemon-users)
+    server connections. <<
+  } >> Tests for $(daemon-users) daemon users <<
+
+  Daemon users 90: Tests for $(daemon-users) more daemon users {
+    $(daemon-users) = 90
+
+    Prep 4@user-register: Create $(daemon-users) user accounts {
+      -no-record
+      -on-one-socket
+
+      -loop      = $(daemon-users)
+      -user-name = "all-xmpp-test_2_$(loop)"
+    }
+    >> Create $(daemon-users) user accounts <<
+
+    Prep 5@auth-plain: Setup $(daemon-users) user daemons {
+      -daemon
+      -no-record
+      -active-connection
+
+      -socket-wait = 100
+      -delay       = 1000
+      -loop        = $(daemon-users)
+      -user-name   = "all-xmpp-test_2_$(loop)"
+    }
+    >> Setup $(daemon-users) user daemons wating for messages <<
+
+    Test 5@msg-send:
+    Test message send $(repeats) * $(messages) * 2 times with $(daemon-users) active connections
+    {
+      -on-one-socket
+
+      -loop     = $(repeats)
+      -to-jid   = $(daemons)
+      -messages = $(messages)
+    }
+    >> Make $(repeats) connections to server, on each connection send $(messages)
+    messages and wait for response message with active $(daemon-users)
+    server connections. <<
+  } >> Tests for $(daemon-users) daemon users <<
+
+  Daemon users 900: Tests for $(daemon-users) more daemon users {
+    $(daemon-users) = 900
+
+    Prep 6@user-register: Create $(daemon-users) user accounts {
+      -no-record
+      -on-one-socket
+
+      -loop      = $(daemon-users)
+      -user-name = "all-xmpp-test_3_$(loop)"
+    }
+    >> Create $(daemon-users) user accounts <<
+
+    Prep 7@auth-plain: Setup $(daemon-users) user daemons {
+      -no-record
+      -daemon
+      -active-connection
+
+      -loop        = $(daemon-users)
+      -socket-wait = 100
+      -user-name   = "all-xmpp-test_3_$(loop)"
+      -delay       = 1000
+    }
+    >> Setup $(daemon-users) user daemons wating for messages <<
+
+    Test 6@msg-send:
+    Test message send $(repeats) * $(messages) * 2 times with $(daemon-users) active connections
+    {
+      -on-one-socket
+
+      -socket-wait = 1000
+      -loop        = $(repeats)
+      -messages    = $(messages)
+      -to-jid      = $(daemons)
+    }
+    >> Make $(repeats) connections to server, on each connection send $(messages)
+    messages and wait for response message with active $(daemon-users)
+    server connections. <<
+  } >> Tests for $(daemon-users) daemon users <<
+
+  Prep 8@user-unregister: Unregister test user { -no-record -loop = 1 }
+  >> Unregister test user <<
+
+  Test 7@ssl-init;user-register;user-unregister:
+  Add and remove account $(repeats) times over SSL
+  { -port = 5223 }
+  !! Unregister user@user-unregister: { -port = 5222 -loop = 1 }
+  >> Add and remove user account over SSL $(repeats) times <<
+
+  Prep 9@user-register: Create test user account { -no-record -loop = 1 }
+  >> Create test user account for using by later tests  <<
+
+  Test 8@xmpp-session:
+  Bind XMPP session over TLS $(repeats) times
+  >> Bind XMPP session over TLS $(repeats) times <<
+
+  Test end@user-unregister: Cleanup, test user unregister
+  { -no-record -loop = 1 }
+  >> Cleanup - test user unregister <<
+
+}
+>> Script with performance tests, selected tests are repeated
+$(repeats) times, processing time is measured for each XMPP/Jabber feature <<
+
+
+Multi thread tests:
+{
+
+  Register@user-register:
+  {
+    -no-record
+    -loop = 10
+    -user-name = "multi-reg_$(loop)"
+  } >> JEP-0077 - setup test accounts <<
+
+  Multi 1: {
+    -multi-thread
+    -to-jid = $(daemons)
+
+    Message send@msg-send: { -user-name = multi-reg_0 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_1 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_2 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_3 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_4 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_5 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_6 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_7 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_8 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_9 }
+    >> Send a message to daemon user <<
+  } >> Multi-thread test of message send to daemon user <<
+
+  Unregister@user-unregister:
+  {
+    -no-record
+    -loop = 10
+    -user-name = "multi-reg_$(loop)"
+  }
+  !! Remove user@user-unregister: { -loop = 1 }
+  >> JEP-0077 - remove tests accounts <<
+
+} >> Multi-threaded preformance tests for various XMPP functions <<

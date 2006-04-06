@@ -1,0 +1,182 @@
+-version = "2.0.0"
+
+-output-format  = html
+-output-file    = "www/functional-tests.html"
+-output-history = yes
+-history-format = separate-file
+-output-cols    = 7
+-title          = "XMPP Server functional tests."
+
+$(server-host) = localhost-2
+$(def-user)    = all-xmpp-test
+$(daemon-user) = all-xmpp-test_1
+$(ssl-tls-wait) = 5000
+
+-serverip    = "127.0.0.1"
+-host        = $(server-host)
+-user-name   = $(def-user)
+-user-pass   = all-xmpp-test-password
+-user_resr   = xmpp-test
+-socket-wait = 5000
+-base-ns     = "jabber:client"
+-def-auth    = auth-plain
+-keys-file-password   = keystore
+-trusts-file-password = truststore
+-keys-file            = "certs/keystore"
+-trusts-file          = "certs/client_truststore"
+
+-debug-on-error
+
+Version@iq-version: >> Get server version <<
+Statistics@iq-stats: { -user-name=stats -user-pass=stats } >> Server statistics <<
+
+Global settings:
+{
+  -loop = 1
+
+  Init 1@user-unregister: { -no-record } >> Remove test account. <<
+
+  Test 1@socket: >> Plain socket connect. <<
+  Test 2@stream-open: >> Stream open to server. <<
+  Test 3@ssl-init: { -port = 5223 -socket-wait = $(ssl-tls-wait) }
+  >> SSL socket connect. <<
+  Test 4@user-register: >> JEP-0077 - In-Band Registration, register <<
+  Test 5@auth-plain: >> JEP-0078 Non-SASL authorization with plain password. <<
+  Test 6@auth-digest: >> JEP-0078 Non-SASL authorization with digest password. <<
+
+  Test 7@tls-init: { -socket-wait = $(ssl-tls-wait) } >> TLS connection open <<
+  Test 8@auth-sasl: { -socket-wait = $(ssl-tls-wait) } >> SASL authorization <<
+  Test 9@xmpp-bind: { -socket-wait = $(ssl-tls-wait) } >> XMPP resource bind <<
+  Test 10@xmpp-session: { -socket-wait = $(ssl-tls-wait) } >> Establish XMPP session <<
+  Test 11@msg-send: { -to-jid = $(self) }
+  >> Send a message to self user and don\'t wait for response <<
+
+  Prep 1@user-register: {
+    -no-record
+    -user-name = $(daemon-user)
+  } >> Create a daemon user account <<
+
+  Prep 2@msg-listen: {
+    -no-record
+    -daemon
+
+    -socket-wait = 0
+    -user-name   = $(daemon-user)
+    -delay       = 500
+  } >> Setup a user daemon wating for messages <<
+
+  Test 12@msg-send: Send a message to $(daemon-user) user
+  { -to-jid = "$(daemon-user)@$(server-host)/xmpp-test" }
+  >> Send a message to $(daemon-user)@$(server-host)/xmpp-test user
+  and wait for message response <<
+
+  Test 13@iq-version: >> JEP-0092 - get entity version <<
+  Test 14@iq-stats: Based on JEP-0092 - get entity statistics
+  { -user-name=stats -user-pass=stats }
+  >> Based on JEP-0092 get entity version similar functionality retrieving
+  entity statistics, introduced for testing and server diagnostics. <<
+
+  Test 15@roster: >> Roster management test <<
+
+  Test end@user-unregister:
+  >> JEP-0077 - In-Band Registration - user unregister <<
+
+}
+>> Script with functional tests for all basic XMPP/Jabber features <<
+
+Multi thread tests:
+{
+
+  Multi 1: {
+    -multi-thread
+    -loop = 5
+
+    Version@iq-version: >> Get server version <<
+    Version@iq-version: >> Get server version <<
+    Version@iq-version: >> Get server version <<
+    Version@iq-version: >> Get server version <<
+    Version@iq-version: >> Get server version <<
+  } >> Multi-thread test of server Version info <<
+
+  Multi 2: {
+    -multi-thread
+    -loop = 5
+
+    Register@user-register: { -user-name = "multi-reg_1_$(loop)" }
+    >> JEP-0077 <<
+    Register@user-register: { -user-name = "multi-reg_2_$(loop)" }
+    >> JEP-0077 <<
+    Register@user-register: { -user-name = "multi-reg_3_$(loop)" }
+    >> JEP-0077 <<
+    Register@user-register: { -user-name = "multi-reg_4_$(loop)" }
+    >> JEP-0077 <<
+    Register@user-register: { -user-name = "multi-reg_5_$(loop)" }
+    >> JEP-0077 <<
+  } >> Multi-thread test of JEP-0077 - In-Band Registration, user register <<
+
+  Multi 3: {
+    -multi-thread
+    -loop = 5
+
+    Statistics@iq-stats: { -user-name = "multi-reg_1_$(loop)" }
+    >> Server statistics <<
+    Statistics@iq-stats: { -user-name = "multi-reg_2_$(loop)" }
+    >> Server statistics <<
+    Statistics@iq-stats: { -user-name = "multi-reg_3_$(loop)" }
+    >> Server statistics <<
+    Statistics@iq-stats: { -user-name = "multi-reg_4_$(loop)" }
+    >> Server statistics <<
+    Statistics@iq-stats: { -user-name = "multi-reg_5_$(loop)" }
+    >> Server statistics <<
+  } >> Multi-thread test of server Statistics info <<
+
+  Multi 4: {
+    -multi-thread
+    -loop = 5
+
+    Roster@roster: { -user-name = "multi-reg_1_$(loop)" }
+    >> Roster management test <<
+    Roster@roster: { -user-name = "multi-reg_2_$(loop)" }
+    >> Roster management test <<
+    Roster@roster: { -user-name = "multi-reg_3_$(loop)" }
+    >> Roster management test <<
+    Roster@roster: { -user-name = "multi-reg_4_$(loop)" }
+    >> Roster management test <<
+    Roster@roster: { -user-name = "multi-reg_5_$(loop)" }
+    >> Roster management test <<
+  } >> Multi-thread test Roster management functions <<
+
+  Multi 5: {
+    -multi-thread
+    -loop   = 5
+    -to-jid = "$(daemon-user)@$(server-host)/xmpp-test"
+
+    Message send@msg-send: { -user-name = "multi-reg_1_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_2_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_3_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_4_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_5_$(loop)" }
+    >> Send a message to daemon user <<
+  } >> Multi-thread test of message send to daemon user <<
+
+  Multi 6: {
+    -multi-thread
+    -loop = 5
+
+    Register@user-unregister: { -user-name = "multi-reg_1_$(loop)" }
+    !! Remove user@user-unregister: { -loop = 1 } >> JEP-0077 <<
+    Register@user-unregister: { -user-name = "multi-reg_2_$(loop)" }
+    !! Remove user@user-unregister: { -loop = 1 } >> JEP-0077 <<
+    Register@user-unregister: { -user-name = "multi-reg_3_$(loop)" }
+    !! Remove user@user-unregister: { -loop = 1 } >> JEP-0077 <<
+    Register@user-unregister: { -user-name = "multi-reg_4_$(loop)" }
+    !! Remove user@user-unregister: { -loop = 1 } >> JEP-0077 <<
+    Register@user-unregister: { -user-name = "multi-reg_5_$(loop)" }
+    !! Remove user@user-unregister: { -loop = 1 } >> JEP-0077 <<
+  } >> Multi-thread test of JEP-0077 - In-Band Registration, user unregister <<
+
+} >> Multi-threaded tests for various XMPP functions <<

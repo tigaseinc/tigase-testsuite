@@ -1,0 +1,122 @@
+-version = "2.0.0"
+
+-output-format  = html
+-output-file    = "www/stability-tests.html"
+-output-history = no
+-output-cols    = 7
+-title          = "XMPP Server stability tests."
+
+# Other global settings
+#-debug-on-error
+
+-serverip    = "127.0.0.1"
+-host        = localhost-2
+-socket-wait = 5000
+-base-ns     = "jabber:client"
+
+Version@iq-version: { -loop = 1 } >> Get server version <<
+Statistics@iq-stats: { -loop = 1 -user-name=stats -user-pass=stats }
+>> Get server statistics <<
+
+$(repeats)      = 1000000
+$(daemon-users) = 1
+$(messages)     = 10
+
+-loop                 = $(repeats)
+-keys-file-password   = keystore
+-trusts-file-password = truststore
+-keys-file            = "certs/keystore"
+-trusts-file          = "certs/client_truststore"
+-def-auth             = auth-plain
+
+-user-name = all-xmpp-test
+-user-pass = all-xmpp-test-password
+-user_resr = xmpp-test
+
+Global settings:
+{
+
+  Init 1@user-unregister: { -no-record -loop = 1 } >> Remove test account <<
+
+  Test 1@user-register;user-unregister:
+  !! Remove user@user-unregister: { -loop = 1 }
+  >> Add and remove user account over plain socket <<
+
+  Prep 1@user-register: { -no-record -loop = 1 }
+  >> Create test user account for using by later tests  <<
+
+  Test 2@xmpp-session: >> XMPP session bind <<
+
+  Test end@user-unregister: { -no-record -loop = 1 }
+  >> Cleanup - test user unregister <<
+
+}
+>> Script with performance tests, selected tests are repeated $(repeats)
+times and processing time is measured for each XMPP/Jabber features <<
+
+Multi thread tests:
+{
+  Daemon users 10: {
+    -no-record
+
+    $(daemon-users) = 10
+    -loop = $(daemon-users)
+
+    Prep 1@user-register: {
+      -on-one-socket
+
+      -user-name = "all-xmpp-test_1_$(loop)"
+    } >> Create $(daemon-users) user account <<
+
+    Prep 2@msg-listen: {
+      -daemon
+
+      -socket-wait = 0
+      -delay       = 1000
+      -user-name   = "all-xmpp-test_1_$(loop)"
+    } >> Setup $(daemon-users) user daemon wating for messages <<
+  } >> Setup $(daemon-users) daemon users <<
+
+  Register@user-register:
+  {
+    -no-record
+    -loop = 10
+    -user-name = "multi-reg_$(loop)"
+  } >> JEP-0077 - setup test accounts <<
+
+  Multi 1: {
+    -multi-thread
+    -to-jid = $(daemons)
+
+    Message send@msg-send: { -user-name = multi-reg_0 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_1 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_2 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_3 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_4 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_5 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_6 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_7 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_8 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_9 }
+    >> Send a message to daemon user <<
+  } >> Multi-thread test of message send to daemon user <<
+
+  Unregister@user-unregister:
+  {
+    -no-record
+    -loop = 10
+    -user-name = "multi-reg_$(loop)"
+  }
+  !! Remove user@user-unregister: { -loop = 1 }
+  >> JEP-0077 - remove tests accounts <<
+
+}  >> Multi-threaded stability tests for selected XMPP functions <<
