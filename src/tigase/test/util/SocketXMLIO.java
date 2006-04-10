@@ -30,7 +30,9 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.Queue;
-import tigase.xml.*;
+import tigase.xml.Element;
+import tigase.xml.SimpleParser;
+import tigase.xml.DefaultElementFactory;
 
 /**
  * Describe class SocketXMLIO here.
@@ -85,7 +87,7 @@ public class SocketXMLIO {
 //       for (int i = 0; i < tmp_data.length; i++) {
 //         tmp_data[i] = in_data[i];
 //       } // end of for (int i = 0; i < tmp_data.length; i++)
-      //      System.out.println("INPUT: " + new String(tmp_data));
+// 			System.out.println("INPUT: " + new String(in_data, 0, res));
       parser.parse(dom, in_data, 0, res);
     } // end of if (res > 0)
     return dom.getParsedElements();

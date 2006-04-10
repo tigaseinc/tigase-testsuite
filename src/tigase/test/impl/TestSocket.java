@@ -46,6 +46,7 @@ import tigase.test.util.SocketXMLIO;
 public class TestSocket extends TestAbstract {
 
   private String hostname = null;
+	private String serverip = null;
   private int port = 5222;
   private int socket_wait = 5000;
 
@@ -104,7 +105,7 @@ public class TestSocket extends TestAbstract {
       //      debug("socket connecting...\n");
       //      System.out.println("socket-wait = " + socket_wait);
       long timeStart = System.currentTimeMillis();
-      client.connect(new InetSocketAddress(hostname, port), socket_wait);
+      client.connect(new InetSocketAddress(serverip, port), socket_wait);
       long timeEnd = System.currentTimeMillis();
       long connectTime = timeEnd - timeStart;
       connectAverTime = (connectAverTime + connectTime) / 2;
@@ -134,12 +135,8 @@ public class TestSocket extends TestAbstract {
    */
   public void init(final Params map) {
     super.init(map);
-    if (map.containsKey("-serverip")) {
-      hostname = map.get("-serverip", "127.0.0.1");
-    } // end of if (map.containsKey("-serverip"))
-    if (hostname == null) {
-      hostname = map.get("-host", "localhost");
-    } // end of if (hostname == null)
+		serverip = map.get("-serverip", "127.0.0.1");
+		hostname = map.get("-host", "localhost");
     port = map.get("-port", port);
     socket_wait = params.get("-socket-wait", socket_wait);
   }
