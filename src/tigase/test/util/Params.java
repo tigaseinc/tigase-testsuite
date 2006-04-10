@@ -44,6 +44,7 @@ public class Params implements Map<String, Object> {
     map = new TreeMap<String, Object>();
   }
 
+	@SuppressWarnings({"unchecked"})
   public Params(Map map) {
     this.map = new TreeMap<String, Object>(map);
   }
@@ -119,7 +120,8 @@ public class Params implements Map<String, Object> {
    *
    * @return a <code>Set</code> value
    */
-  public Set entrySet() {
+	@SuppressWarnings({"unchecked"})
+  public Set<Map.Entry<String, Object>> entrySet() {
     return map.entrySet();
   }
 
@@ -184,6 +186,7 @@ public class Params implements Map<String, Object> {
    *
    * @param map a <code>Map</code> value
    */
+	@SuppressWarnings({"unchecked"})
   public void putAll(final Map map) {
     if (map != null) {
       this.map.putAll(map);
@@ -252,7 +255,8 @@ public class Params implements Map<String, Object> {
    *
    * @return a <code>Set</code> value
    */
-  public Set keySet() {
+	@SuppressWarnings({"unchecked"})
+  public Set<String> keySet() {
     return map.keySet();
   }
 

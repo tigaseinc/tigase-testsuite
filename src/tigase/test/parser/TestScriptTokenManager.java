@@ -6,6 +6,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+@SuppressWarnings("cast")
 public class TestScriptTokenManager implements TestScriptConstants
 {
   public  java.io.PrintStream debugStream = System.out;

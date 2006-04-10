@@ -75,6 +75,7 @@ public class TestScriptLoader {
     this.params = params;
   }
 
+	@SuppressWarnings({"unchecked"})
   public void loadTests() throws Exception {
     scriptName = params.get("-script", scriptName);
     debug("Script name: " + scriptName + "\n", true);
@@ -89,6 +90,7 @@ public class TestScriptLoader {
     stop_on_fail = params.get("-stop-on-fail", false);
   }
 
+	@SuppressWarnings({"unchecked"})
   public void runTests() throws Exception {
     filter = initOutputFilter();
     for (TestNode node: testNodes) {
@@ -292,6 +294,7 @@ public class TestScriptLoader {
     filter.close(outputStatistics(getStatistics(), "after"));
   }
 
+	@SuppressWarnings({"unchecked"})
   private Map<String, String> getVersion() {
     TestNode node = getTestNode("Version");
     if (node != null) {
@@ -320,6 +323,7 @@ public class TestScriptLoader {
     return sb.toString();
   }
 
+	@SuppressWarnings({"unchecked"})
   private List<StatItem> getStatistics() {
     TestNode node = getTestNode("Statistics");
     if (node != null) {

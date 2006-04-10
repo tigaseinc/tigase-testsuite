@@ -33,7 +33,9 @@ package tigase.test;
  */
 public class ResultsDontMatchException extends Exception {
 
-  /**
+	public static final long serialVersionUID = 1L;
+
+	/**
    * Creates a new <code>ResultsDontMatchException</code> instance.
    *
    */

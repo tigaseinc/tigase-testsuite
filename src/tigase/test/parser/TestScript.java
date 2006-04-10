@@ -7,6 +7,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+@SuppressWarnings({"unchecked", "serial"})
 public class TestScript implements TestScriptConstants {
 
   public static final String VERSION = "\"2.0.0\"";

@@ -12,6 +12,8 @@ package tigase.test.parser;
  */
 public class ParseException extends Exception {
 
+	public static final long serialVersionUID = 1L;
+
   /**
    * This constructor is used by the method "generateParseException"
    * in the generated parser.  Calling this constructor generates
