@@ -167,7 +167,9 @@ public class TestReceiveMessage extends TestAbstract {
       String elem = null;
       SocketXMLIO io = (SocketXMLIO)params.get("socketxmlio");
       if (io == null) {
+				TestUtil.removeDaemonJID(jid);
         resultCode = ResultCode.SOCKET_NOT_INITALIZED;
+				System.out.println("Message listener FINISHED 1");
         return false;
       } // end of if (sock == null)
       elem = nextElementName(reply);
@@ -186,19 +188,26 @@ public class TestReceiveMessage extends TestAbstract {
           } // end of if (data != null && !data.equals(""))
         }
       }
+			TestUtil.removeDaemonJID(jid);
+			System.out.println("Message listener FINISHED 2");
       return true;
     } catch (SocketTimeoutException e) {
+			TestUtil.removeDaemonJID(jid);
       addInput("" + e + "\n" + TestUtil.stack2String(e));
       resultCode = ResultCode.PROCESSING_EXCEPTION;
       exception = e;
+			System.out.println("Message listener FINISHED 3");
       return false;
     } catch (Exception e) {
+			TestUtil.removeDaemonJID(jid);
       addInput("" + e + "\n" + TestUtil.stack2String(e));
       resultCode = ResultCode.PROCESSING_EXCEPTION;
       exception = e;
       e.printStackTrace();
+			System.out.println("Message listener FINISHED 4");
       return false;
     } // end of try-catch
+		//		System.out.println("Message listener FINISHED 5");
   }
 
 } // TestReceiveMessage

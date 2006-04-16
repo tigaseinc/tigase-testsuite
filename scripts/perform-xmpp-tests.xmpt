@@ -4,7 +4,7 @@
 # Additional global settings
 
 -output-format  = html
--output-file    = "www/performance-tests.html"
+-output-file    = "../www/performance-tests.html"
 -output-history = no
 # Only valid values for setting below are: 5 or 7
 # 7 means:
@@ -16,7 +16,7 @@
 -title          = "XMPP Server performance tests."
 
 # Other global settings
--debug-on-error
+#-debug-on-error
 
 -serverip    = "127.0.0.1"
 -host        = localhost-2
@@ -78,7 +78,7 @@ Global settings:
   {
     $(repeats) = 100
 
-    -no-record
+#    -no-record
     -on-one-socket
 
     -messages  = 1
@@ -119,11 +119,13 @@ Global settings:
 
   Daemon users 10: Tests for $(daemon-users) daemon users {
     $(daemon-users) = 10
+    -delay = 1000
 
     Prep 1@user-register: Create $(daemon-users) user account {
       -no-record
       -on-one-socket
 
+      -delay     = 0
       -loop          = $(daemon-users)
       -user-name     = "all-xmpp-test_1_$(loop)"
     }
@@ -131,16 +133,20 @@ Global settings:
 
     Prep 2@msg-listen: Setup $(daemon-users) user daemon wating for messages {
       -daemon
-      -no-record
+#      -no-record
 
-      -socket-wait = 100
-      -delay       = 1000
+      -socket-wait = 0
+      -delay       = 100
       -loop        = $(daemon-users)
       -user-name   = "all-xmpp-test_1_$(loop)"
     }
     >> Setup $(daemon-users) user daemon wating for messages <<
 
-    Prep 3@user-register: Create test user account { -no-record -loop = 1 }
+    Prep 3@user-register: Create test user account {
+      -delay     = 0
+      -no-record
+      -loop = 1
+    }
     >> Create test user account for using by later tests  <<
 
     Test 4@msg-send:
@@ -148,6 +154,7 @@ Global settings:
     {
       -on-one-socket
 
+      -delay     = 0
       -loop     = $(repeats)
       -to-jid   = $(daemons)
       -messages = $(messages)
@@ -159,11 +166,13 @@ Global settings:
 
   Daemon users 90: Tests for $(daemon-users) more daemon users {
     $(daemon-users) = 90
+    -delay = 2000
 
     Prep 4@user-register: Create $(daemon-users) user accounts {
       -no-record
       -on-one-socket
 
+      -delay     = 0
       -loop      = $(daemon-users)
       -user-name = "all-xmpp-test_2_$(loop)"
     }
@@ -174,8 +183,8 @@ Global settings:
       -no-record
       -active-connection
 
-      -socket-wait = 100
-      -delay       = 1000
+      -socket-wait = 0
+      -delay       = 100
       -loop        = $(daemon-users)
       -user-name   = "all-xmpp-test_2_$(loop)"
     }
@@ -186,6 +195,7 @@ Global settings:
     {
       -on-one-socket
 
+      -delay     = 0
       -loop     = $(repeats)
       -to-jid   = $(daemons)
       -messages = $(messages)
@@ -197,11 +207,13 @@ Global settings:
 
   Daemon users 900: Tests for $(daemon-users) more daemon users {
     $(daemon-users) = 900
+    -delay = 5000
 
     Prep 6@user-register: Create $(daemon-users) user accounts {
       -no-record
       -on-one-socket
 
+      -delay     = 0
       -loop      = $(daemon-users)
       -user-name = "all-xmpp-test_3_$(loop)"
     }
@@ -213,9 +225,9 @@ Global settings:
       -active-connection
 
       -loop        = $(daemon-users)
-      -socket-wait = 100
+      -socket-wait = 0
       -user-name   = "all-xmpp-test_3_$(loop)"
-      -delay       = 1000
+      -delay       = 100
     }
     >> Setup $(daemon-users) user daemons wating for messages <<
 
@@ -224,7 +236,8 @@ Global settings:
     {
       -on-one-socket
 
-      -socket-wait = 1000
+#      -socket-wait = 1000
+      -delay     = 0
       -loop        = $(repeats)
       -messages    = $(messages)
       -to-jid      = $(daemons)
@@ -272,6 +285,7 @@ Multi thread tests:
   Multi 1: {
     -multi-thread
     -to-jid = $(daemons)
+    -delay = 2000
 
     Message send@msg-send: { -user-name = multi-reg_0 }
     >> Send a message to daemon user <<

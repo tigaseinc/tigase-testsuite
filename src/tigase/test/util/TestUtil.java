@@ -82,7 +82,10 @@ public class TestUtil {
     if (daemons_jids == null) {
       return false;
     } // end of if (daemons_jids != null)
-    daemons.remove(jid);
+    Socket soc = daemons.remove(jid);
+		try {
+			soc.close();
+		} catch (Exception e) {	} // end of try-catch
     return daemons_jids.remove(jid);
   }
 
