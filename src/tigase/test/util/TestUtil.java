@@ -29,11 +29,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import tigase.test.TestIfc;
 import tigase.util.ClassUtil;
 
@@ -49,10 +53,13 @@ import tigase.util.ClassUtil;
 public class TestUtil {
 
   private static Set<TestIfc> all_tests = null;
-  private static List<String> daemons_jids = null;
-  private static Map<String, Socket> daemons = null;
-  private static List<Socket> active_connections = null;
-  private static Random rand = null;
+  private static List<String> daemons_jids =
+		new CopyOnWriteArrayList<String>();
+  private static Map<String, Socket> daemons =
+		new ConcurrentSkipListMap<String, Socket>();
+  private static Queue<Socket> active_connections =
+		new ConcurrentLinkedQueue<Socket>();
+  private static Random rand = new Random(System.currentTimeMillis());
   private static int seq = 0;
 
   /**
@@ -62,26 +69,15 @@ public class TestUtil {
   private TestUtil() { }
 
   public static void addActiveConnection(Socket conn) {
-    if (active_connections == null) {
-      active_connections = new LinkedList<Socket>();
-    } // end of if (daemons_jids == null)
     active_connections.add(conn);
   }
 
   public static void addDaemonJID(String jid, Socket sock) {
-    if (daemons_jids == null) {
-      daemons_jids = new ArrayList<String>(100);
-      daemons = new TreeMap<String, Socket>();
-      rand = new Random(System.currentTimeMillis());
-    } // end of if (daemons_jids == null)
     daemons_jids.add(jid);
     daemons.put(jid, sock);
   }
 
   public static boolean removeDaemonJID(String jid) {
-    if (daemons_jids == null) {
-      return false;
-    } // end of if (daemons_jids != null)
     Socket soc = daemons.remove(jid);
 		try {
 			soc.close();
@@ -90,9 +86,6 @@ public class TestUtil {
   }
 
   public static String getRandomJID() {
-    if (daemons_jids == null) {
-      return null;
-    } // end of if (daemons_jids != null)
     String jid = null;
     while (jid == null && daemons_jids.size() > 0) {
       jid = daemons_jids.get(rand.nextInt(daemons_jids.size()));
@@ -106,9 +99,6 @@ public class TestUtil {
   }
 
   public static String getSeqJID() {
-    if (daemons_jids == null) {
-      return null;
-    } // end of if (daemons_jids != null)
     String jid = null;
     if (seq + 1 >= daemons_jids.size()) {
       seq = 0;
