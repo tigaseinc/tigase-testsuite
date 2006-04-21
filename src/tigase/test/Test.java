@@ -181,7 +181,7 @@ public class Test {
 
   private boolean runTest(List<TestIfc> suite, Params test_params) {
     boolean daemon = test_params.containsKey("-daemon");
-		long socket_wait = test_params.get("-socket-wait", 5000;
+		long socket_wait = test_params.get("-socket-wait", 5000);
     DaemonTest dt = new DaemonTest(suite, test_params);
     if (daemon) {
       runThread(dt);
