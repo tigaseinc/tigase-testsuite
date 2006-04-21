@@ -7,7 +7,7 @@
 -output-cols    = 7
 -title          = "XMPP Server functional tests."
 
-$(server-host) = localhost-2
+$(server-host) = localhost
 $(def-user)    = all-xmpp-test
 $(daemon-user) = all-xmpp-test_1
 $(ssl-tls-wait) = 5000

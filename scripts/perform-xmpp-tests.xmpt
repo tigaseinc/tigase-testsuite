@@ -16,11 +16,11 @@
 -title          = "XMPP Server performance tests."
 
 # Other global settings
-#-debug-on-error
+-debug-on-error
 
 -serverip    = "127.0.0.1"
--host        = localhost-2
--socket-wait = 5000
+-host        = localhost
+-socket-wait = 2000
 -base-ns     = "jabber:client"
 
 $(repeats)      = 1000
@@ -236,7 +236,6 @@ Global settings:
     {
       -on-one-socket
 
-#      -socket-wait = 1000
       -delay     = 0
       -loop        = $(repeats)
       -messages    = $(messages)
@@ -315,6 +314,6 @@ Multi thread tests:
     -user-name = "multi-reg_$(loop)"
   }
   !! Remove user@user-unregister: { -loop = 1 }
-  >> JEP-0077 - remove tests accounts <<
+  >> JEP-0077 - remove test accounts <<
 
 } >> Multi-threaded preformance tests for various XMPP functions <<
