@@ -20,7 +20,7 @@
 
 -serverip    = "127.0.0.1"
 -host        = localhost
--socket-wait = 2000
+-socket-wait = 5000
 -base-ns     = "jabber:client"
 
 $(repeats)      = 1000

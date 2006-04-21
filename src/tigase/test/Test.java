@@ -185,9 +185,9 @@ public class Test {
     DaemonTest dt = new DaemonTest(suite, test_params);
     if (daemon) {
       runThread(dt);
-      synchronized(dt) {
-        try { dt.wait(socket_wait); } catch (InterruptedException e) { }
-      }
+//       synchronized(dt) {
+//         try { dt.wait(socket_wait); } catch (InterruptedException e) { }
+//       }
 //       if (!dt.isAuthorized()) {
 //         runThread(dt);
 //         synchronized(dt) {

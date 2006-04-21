@@ -91,9 +91,10 @@ public class HTMLFilter implements OutputFilter {
       DateFormat.getDateTimeInstance().format(new Date()) + "</b></p>\n");
     Calendar cal = Calendar.getInstance();
     cal.setTimeInMillis(System.currentTimeMillis() - start);
-    //    cal.computeFields();
+    //cal.computeFields();
     bw.write("  <p>Total test time:");
-    bw.write(" " + (cal.get(Calendar.HOUR_OF_DAY) - 1) + " hours");
+		bw.write(" " + (cal.get(Calendar.HOUR_OF_DAY) - 1) + " hours");
+    //bw.write(" " + cal.get(Calendar.HOUR_OF_DAY) + " hours");
     bw.write(", " + cal.get(Calendar.MINUTE) + " minutes");
     bw.write(", " + cal.get(Calendar.SECOND) + " seconds");
     bw.write(", " + cal.get(Calendar.MILLISECOND) + " ms.</p>");
