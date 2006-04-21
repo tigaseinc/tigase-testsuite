@@ -305,6 +305,8 @@ public class TestScriptLoader {
   private Map<String, String> getVersion() {
     TestNode node = getTestNode("Version");
     if (node != null) {
+			node.addGlobalPars(parser.getGlobalPars());
+			node.addGlobalVars(parser.getGlobalVars());
       Test tmp_test = new Test(node);
       tmp_test.runTest();
       return (Map<String, String>) tmp_test.getParams().get("Version");
