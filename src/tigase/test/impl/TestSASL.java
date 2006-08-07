@@ -48,7 +48,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
  *
  * Created: Tue May 17 20:27:16 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public class TestSASL extends TestAbstract {

@@ -35,7 +35,7 @@ import static tigase.util.JID.*;
  *
  * Created: Thu Jun 30 22:46:37 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public class TestRosterSetBuddy extends TestAbstract {

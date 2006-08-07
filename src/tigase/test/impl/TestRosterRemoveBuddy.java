@@ -32,7 +32,7 @@ import tigase.xml.Element;
  *
  * Created: Thu Jun 30 22:47:59 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public class TestRosterRemoveBuddy extends TestAbstract {

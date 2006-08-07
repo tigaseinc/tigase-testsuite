@@ -42,7 +42,7 @@ import static tigase.test.util.TestUtil.*;
  *
  * Created: Sun May 22 11:08:23 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public abstract class TestAbstract implements TestIfc {

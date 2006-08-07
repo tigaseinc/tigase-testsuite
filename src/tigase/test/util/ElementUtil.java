@@ -31,7 +31,7 @@ import javax.management.Attribute;
  *
  * Created: Wed May 18 16:45:12 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public class ElementUtil {

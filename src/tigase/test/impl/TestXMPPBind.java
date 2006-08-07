@@ -33,7 +33,7 @@ import tigase.test.util.Params;
  *
  * Created: Thu May 26 14:24:00 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public class TestXMPPBind extends TestAbstract {

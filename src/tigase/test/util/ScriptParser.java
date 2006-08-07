@@ -34,7 +34,7 @@ import java.util.TreeMap;
  *
  * Created: Sat May 28 07:47:46 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public class ScriptParser {

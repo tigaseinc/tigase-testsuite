@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * Created: Thu Jun  9 20:02:20 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public interface OutputFilter {

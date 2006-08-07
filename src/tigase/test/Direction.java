@@ -28,7 +28,7 @@ package tigase.test;
  *
  * Created: Wed May 18 06:59:35 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public enum Direction {

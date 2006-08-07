@@ -43,7 +43,7 @@ import static tigase.test.util.TestUtil.*;
  *
  * Created: Tue May 17 19:14:30 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public class TestSuite {

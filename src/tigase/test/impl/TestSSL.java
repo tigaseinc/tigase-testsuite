@@ -48,7 +48,7 @@ import tigase.xml.Element;
  *
  * Created: Tue May 17 20:26:41 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public class TestSSL extends TestAbstract {

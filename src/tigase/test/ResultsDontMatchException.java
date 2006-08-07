@@ -28,7 +28,7 @@ package tigase.test;
  *
  * Created: Sat Jun 18 08:11:34 2005
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public class ResultsDontMatchException extends Exception {
