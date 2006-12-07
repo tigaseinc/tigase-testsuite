@@ -64,17 +64,20 @@ public class TestTLS extends TestAbstract {
   private SSLSocketFactory getSSLSocketFactory() throws Exception {
     SecureRandom sr = new SecureRandom();
     sr.nextInt();
-    KeyStore keys = KeyStore.getInstance("JKS");
-    keys.load(new FileInputStream(keys_file), keys_password.toCharArray());
-    KeyStore trusts = KeyStore.getInstance("JKS");
-    trusts.load(new FileInputStream(trusts_file), trusts_password.toCharArray());
-    KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-    kmf.init(keys, keys_password.toCharArray());
-    TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-    tmf.init(trusts);
+//     KeyStore keys = KeyStore.getInstance("JKS");
+//     keys.load(new FileInputStream(keys_file), keys_password.toCharArray());
+//     KeyStore trusts = KeyStore.getInstance("JKS");
+//     trusts.load(new FileInputStream(trusts_file), trusts_password.toCharArray());
+//     KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+//     kmf.init(keys, keys_password.toCharArray());
+//     TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+//     tmf.init(trusts);
+//     SSLContext sslContext = SSLContext.getInstance("TLS");
+// //     sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), sr);
+//     sslContext.init(kmf.getKeyManagers(),
+//       new X509TrustManager[] {new FakeTrustManager()}, sr);
     SSLContext sslContext = SSLContext.getInstance("TLS");
-//     sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), sr);
-    sslContext.init(kmf.getKeyManagers(),
+    sslContext.init(null,
       new X509TrustManager[] {new FakeTrustManager()}, sr);
     return sslContext.getSocketFactory();
   }

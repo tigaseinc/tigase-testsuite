@@ -77,8 +77,9 @@ public class DomBuilderHandler implements SimpleHandler {
     return all_roots;
   }
 
-  public void error() {
+  public void error(String msg) {
     log.warning("XML content parse error.");
+    log.warning(msg);
   }
 
   private Element newElement(String name, String cdata,

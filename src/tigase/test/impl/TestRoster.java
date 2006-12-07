@@ -27,6 +27,7 @@ import javax.management.Attribute;
 import tigase.test.TestAbstract;
 import tigase.test.ResultsDontMatchException;
 import tigase.xml.Element;
+import tigase.test.util.ElementUtil;
 
 import static tigase.util.JID.*;
 
@@ -51,7 +52,7 @@ public class TestRoster extends TestAbstract {
   private String[] elems = {"iq", "iq", "iq", "iq", "iq", "iq", "iq"};
   private int counter = 0;
 
-  private String expected_query = null;
+  private Element expected_query = null;
   private Attribute[] result = null;
   private Attribute[] result_2 = null;
   private String[] resp_name = null;
@@ -84,10 +85,14 @@ public class TestRoster extends TestAbstract {
       boolean error = true;
       Element query = element.getChild("query");
       if (query != null) {
-        if (query.toString().equals(expected_query)) {
-          error = false;
-        } // end of if (query.toString().equals(expected_query))
-      } // end of if (query != null)
+				if (ElementUtil.equalElemsDeep(expected_query, query)) {
+					error = false;
+				} // end of if (ElementUtil.equalElemsDeep(expected_query, query))
+      } else {
+				if (expected_query == null) {
+					error = false;
+				} // end of if (expected_query == null)
+			} // end of else
       if (error) {
         throw new ResultsDontMatchException(
           "Expected: " + expected_query + ", Received: " + query.toString());
@@ -120,18 +125,25 @@ public class TestRoster extends TestAbstract {
     res_cnt = 0;
     switch (counter) {
     case 1:
-      expected_query = "<query xmlns=\"jabber:iq:roster\"/>";
+			//      expected_query = "<query xmlns=\"jabber:iq:roster\"/>";
+			expected_query = new Element("query",
+				new String[] {"xmlns"}, new String[] {"jabber:iq:roster"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"roster_1\" from=\"" + jid + "\">"
         + "<query xmlns=\"jabber:iq:roster\"/>"
         + "</iq>";
     case 2:
-      //      expected_query = "<query xmlns=\"jabber:iq:roster\"/>";
-      expected_query =
-        "<query xmlns=\"jabber:iq:roster\">"
-        + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\"/>"
-        + "</query>";
+//       expected_query =
+//         "<query xmlns=\"jabber:iq:roster\">"
+//         + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\"/>"
+//         + "</query>";
+			expected_query = new Element("query",
+				new Element[] {new Element("item",
+						new String[] {"jid", "subscription", "name"},
+						new String[] {"santa.claus@north.pole", "none", "claus"})},
+				new String[] {"xmlns"},
+				new String[] {"jabber:iq:roster"});
       resp_name = new String[] {"iq", "iq"};
       return
         "<iq type=\"set\" id=\"roster_2\" from=\"" + jid + "\">"
@@ -140,23 +152,36 @@ public class TestRoster extends TestAbstract {
         + "</query>"
         + "</iq>";
     case 3:
-      expected_query =
-        "<query xmlns=\"jabber:iq:roster\">"
-        + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\"/>"
-        + "</query>";
+//       expected_query =
+//         "<query xmlns=\"jabber:iq:roster\">"
+//         + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\"/>"
+//         + "</query>";
+			expected_query = new Element("query",
+				new Element[] {new Element("item",
+						new String[] {"jid", "subscription", "name"},
+						new String[] {"santa.claus@north.pole", "none", "claus"})},
+				new String[] {"xmlns"},
+				new String[] {"jabber:iq:roster"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"roster_3\" from=\"" + jid + "\">"
         + "<query xmlns=\"jabber:iq:roster\"/>"
         + "</iq>";
     case 4:
-      //      expected_query = "<query xmlns=\"jabber:iq:roster\"/>";
-      expected_query =
-        "<query xmlns=\"jabber:iq:roster\">"
-        + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\">"
-        + "<group>guests</group>"
-        + "</item>"
-        + "</query>";
+//       expected_query =
+//         "<query xmlns=\"jabber:iq:roster\">"
+//         + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\">"
+//         + "<group>guests</group>"
+//         + "</item>"
+//         + "</query>";
+			expected_query = new Element("query",
+				new Element[] {new Element("item",
+						new Element[] {
+							new Element("group", "guests")},
+						new String[] {"jid", "subscription", "name"},
+						new String[] {"santa.claus@north.pole", "none", "claus"})},
+				new String[] {"xmlns"},
+				new String[] {"jabber:iq:roster"});
       resp_name = new String[] {"iq", "iq"};
       return
         "<iq type=\"set\" id=\"roster_4\" from=\"" + jid + "\">"
@@ -167,23 +192,28 @@ public class TestRoster extends TestAbstract {
         + "</query>"
         + "</iq>";
     case 5:
-      expected_query =
-        "<query xmlns=\"jabber:iq:roster\">"
-        + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\">"
-        + "<group>guests</group>"
-        + "</item>"
-        + "</query>";
+//       expected_query =
+//         "<query xmlns=\"jabber:iq:roster\">"
+//         + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\">"
+//         + "<group>guests</group>"
+//         + "</item>"
+//         + "</query>";
+			expected_query = new Element("query",
+				new Element[] {new Element("item",
+						new Element[] {
+							new Element("group", "guests")},
+						new String[] {"jid", "subscription", "name"},
+						new String[] {"santa.claus@north.pole", "none", "claus"})},
+				new String[] {"xmlns"},
+				new String[] {"jabber:iq:roster"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"roster_5\" from=\"" + jid + "\">"
         + "<query xmlns=\"jabber:iq:roster\"/>"
         + "</iq>";
     case 6:
-      //      expected_query = "<query xmlns=\"jabber:iq:roster\"/>";
-      expected_query =  "<query xmlns=\"jabber:iq:roster\">"
-        + "<item jid=\"santa.claus@north.pole\" subscription=\"remove\"/>"
-        + "</query>";
-      resp_name = new String[] {"iq", "iq"};
+			expected_query = null;
+      resp_name = new String[] {"iq"};
       return
         "<iq type=\"set\" id=\"roster_6\" from=\"" + jid + "\">"
         + "<query xmlns=\"jabber:iq:roster\">"
@@ -191,7 +221,8 @@ public class TestRoster extends TestAbstract {
         + "</query>"
         + "</iq>";
     case 7:
-      expected_query = "<query xmlns=\"jabber:iq:roster\"/>";
+			expected_query = new Element("query",
+				new String[] {"xmlns"}, new String[] {"jabber:iq:roster"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"roster_7\" from=\"" + jid + "\">"

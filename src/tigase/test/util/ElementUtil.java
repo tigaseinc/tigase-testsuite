@@ -24,6 +24,8 @@ package tigase.test.util;
 
 import tigase.xml.Element;
 import javax.management.Attribute;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Describe class ElementUtil here.
@@ -58,5 +60,56 @@ public class ElementUtil {
     } // end of for ()
     return true;
   }
+
+	public static boolean equalElems(Element el1, Element el2) {
+		if (!el1.getName().equals(el2.getName())) {
+			return false;
+		} // end of if (!el1.getName().equals(el2.getName()))
+		Map<String, String> attrs = el1.getAttributes();
+		if (attrs != null) {
+			for (String key: attrs.keySet()) {
+				String atval2 = el2.getAttribute(key);
+				if (atval2 == null) {
+					return false;
+				} // end of if (at2 == null)
+				if (!attrs.get(key).equals(atval2)) {
+					return false;
+				} // end of if (!attrs.get(key).equals(atval2))
+			} // end of for (String key: attrs.keySet())
+		} // end of if (attrs != null)
+		String cdata1 = el1.getCData();
+		if (cdata1 != null) {
+			String cdata2 = el2.getCData();
+			if (cdata2 == null) {
+				return false;
+			} // end of if (cdata2 == null)
+			if (!cdata1.equals(cdata2)) {
+				return false;
+			} // end of if (!cdata1.equals(cdata2))
+		} // end of if (cdata1 != null)
+		return true;
+	}
+
+	public static boolean equalElemsDeep(Element el1, Element el2) {
+		boolean equal = equalElems(el1, el2);
+		if (!equal) {
+			return false;
+		} // end of if (!res)
+		List <Element> children = el1.getChildren();
+		if (children == null) {
+			return true;
+		} // end of if (children == null)
+		for (Element child1: children) {
+			Element child2 = el2.getChild(child1.getName());
+			if (child2 == null) {
+				return false;
+			} // end of if (child2 == null)
+			equal = equalElems(child1, child2);
+			if (!equal) {
+				return false;
+			} // end of if (!res)
+		} // end of for (Element child: children)
+		return true;
+	}
 
 } // ElementUtil

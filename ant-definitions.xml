@@ -28,6 +28,22 @@
     <attribute name="filename"/>
     <attribute name="manifest" default="MANIFEST.MF"/>
     <sequential>
+    <concat destfile="@{manifest}">Manifest-Version: 1.0
+Created-By: Artur Hefczyc
+Main-Class: tigase.test.TestSuite
+
+Name: tigase/test/
+Specification-Title: Tigase Test Suite
+Specification-Version: 1.0.0
+Specification-Vendor: tigase.org
+Implementation-Title: tigase.test
+Implementation-Version: 1.0.0-b111
+Implementation-Vendor: tigase.org
+Package-Title: tigase.test
+Package-Version: build111
+Package-Vendor: tigase.org
+Tigase-Version: 1.0.0-b111
+</concat>
       <replaceregexp
         file="@{manifest}"
         match="^(Specification-Version: ).*$"
@@ -37,6 +53,11 @@
         file="@{manifest}"
         match="^(Implementation-Version: ).*$"
         replace="\1${version}"
+        byline="true"/>
+      <replaceregexp
+        file="@{manifest}"
+        match="^(Package-Version: ).*$"
+        replace="\1build${build-no}"
         byline="true"/>
       <replaceregexp
         file="@{manifest}"
@@ -73,6 +94,11 @@
         bottom="${javadoc-copyright}">
         <link offline="true" href="http://java.sun.com/j2se/1.5.0/docs/api/"
           packagelistLoc="package-list"/>
+	<classpath>
+	  <fileset dir="${libs}">
+	    <include name="**/*.jar"/>
+	  </fileset>
+	</classpath>
       </javadoc>
     </sequential>
   </macrodef>
@@ -94,17 +120,32 @@
         <arg value="s/&lt;[^>]*>//g"/>
         <arg value="-e"/>
         <arg value="s/&#60;[^>]*>//g"/>
-        <arg value="www/README.html"/>
+        <arg value="package.html"/>
       </exec>
       <copy
-        file="www/README.html"
+        file="package.html"
         tofile="${dist}/@{packagename}-${version}/README.html"/>
+      <mkdir dir="${dist}/@{packagename}-${version}/certs"/>
+      <copy todir="${dist}/@{packagename}-${version}/certs">
+        <fileset dir="certs" includes="*"/>
+      </copy>
+      <mkdir dir="${dist}/@{packagename}-${version}/etc"/>
       <copy
-        file="scripts/start_server.sh"
-        tofile="${dist}/@{packagename}-${version}/bin/start_server.sh"/>
+        file="etc/tigase.conf"
+        tofile="${dist}/@{packagename}-${version}/etc/tigase.conf"/>
+      <mkdir dir="${dist}/@{packagename}-${version}/libs"/>
+      <copy todir="${dist}/@{packagename}-${version}/libs">
+        <fileset dir="libs" includes="*"/>
+      </copy>
       <copy
-        file="www/serverfeatures.html"
-        tofile="${dist}/@{packagename}-${version}/serverfeatures.html"/>
+        file="scripts/tigase.sh"
+        tofile="${dist}/@{packagename}-${version}/bin/tigase.sh"/>
+      <copy
+        file="scripts/config.sh"
+        tofile="${dist}/@{packagename}-${version}/bin/config.sh"/>
+      <copy
+        file="scripts/repo.sh"
+        tofile="${dist}/@{packagename}-${version}/bin/repo.sh"/>
       <move todir="${dist}/@{packagename}-${version}/docs">
         <fileset dir="@{docsdir}"/>
       </move>
@@ -152,9 +193,5 @@
       <delete dir="@{packagename}-${version}.src"/>
     </sequential>
   </macrodef>
-
-  <taskdef name="unitgen"
-    classpath="${libs}/unittestsgen.jar"
-    classname="testsgen.taskant.UnitTestsGen"/>
 
 </project>

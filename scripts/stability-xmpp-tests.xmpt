@@ -1,7 +1,7 @@
 -version = "2.0.0"
 
 -output-format  = html
--output-file    = "www/stability-tests.html"
+-output-file    = "../www/stability-tests.html"
 -output-history = no
 -output-cols    = 7
 -title          = "XMPP Server stability tests."
@@ -10,7 +10,7 @@
 #-debug-on-error
 
 -serverip    = "127.0.0.1"
--host        = localhost-2
+-host        = localhost
 -socket-wait = 5000
 -base-ns     = "jabber:client"
 

@@ -93,7 +93,7 @@ public class HTMLFilter implements OutputFilter {
     cal.setTimeInMillis(System.currentTimeMillis() - start);
     //cal.computeFields();
     bw.write("  <p>Total test time:");
-		bw.write(" " + (cal.get(Calendar.HOUR_OF_DAY) - 1) + " hours");
+		bw.write(" " + (cal.get(Calendar.HOUR_OF_DAY)) + " hours");
     //bw.write(" " + cal.get(Calendar.HOUR_OF_DAY) + " hours");
     bw.write(", " + cal.get(Calendar.MINUTE) + " minutes");
     bw.write(", " + cal.get(Calendar.SECOND) + " seconds");
