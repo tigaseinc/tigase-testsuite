@@ -125,7 +125,6 @@ public class TestRoster extends TestAbstract {
     res_cnt = 0;
     switch (counter) {
     case 1:
-			//      expected_query = "<query xmlns=\"jabber:iq:roster\"/>";
 			expected_query = new Element("query",
 				new String[] {"xmlns"}, new String[] {"jabber:iq:roster"});
       resp_name = new String[] {"iq"};
@@ -134,10 +133,6 @@ public class TestRoster extends TestAbstract {
         + "<query xmlns=\"jabber:iq:roster\"/>"
         + "</iq>";
     case 2:
-//       expected_query =
-//         "<query xmlns=\"jabber:iq:roster\">"
-//         + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\"/>"
-//         + "</query>";
 			expected_query = new Element("query",
 				new Element[] {new Element("item",
 						new String[] {"jid", "subscription", "name"},
@@ -152,10 +147,6 @@ public class TestRoster extends TestAbstract {
         + "</query>"
         + "</iq>";
     case 3:
-//       expected_query =
-//         "<query xmlns=\"jabber:iq:roster\">"
-//         + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\"/>"
-//         + "</query>";
 			expected_query = new Element("query",
 				new Element[] {new Element("item",
 						new String[] {"jid", "subscription", "name"},
@@ -168,12 +159,6 @@ public class TestRoster extends TestAbstract {
         + "<query xmlns=\"jabber:iq:roster\"/>"
         + "</iq>";
     case 4:
-//       expected_query =
-//         "<query xmlns=\"jabber:iq:roster\">"
-//         + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\">"
-//         + "<group>guests</group>"
-//         + "</item>"
-//         + "</query>";
 			expected_query = new Element("query",
 				new Element[] {new Element("item",
 						new Element[] {
@@ -192,12 +177,6 @@ public class TestRoster extends TestAbstract {
         + "</query>"
         + "</iq>";
     case 5:
-//       expected_query =
-//         "<query xmlns=\"jabber:iq:roster\">"
-//         + "<item jid=\"santa.claus@north.pole\" subscription=\"none\" name=\"claus\">"
-//         + "<group>guests</group>"
-//         + "</item>"
-//         + "</query>";
 			expected_query = new Element("query",
 				new Element[] {new Element("item",
 						new Element[] {

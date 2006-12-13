@@ -27,7 +27,8 @@ $(ssl-tls-wait) = 5000
 
 -debug-on-error
 
-Version@iq-version: >> Get server version <<
+Version@auth-sasl;iq-version: { -user-name=stats -user-pass=stats }
+ >> Get server version <<
 Statistics@iq-stats: { -user-name=stats -user-pass=stats } >> Server statistics <<
 
 Global settings:
@@ -78,6 +79,8 @@ Global settings:
   entity statistics, introduced for testing and server diagnostics. <<
 
   Test 15@roster: >> Roster management test <<
+
+  Test 16@privacy-lists: >> Privacy lists management test <<
 
   Test end@user-unregister:
   >> JEP-0077 - In-Band Registration - user unregister <<
@@ -165,6 +168,22 @@ Multi thread tests:
   } >> Multi-thread test of message send to daemon user <<
 
   Multi 6: {
+    -multi-thread
+    -loop = 5
+
+    Roster@privacy-lists: { -user-name = "multi-reg_1_$(loop)" }
+    >> Privacy lists management test <<
+    Roster@privacy-lists: { -user-name = "multi-reg_2_$(loop)" }
+    >> Privacy lists management test <<
+    Roster@privacy-lists: { -user-name = "multi-reg_3_$(loop)" }
+    >> Privacy lists management test <<
+    Roster@privacy-lists: { -user-name = "multi-reg_4_$(loop)" }
+    >> Privacy lists management test <<
+    Roster@privacy-lists: { -user-name = "multi-reg_5_$(loop)" }
+    >> Privacy lists management test <<
+  } >> Multi-thread test Privacy lists management <<
+
+  Multi-test end: {
     -multi-thread
     -loop = 5
 
