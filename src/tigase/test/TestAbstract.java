@@ -59,6 +59,7 @@ public abstract class TestAbstract implements TestIfc {
   private List<HistoryEntry> history = null;
   private boolean deb = false;
   private boolean collectHistory = true;
+	protected boolean timeoutOk = false;
 
   /**
    * Creates a new <code>TestAbstract</code> instance.
@@ -173,10 +174,14 @@ public abstract class TestAbstract implements TestIfc {
       }
       return true;
     } catch (SocketTimeoutException e) {
-      addInput("" + e + "\n" + TestUtil.stack2String(e));
-      resultCode = ResultCode.PROCESSING_EXCEPTION;
-      exception = e;
-      return false;
+			if (timeoutOk) {
+				return true;
+			}	else {
+				addInput("" + e + "\n" + TestUtil.stack2String(e));
+				resultCode = ResultCode.PROCESSING_EXCEPTION;
+				exception = e;
+				return false;
+			} // end of if (timeoutOk) else
     } catch (Exception e) {
       addInput("" + e + "\n" + TestUtil.stack2String(e));
       resultCode = ResultCode.PROCESSING_EXCEPTION;
@@ -213,6 +218,7 @@ public abstract class TestAbstract implements TestIfc {
     this.params = params;
     deb = params.containsKey("-debug");
     collectHistory = !params.containsKey("-daemon");
+		timeoutOk = params.containsKey("-time-out-ok");
 //       && !params.containsKey("-on-one-socket");
 //    collectHistory = true;
     if (collectHistory) {

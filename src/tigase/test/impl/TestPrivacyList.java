@@ -51,7 +51,6 @@ public class TestPrivacyList extends TestAbstract {
   private String id = null;
 	private String xmlns = "jabber:iq:privacy";
 
-	//private String[] elems = {"iq", "iq", "iq", "iq", "iq", "iq", "iq"};
   private String[] elems =
 	{"iq", "iq", "iq", "iq", "iq", "iq", "iq", "iq", "iq"
 	 , "iq", "iq", "iq", "iq", "iq"};

@@ -33,11 +33,12 @@ package tigase.test;
  */
 public enum ResultCode {
 
-  TEST_OK("No errors during test."),
-  SOCKET_NOT_INITALIZED("Network socket is not ready."),
-  NO_TESTS_DEFINED("There is no tests defined."),
-  PROCESSING_EXCEPTION("Exception during processing: "),
-  RESULT_DOESNT_MATCH("Received result doesn't match expected result.")
+  TEST_OK("No errors during test.")
+		, SOCKET_NOT_INITALIZED("Network socket is not ready.")
+		, NO_TESTS_DEFINED("There is no tests defined.")
+		, PROCESSING_EXCEPTION("Exception during processing: ")
+		,	RESULT_DOESNT_MATCH("Received result doesn't match expected result.")
+		, UNEXPECTED_INPUT("Unpexpected input from the socket.")
   ;
 
   String resultMsg = null;

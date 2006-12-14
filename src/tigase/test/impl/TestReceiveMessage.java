@@ -65,7 +65,8 @@ public class TestReceiveMessage extends TestAbstract {
       new String[] {"jabber:client"},
       new String[] {"msg-listen"},
       new String[] {"socket", "stream-open", "auth"},
-      new String[] {"user-register", "tls-init"}
+      new String[] {"user-register", "tls-init",
+										"privacy-block-msg", "privacy-long-list"}
       );
   }
 

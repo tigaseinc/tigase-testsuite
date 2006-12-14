@@ -111,7 +111,11 @@ public class TestSendMessage extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public String[] getRespElementNames(final String string) throws Exception {
-    return new String[] {"message"};
+		if (timeoutOk) {
+			return new String[] {"complete rubish, there should be no response at all"};
+		} else {
+			return new String[] {"message"};
+		} // end of else
   }
 
   /**

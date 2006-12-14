@@ -10,6 +10,8 @@
 $(server-host) = localhost
 $(def-user)    = all-xmpp-test
 $(daemon-user) = all-xmpp-test_1
+$(blocking-user) = blocking-test-user_1
+$(long-list-user) = long-list-user_1
 $(ssl-tls-wait) = 5000
 
 -serverip    = "127.0.0.1"
@@ -51,14 +53,19 @@ Global settings:
   Test 9@xmpp-bind: { -socket-wait = $(ssl-tls-wait) } >> XMPP resource bind <<
   Test 10@xmpp-session: { -socket-wait = $(ssl-tls-wait) } >> Establish XMPP session <<
   Test 11@msg-send: { -to-jid = $(self) }
-  >> Send a message to self user and don\'t wait for response <<
+  >> Send a message to self user and don't wait for response <<
 
-  Prep 1@user-register: {
+  Prep 1@user-unregister: {
+    -no-record
+    -user-name = $(daemon-user)
+  } >> Remove test account. <<
+
+  Prep 2@user-register: {
     -no-record
     -user-name = $(daemon-user)
   } >> Create a daemon user account <<
 
-  Prep 2@msg-listen: {
+  Prep 3@msg-listen: {
     -no-record
     -daemon
 
@@ -81,6 +88,57 @@ Global settings:
   Test 15@roster: >> Roster management test <<
 
   Test 16@privacy-lists: >> Privacy lists management test <<
+
+  Prep 4@user-unregister: {
+    -no-record
+    -user-name = $(blocking-user)
+  } >> Remove test account. <<
+
+  Prep 5@user-register: {
+    -no-record
+    -user-name = $(blocking-user)
+  } >> Create a daemon user account blocking all messages <<
+
+  Prep 6@privacy-block-msg;msg-listen: {
+    -no-record
+    -daemon
+
+    -socket-wait = 0
+    -user-name   = $(blocking-user)
+    -delay       = 500
+  } >> Setup a user daemon blocking all messages <<
+
+  Test 17@msg-send: Privacy lists - send a message to $(blocking-user) user
+  {
+    -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
+    -socket-wait = 1000
+    -time-out-ok
+  } >> Privacy lists test - send a message to $(blocking-user) user blocking all messages and wait for error response <<
+
+  Prep 7@user-unregister: {
+    -no-record
+    -user-name = $(long-list-user)
+  } >> Remove test account. <<
+
+  Prep 8@user-register: {
+    -no-record
+    -user-name = $(long-list-user)
+  } >> Create a daemon user account with very long privacy list <<
+
+  Prep 9@privacy-long-list;msg-listen: {
+    -no-record
+    -daemon
+
+    -socket-wait = 0
+    -user-name   = $(long-list-user)
+    -delay       = 10000
+  } >> Setup a user daemon with very long privacy list <<
+
+  Test 18@msg-send: Send a message to $(long-list-user) user
+  {
+    -to-jid = "$(long-list-user)@$(server-host)/xmpp-test"
+  } >> Send a message to $(long-list-user)@$(server-host)/xmpp-test user
+  with very long privacy list and wait for message response <<
 
   Test end@user-unregister:
   >> JEP-0077 - In-Band Registration - user unregister <<
@@ -181,7 +239,43 @@ Multi thread tests:
     >> Privacy lists management test <<
     Roster@privacy-lists: { -user-name = "multi-reg_5_$(loop)" }
     >> Privacy lists management test <<
-  } >> Multi-thread test Privacy lists management <<
+  } >> Multi-thread test privacy lists management <<
+
+  Multi 7: {
+    -multi-thread
+    -loop   = 5
+    -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
+    -socket-wait = 1000
+    -time-out-ok
+
+    Message send@msg-send: { -user-name = "multi-reg_1_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_2_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_3_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_4_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_5_$(loop)" }
+    >> Send a message to daemon user <<
+  } >> Multi-thread test privacy lists - send a message to daemon user who blocks all messages <<
+
+  Multi 8: {
+    -multi-thread
+    -loop   = 5
+    -to-jid = "$(long-list-user)@$(server-host)/xmpp-test"
+
+    Message send@msg-send: { -user-name = "multi-reg_1_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_2_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_3_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_4_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_5_$(loop)" }
+    >> Send a message to daemon user <<
+  } >> Multi-thread test privacy lists - send a message to daemon user with very long privacy list <<
 
   Multi-test end: {
     -multi-thread
