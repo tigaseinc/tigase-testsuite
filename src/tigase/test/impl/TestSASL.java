@@ -40,7 +40,7 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import tigase.util.Base64;
 
 /**
  * Describe class TestSASL here.

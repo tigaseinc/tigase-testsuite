@@ -9,18 +9,20 @@
 # Other global settings
 #-debug-on-error
 
+$(repeats)      = 1000000
+$(daemon-users) = 1
+$(messages)     = 10
+$(server-host) = localhost
+$(long-list-user) = long-list-user_1
+
 -serverip    = "127.0.0.1"
--host        = localhost
+-host        = $(server-host)
 -socket-wait = 5000
 -base-ns     = "jabber:client"
 
 Version@iq-version: { -loop = 1 } >> Get server version <<
 Statistics@iq-stats: { -loop = 1 -user-name=stats -user-pass=stats }
 >> Get server statistics <<
-
-$(repeats)      = 1000000
-$(daemon-users) = 1
-$(messages)     = 10
 
 -loop                 = $(repeats)
 -keys-file-password   = keystore
@@ -46,6 +48,39 @@ Global settings:
   >> Create test user account for using by later tests  <<
 
   Test 2@xmpp-session: >> XMPP session bind <<
+
+  Prep 2@user-unregister: {
+    -no-record
+    -user-name = $(long-list-user)
+    -loop = 1
+  } >> Remove test account. <<
+
+  Prep 3@user-register: {
+    -no-record
+    -user-name = $(long-list-user)
+    -loop = 1
+  } >> Create a daemon user account with very long privacy list <<
+
+  Prep 4@privacy-long-list;msg-listen: {
+    -no-record
+    -daemon
+
+    -loop = 1
+    -socket-wait = 0
+    -user-name   = $(long-list-user)
+    -delay       = 10000
+  } >> Setup a user daemon with very long privacy list <<
+
+  Test 3@msg-send: Send messages to user with very long privacy list
+  {
+    -on-one-socket
+
+    -delay    = 0
+    -loop     = $(repeats)
+    -messages = $(messages)
+    -to-jid   = "$(long-list-user)@$(server-host)/xmpp-test"
+  } >> Send a messages to test user with very long privacy list
+        and wait for message response <<
 
   Test end@user-unregister: { -no-record -loop = 1 }
   >> Cleanup - test user unregister <<
@@ -86,7 +121,10 @@ Multi thread tests:
 
   Multi 1: {
     -multi-thread
-    -to-jid = $(daemons)
+    -on-one-socket
+
+    -to-jid   = $(daemons)
+    -messages = $(messages)
 
     Message send@msg-send: { -user-name = multi-reg_0 }
     >> Send a message to daemon user <<
@@ -109,6 +147,35 @@ Multi thread tests:
     Message send@msg-send: { -user-name = multi-reg_9 }
     >> Send a message to daemon user <<
   } >> Multi-thread test of message send to daemon user <<
+
+  Multi 2: {
+    -multi-thread
+    -on-one-socket
+
+    -to-jid   = "$(long-list-user)@$(server-host)/xmpp-test"
+    -messages = $(messages)
+
+    Message send@msg-send: { -user-name = multi-reg_0 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_1 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_2 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_3 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_4 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_5 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_6 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_7 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_8 }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = multi-reg_9 }
+    >> Send a message to daemon user <<
+  } >> Multi-thread test send messages to user with very long privacy list <<
 
   Unregister@user-unregister:
   {
