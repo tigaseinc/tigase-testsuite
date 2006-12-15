@@ -12,7 +12,7 @@
 $(repeats)      = 1000000
 $(daemon-users) = 1
 $(messages)     = 10
-$(server-host) = localhost
+$(server-host)  = localhost
 $(long-list-user) = long-list-user_1
 
 -serverip    = "127.0.0.1"

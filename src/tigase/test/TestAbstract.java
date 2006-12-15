@@ -60,6 +60,7 @@ public abstract class TestAbstract implements TestIfc {
   private boolean deb = false;
   private boolean collectHistory = true;
 	protected boolean timeoutOk = false;
+	private boolean fullExceptionStack = false;
 
   /**
    * Creates a new <code>TestAbstract</code> instance.
@@ -177,11 +178,16 @@ public abstract class TestAbstract implements TestIfc {
 			if (timeoutOk) {
 				return true;
 			}	else {
-				addInput("" + e + "\n" + TestUtil.stack2String(e));
 				resultCode = ResultCode.PROCESSING_EXCEPTION;
 				exception = e;
+				addInput(e.getMessage());
 				return false;
 			} // end of if (timeoutOk) else
+		} catch (ResultsDontMatchException e) {
+			resultCode = ResultCode.PROCESSING_EXCEPTION;
+			exception = e;
+			addInput(e.getMessage());
+			return false;
     } catch (Exception e) {
       addInput("" + e + "\n" + TestUtil.stack2String(e));
       resultCode = ResultCode.PROCESSING_EXCEPTION;
@@ -219,6 +225,7 @@ public abstract class TestAbstract implements TestIfc {
     deb = params.containsKey("-debug");
     collectHistory = !params.containsKey("-daemon");
 		timeoutOk = params.containsKey("-time-out-ok");
+		fullExceptionStack = params.containsKey("-full-stack-trace");
 //       && !params.containsKey("-on-one-socket");
 //    collectHistory = true;
     if (collectHistory) {
@@ -287,9 +294,12 @@ public abstract class TestAbstract implements TestIfc {
   public String getResultMessage() {
     switch (resultCode) {
     case PROCESSING_EXCEPTION:
-      return resultCode.getMessage()
-        + exception.toString() + "\n"
+			if (fullExceptionStack) {
+      return resultCode.getMessage() + exception.toString() + "\n"
         + stack2String(exception);
+			} else {
+				return exception.getMessage();
+			}
     default:
       return resultCode.getMessage();
     } // end of switch (resultCode)
