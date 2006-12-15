@@ -92,9 +92,9 @@ public class TestUnregister extends TestAbstract {
     case 1:
       return new Attribute[]
       {
-        new Attribute("type", "result"),
-        new Attribute("id", "unreg1"),
-        new Attribute("to", jid)
+        new Attribute("type", "result")
+				, new Attribute("id", "unreg1")
+				//				, new Attribute("to", jid)
       };
     default:
       return null;
