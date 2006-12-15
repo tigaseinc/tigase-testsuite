@@ -329,12 +329,12 @@ public class Test {
             debug("Error code: " + test.getResultCode()
               + ", error message: " + test.getResultMessage() + "\n",
               debug || debug_on_error);
-            if (test.getHistory() != null) {
-              for (HistoryEntry he : test.getHistory()) {
-                debug("" + he.getDirection() + "\n"
-                  + he.getContent() + "\n", debug || debug_on_error);
-              } // end of for ()
-            } // end of if (test.getHistory() != null)
+//             if (test.getHistory() != null) {
+//               for (HistoryEntry he : test.getHistory()) {
+//                 debug("" + he.getDirection() + "\n"
+//                   + he.getContent() + "\n", debug || debug_on_error);
+//               } // end of for ()
+//             } // end of if (test.getHistory() != null)
             result = false;
             synchronized(this) { this.notifyAll(); }
             return;
