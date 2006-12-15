@@ -87,7 +87,8 @@ public class TestPrivacyLongList extends TestAbstract {
       boolean error = true;
       if (element != null) {
 				if (ElementUtil.equalElemsDeep(expected_query, element)
-					&& ElementUtil.equalElemsDeep(element, expected_query)) {
+					//					&& ElementUtil.equalElemsDeep(element, expected_query)
+						) {
 					error = false;
 				}
       } else {
@@ -123,8 +124,8 @@ public class TestPrivacyLongList extends TestAbstract {
     switch (counter) {
     case 1:
 			expected_query = new Element("iq",
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_" + counter});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_" + counter});
       resp_name = new String[] {"iq"};
       String list =
         "<iq type=\"set\" id=\"privacy_" + counter + "\" from=\"" + jid + "\">"
@@ -140,8 +141,8 @@ public class TestPrivacyLongList extends TestAbstract {
 			return list;
     case 2:
 			expected_query = new Element("iq",
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_" + counter});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_" + counter});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"set\" id=\"privacy_" + counter + "\" from=\"" + jid + "\">"
@@ -151,8 +152,8 @@ public class TestPrivacyLongList extends TestAbstract {
         + "</iq>";
     case 3:
 			expected_query = new Element("iq",
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_" + counter});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_" + counter});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"set\" id=\"privacy_" + counter + "\" from=\"" + jid + "\">"

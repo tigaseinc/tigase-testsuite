@@ -56,7 +56,7 @@ public class TestPrivacyList extends TestAbstract {
 	 , "iq", "iq", "iq", "iq", "iq"};
   private int counter = 0;
 
-  private Element expected_query = null;
+  private Element expected_result = null;
   private Attribute[] result = null;
   private Attribute[] result_2 = null;
   private String[] resp_name = null;
@@ -88,18 +88,19 @@ public class TestPrivacyList extends TestAbstract {
     if (element != null) {
       boolean error = true;
       if (element != null) {
-				if (ElementUtil.equalElemsDeep(expected_query, element)
-					&& ElementUtil.equalElemsDeep(element, expected_query)) {
+				if (ElementUtil.equalElemsDeep(expected_result, element)
+					//					&& ElementUtil.equalElemsDeep(element, expected_result)
+						) {
 					error = false;
 				}
       } else {
-				if (expected_query == null) {
+				if (expected_result == null) {
 					error = false;
-				} // end of if (expected_query == null)
+				} // end of if (expected_result == null)
 			} // end of else
       if (error) {
         throw new ResultsDontMatchException(
-          "Expected: " + expected_query + ", Received: " + element.toString());
+          "Expected: " + expected_result + ", Received: " + element.toString());
       } // end of if (error)
     } // end of if (element != null)
     if (counter < elems.length) {
@@ -124,21 +125,21 @@ public class TestPrivacyList extends TestAbstract {
     res_cnt = 0;
     switch (counter) {
     case 1:
-			expected_query = new Element("iq",
+			expected_result = new Element("iq",
 				new Element[] {new Element("query",
 						new String[] {"xmlns"},
 						new String[] {xmlns})},
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_1"});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_1"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"privacy_1\" from=\"" + jid + "\">"
         + "<query xmlns=\"" + xmlns + "\"/>"
         + "</iq>";
     case 2:
-			expected_query = new Element("iq",
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_2"});
+			expected_result = new Element("iq",
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_2"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"set\" id=\"privacy_2\" from=\"" + jid + "\">"
@@ -151,7 +152,7 @@ public class TestPrivacyList extends TestAbstract {
         + "</query>"
         + "</iq>";
     case 3:
-			expected_query = new Element("iq",
+			expected_result = new Element("iq",
 				new Element[] {new Element("query",
 						new Element[] {
 							new Element("list",
@@ -159,15 +160,15 @@ public class TestPrivacyList extends TestAbstract {
 								new String[] {"public"})},
 						new String[] {"xmlns"},
 						new String[] {xmlns})},
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_3"});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_3"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"privacy_3\" from=\"" + jid + "\">"
         + "<query xmlns=\"" + xmlns + "\"/>"
         + "</iq>";
     case 4:
-			expected_query = new Element("iq",
+			expected_result = new Element("iq",
 				new Element[] {new Element("query",
 						new Element[] {
 							new Element("list",
@@ -186,8 +187,8 @@ public class TestPrivacyList extends TestAbstract {
 								new String[] {"public"})},
 						new String[] {"xmlns"},
 						new String[] {xmlns})},
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_4"});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_4"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"privacy_4\" from=\"" + jid + "\">"
@@ -196,9 +197,9 @@ public class TestPrivacyList extends TestAbstract {
 				+ "</query>"
         + "</iq>";
     case 5:
-			expected_query = new Element("iq",
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_5"});
+			expected_result = new Element("iq",
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_5"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"set\" id=\"privacy_5\" from=\"" + jid + "\">"
@@ -207,7 +208,7 @@ public class TestPrivacyList extends TestAbstract {
 				+ "</query>"
         + "</iq>";
     case 6:
-			expected_query = new Element("iq",
+			expected_result = new Element("iq",
 				new Element[] {new Element("query",
 						new Element[] {
 							new Element("active",
@@ -218,17 +219,17 @@ public class TestPrivacyList extends TestAbstract {
 								new String[] {"public"})},
 						new String[] {"xmlns"},
 						new String[] {xmlns})},
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_6"});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_6"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"privacy_6\" from=\"" + jid + "\">"
         + "<query xmlns=\"" + xmlns + "\"/>"
         + "</iq>";
     case 7:
-			expected_query = new Element("iq",
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_7"});
+			expected_result = new Element("iq",
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_7"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"set\" id=\"privacy_7\" from=\"" + jid + "\">"
@@ -237,7 +238,7 @@ public class TestPrivacyList extends TestAbstract {
 				+ "</query>"
         + "</iq>";
     case 8:
-			expected_query = new Element("iq",
+			expected_result = new Element("iq",
 				new Element[] {new Element("query",
 						new Element[] {
 							new Element("default",
@@ -251,17 +252,17 @@ public class TestPrivacyList extends TestAbstract {
 								new String[] {"public"})},
 						new String[] {"xmlns"},
 						new String[] {xmlns})},
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_8"});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_8"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"privacy_8\" from=\"" + jid + "\">"
         + "<query xmlns=\"" + xmlns + "\"/>"
         + "</iq>";
     case 9:
-			expected_query = new Element("iq",
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_9"});
+			expected_result = new Element("iq",
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_9"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"set\" id=\"privacy_9\" from=\"" + jid + "\">"
@@ -270,7 +271,7 @@ public class TestPrivacyList extends TestAbstract {
 				+ "</query>"
         + "</iq>";
     case 10:
-			expected_query = new Element("iq",
+			expected_result = new Element("iq",
 				new Element[] {new Element("query",
 						new Element[] {
 							new Element("active",
@@ -281,17 +282,17 @@ public class TestPrivacyList extends TestAbstract {
 								new String[] {"public"})},
 						new String[] {"xmlns"},
 						new String[] {xmlns})},
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_10"});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_10"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"privacy_10\" from=\"" + jid + "\">"
         + "<query xmlns=\"" + xmlns + "\"/>"
         + "</iq>";
     case 11:
-			expected_query = new Element("iq",
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_11"});
+			expected_result = new Element("iq",
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_11"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"set\" id=\"privacy_11\" from=\"" + jid + "\">"
@@ -300,7 +301,7 @@ public class TestPrivacyList extends TestAbstract {
 				+ "</query>"
         + "</iq>";
     case 12:
-			expected_query = new Element("iq",
+			expected_result = new Element("iq",
 				new Element[] {new Element("query",
 						new Element[] {
 							new Element("list",
@@ -308,17 +309,17 @@ public class TestPrivacyList extends TestAbstract {
 								new String[] {"public"})},
 						new String[] {"xmlns"},
 						new String[] {xmlns})},
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_12"});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_12"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"privacy_12\" from=\"" + jid + "\">"
         + "<query xmlns=\"" + xmlns + "\"/>"
         + "</iq>";
     case 13:
-			expected_query = new Element("iq",
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_13"});
+			expected_result = new Element("iq",
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_13"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"set\" id=\"privacy_13\" from=\"" + jid + "\">"
@@ -327,12 +328,12 @@ public class TestPrivacyList extends TestAbstract {
 				+ "</query>"
         + "</iq>";
     case 14:
-			expected_query = new Element("iq",
+			expected_result = new Element("iq",
 				new Element[] {new Element("query",
 						new String[] {"xmlns"},
 						new String[] {xmlns})},
-				new String[] {"to", "type", "id"},
-				new String[] {jid, "result", "privacy_14"});
+				new String[] {"type", "id"},
+				new String[] {"result", "privacy_14"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"privacy_14\" from=\"" + jid + "\">"
