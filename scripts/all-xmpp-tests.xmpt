@@ -29,6 +29,9 @@ $(ssl-tls-wait) = 5000
 
 -debug-on-error
 
+Init 0@user-register: {
+-user-name=stats -user-pass=stats -no-record
+}>> JEP-0077 - In-Band Registration, register <<
 Version@auth-sasl;iq-version: { -user-name=stats -user-pass=stats }
  >> Get server version <<
 Statistics@iq-stats: { -user-name=stats -user-pass=stats } >> Server statistics <<
