@@ -61,6 +61,7 @@ public abstract class TestAbstract implements TestIfc {
   private boolean collectHistory = true;
 	protected boolean timeoutOk = false;
 	private boolean fullExceptionStack = false;
+	private String error_message = "";
 
   /**
    * Creates a new <code>TestAbstract</code> instance.
@@ -212,6 +213,8 @@ public abstract class TestAbstract implements TestIfc {
         } // end of for ()
       }
     } // end of else
+		error_message =
+			"Expected: " + response + ", Received: " + reply.toString();
     return false;
   }
 
@@ -301,7 +304,9 @@ public abstract class TestAbstract implements TestIfc {
 				return exception.getMessage();
 			}
     default:
-      return resultCode.getMessage();
+      return resultCode.getMessage()
+				+ ", "
+				+ error_message;
     } // end of switch (resultCode)
   }
 
