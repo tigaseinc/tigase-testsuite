@@ -100,7 +100,7 @@ public class TestPrivacyList extends TestAbstract {
 			} // end of else
       if (error) {
         throw new ResultsDontMatchException(
-          "Expected: " + expected_result + ", Received: " + element.toString());
+          "Expected: " + expected_result + ", Received: " + element);
       } // end of if (error)
     } // end of if (element != null)
     if (counter < elems.length) {

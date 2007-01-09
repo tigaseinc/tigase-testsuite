@@ -52,7 +52,7 @@ public class TestRoster extends TestAbstract {
   private String[] elems = {"iq", "iq", "iq", "iq", "iq", "iq", "iq"};
   private int counter = 0;
 
-  private Element expected_query = null;
+  private Element expected_result, optional_result = null;
   private Attribute[] result = null;
   private Attribute[] result_2 = null;
   private String[] resp_name = null;
@@ -83,19 +83,21 @@ public class TestRoster extends TestAbstract {
   public String nextElementName(final Element element) throws Exception {
     if (element != null) {
       boolean error = true;
-      Element query = element.getChild("query");
-      if (query != null) {
-				if (ElementUtil.equalElemsDeep(expected_query, query)) {
+      if (element != null) {
+				if (expected_result != null
+					&& ElementUtil.equalElemsDeep(expected_result, element)
+					|| (optional_result != null
+						&& ElementUtil.equalElemsDeep(optional_result, element))) {
 					error = false;
-				} // end of if (ElementUtil.equalElemsDeep(expected_query, query))
+				} // end of if (ElementUtil.equalElemsDeep(expected_result, query))
       } else {
-				if (expected_query == null) {
+				if (expected_result == null) {
 					error = false;
-				} // end of if (expected_query == null)
+				} // end of if (expected_result == null)
 			} // end of else
       if (error) {
         throw new ResultsDontMatchException(
-          "Expected: " + expected_query + ", Received: " + query.toString());
+          "Expected: " + expected_result + ", Received: " + element);
       } // end of if (error)
     } // end of if (element != null)
     if (counter < elems.length) {
@@ -113,32 +115,42 @@ public class TestRoster extends TestAbstract {
    */
   public String getElementData(final String string) throws Exception {
     result = new Attribute[] {
-      new Attribute("type", "result"),
-      new Attribute("id", "roster_" + counter),
-      new Attribute("to", jid),
+      new Attribute("type", "result"), new Attribute("id", "roster_" + counter)
     };
-    result_2 = new Attribute[] {
-      new Attribute("type", "set"),
-			//      new Attribute("id", "ah16121998"),
-      new Attribute("to", jid),
-    };
+    result_2 = new Attribute[] { new Attribute("type", "set") };
     res_cnt = 0;
     switch (counter) {
     case 1:
-			expected_query = new Element("query",
-				new String[] {"xmlns"}, new String[] {"jabber:iq:roster"});
+			expected_result = new Element("iq",
+				new Element[] {new Element("query",
+						new String[] {"xmlns"},
+						new String[] {"jabber:iq:roster"})},
+				new String[] {"type", "id"},
+				new String[] {"result", "roster_1"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"roster_1\" from=\"" + jid + "\">"
         + "<query xmlns=\"jabber:iq:roster\"/>"
         + "</iq>";
     case 2:
-			expected_query = new Element("query",
-				new Element[] {new Element("item",
-						new String[] {"jid", "subscription", "name"},
-						new String[] {"santa.claus@north.pole", "none", "claus"})},
-				new String[] {"xmlns"},
-				new String[] {"jabber:iq:roster"});
+			expected_result = new Element("iq",
+// 				new Element[] {new Element("query",
+// 						new Element[] {new Element("item",
+// 								new String[] {"jid", "subscription", "name"},
+// 								new String[] {"santa.claus@north.pole", "none", "claus"})},
+// 						new String[] {"xmlns"},
+// 						new String[] {"jabber:iq:roster"})},
+				new String[] {"type", "id"},
+				new String[] {"result", "roster_2"});
+			optional_result = new Element("iq",
+				new Element[] {new Element("query",
+						new Element[] {new Element("item",
+								new String[] {"jid", "subscription", "name"},
+								new String[] {"santa.claus@north.pole", "none", "claus"})},
+						new String[] {"xmlns"},
+						new String[] {"jabber:iq:roster"})},
+				new String[] {"type", "to"},
+				new String[] {"set", jid});
       resp_name = new String[] {"iq", "iq"};
       return
         "<iq type=\"set\" id=\"roster_2\" from=\"" + jid + "\">"
@@ -147,26 +159,35 @@ public class TestRoster extends TestAbstract {
         + "</query>"
         + "</iq>";
     case 3:
-			expected_query = new Element("query",
-				new Element[] {new Element("item",
-						new String[] {"jid", "subscription", "name"},
-						new String[] {"santa.claus@north.pole", "none", "claus"})},
-				new String[] {"xmlns"},
-				new String[] {"jabber:iq:roster"});
+			expected_result = new Element("iq",
+				new Element[] {new Element("query",
+						new Element[] {new Element("item",
+								new String[] {"jid", "subscription", "name"},
+								new String[] {"santa.claus@north.pole", "none", "claus"})},
+						new String[] {"xmlns"},
+						new String[] {"jabber:iq:roster"})},
+				new String[] {"type", "id"},
+				new String[] {"result", "roster_3"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"roster_3\" from=\"" + jid + "\">"
         + "<query xmlns=\"jabber:iq:roster\"/>"
         + "</iq>";
     case 4:
-			expected_query = new Element("query",
-				new Element[] {new Element("item",
-						new Element[] {
-							new Element("group", "guests")},
-						new String[] {"jid", "subscription", "name"},
-						new String[] {"santa.claus@north.pole", "none", "claus"})},
-				new String[] {"xmlns"},
-				new String[] {"jabber:iq:roster"});
+			expected_result = new Element("iq",
+				new Element[] {new Element("query",
+						new Element[] {new Element("item",
+								new Element[] {
+									new Element("group", "guests")},
+								new String[] {"jid", "subscription", "name"},
+								new String[] {"santa.claus@north.pole", "none", "claus"})},
+						new String[] {"xmlns"},
+						new String[] {"jabber:iq:roster"})},
+				new String[] {"type", "to"},
+				new String[] {"set", jid});
+			optional_result = new Element("iq",
+				new String[] {"type", "id"},
+				new String[] {"result", "roster_4"});
       resp_name = new String[] {"iq", "iq"};
       return
         "<iq type=\"set\" id=\"roster_4\" from=\"" + jid + "\">"
@@ -177,21 +198,26 @@ public class TestRoster extends TestAbstract {
         + "</query>"
         + "</iq>";
     case 5:
-			expected_query = new Element("query",
-				new Element[] {new Element("item",
-						new Element[] {
-							new Element("group", "guests")},
-						new String[] {"jid", "subscription", "name"},
-						new String[] {"santa.claus@north.pole", "none", "claus"})},
-				new String[] {"xmlns"},
-				new String[] {"jabber:iq:roster"});
+			expected_result = new Element("iq",
+				new Element[] {new Element("query",
+						new Element[] {new Element("item",
+								new Element[] {
+									new Element("group", "guests")},
+								new String[] {"jid", "subscription", "name"},
+								new String[] {"santa.claus@north.pole", "none", "claus"})},
+						new String[] {"xmlns"},
+						new String[] {"jabber:iq:roster"})},
+				new String[] {"type", "id"},
+				new String[] {"result", "roster_5"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"roster_5\" from=\"" + jid + "\">"
         + "<query xmlns=\"jabber:iq:roster\"/>"
         + "</iq>";
     case 6:
-			expected_query = null;
+			expected_result =  new Element("iq",
+				new String[] {"type", "id"},
+				new String[] {"result", "roster_6"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"set\" id=\"roster_6\" from=\"" + jid + "\">"
@@ -200,8 +226,12 @@ public class TestRoster extends TestAbstract {
         + "</query>"
         + "</iq>";
     case 7:
-			expected_query = new Element("query",
-				new String[] {"xmlns"}, new String[] {"jabber:iq:roster"});
+			expected_result = new Element("iq",
+				new Element[] {new Element("query",
+						new String[] {"xmlns"},
+						new String[] {"jabber:iq:roster"})},
+				new String[] {"type", "id"},
+				new String[] {"result", "roster_7"});
       resp_name = new String[] {"iq"};
       return
         "<iq type=\"get\" id=\"roster_7\" from=\"" + jid + "\">"
