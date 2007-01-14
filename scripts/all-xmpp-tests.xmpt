@@ -83,10 +83,9 @@ Global settings:
   and wait for message response <<
 
   Test 13@iq-version: >> JEP-0092 - get entity version <<
-  Test 14@iq-stats: Based on JEP-0092 - get entity statistics
+  Test 14@iq-stats: XEP-0039 Statistics Gathering
   { -user-name=stats -user-pass=stats }
-  >> Based on JEP-0092 get entity version similar functionality retrieving
-  entity statistics, introduced for testing and server diagnostics. <<
+  >> XEP-0039 Statistics Gathering. <<
 
   Test 15@roster: >> Roster management test <<
 

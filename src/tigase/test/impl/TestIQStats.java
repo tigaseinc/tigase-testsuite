@@ -75,14 +75,18 @@ public class TestIQStats extends TestAbstract {
       return elems[counter++];
     } // end of if (counter < elems.length)
     List<StatItem> stats = new LinkedList<StatItem>();
-    List<Element> comps = element.getChildren("/iq/query/statistics");
-    for (Element comp: comps) {
-			List<Element> items = comp.getChildren();
-			for (Element item: items) {
-				stats.add(new StatItem(comp.getAttribute("name"),
-						item.getAttribute("value"), item.getAttribute("unit"),
-						item.getAttribute("description")));
-			} // end of for ()
+    List<Element> items = element.getChildren("/iq/query");
+		for (Element item: items) {
+			String name = item.getAttribute("name");
+			int idx = name.indexOf("/");
+			String comp = "unknown";
+			String stat = name;
+			if (idx >= 0) {
+			 comp = name.substring(0, idx-1);
+			 stat = name.substring(idx+1);
+			}
+			stats.add(new StatItem(comp,
+					item.getAttribute("value"), item.getAttribute("units"), stat));
     } // end of for (Element item: items)
     params.put("Statistics", stats);
     return null;
@@ -101,7 +105,7 @@ public class TestIQStats extends TestAbstract {
       return
         "<iq type='get' to='" + hostname
         + "' from='" + from + "' id='stats_1'>"
-        + "<query xmlns='jabber:iq:stats'/>" +
+        + "<query xmlns='http://jabber.org/protocol/stats'/>" +
         "</iq>";
     default:
       return null;
