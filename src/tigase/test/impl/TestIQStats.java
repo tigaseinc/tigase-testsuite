@@ -82,7 +82,7 @@ public class TestIQStats extends TestAbstract {
 			String comp = "unknown";
 			String stat = name;
 			if (idx >= 0) {
-			 comp = name.substring(0, idx-1);
+			 comp = name.substring(0, idx);
 			 stat = name.substring(idx+1);
 			}
 			stats.add(new StatItem(comp,
