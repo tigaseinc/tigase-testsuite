@@ -143,7 +143,7 @@ public class TestIQCommandGetConfig extends TestAbstract {
 								new String[] {"xmlns", "type"},
 								new String[] {"jabber:x:data", "result"})},
 						new String[] {"xmlns", "status", "node"},
-						new String[] {xmlns, "completed", "list/session_1"})},
+						new String[] {xmlns, "completed", "config/list/session_1"})},
 				new String[] {"type", "id", "from"},
 				new String[] {"result", "command_1", "basic-conf." + hostname});
       resp_name = new String[] {"iq"};
