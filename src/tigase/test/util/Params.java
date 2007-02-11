@@ -75,7 +75,15 @@ public class Params implements Map<String, Object> {
     return map;
   }
 
-  // Implementation of java.util.Map
+	public Map<String, String> getMap() {
+    Map<String, String> result = new TreeMap<String, String>();
+		for (Map.Entry<String, Object> entry: map.entrySet()) {
+			result.put(entry.getKey(), entry.getValue().toString());
+		}
+		return result;
+	}
+
+	// Implementation of java.util.Map
 
   /**
    * Describe <code>hashCode</code> method here.

@@ -31,14 +31,13 @@ import tigase.test.util.ElementUtil;
 
 import static tigase.util.JID.*;
 
-
 /**
  * Describe class TestPrivacyList here.
  *
  *
  * Created: Tue Dec 12 18:07:02 2006
  *
- * @author <a href="mailto:artur.hefczyc@gmail.com">Artur Hefczyc</a>
+ * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
 public class TestPrivacyList extends TestAbstract {
@@ -58,9 +57,7 @@ public class TestPrivacyList extends TestAbstract {
 
   private Element expected_result = null;
   private Attribute[] result = null;
-  private Attribute[] result_2 = null;
   private String[] resp_name = null;
-  private int res_cnt = 0;
 
 	/**
 	 * Creates a new <code>TestPrivacyList</code> instance.
@@ -122,7 +119,6 @@ public class TestPrivacyList extends TestAbstract {
       new Attribute("id", "privacy_" + counter),
       new Attribute("to", jid),
     };
-    res_cnt = 0;
     switch (counter) {
     case 1:
 			expected_result = new Element("iq",
@@ -374,7 +370,6 @@ public class TestPrivacyList extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public Attribute[] getRespElementAttributes(final String string) throws Exception {
-    ++res_cnt;
 		return result;
   }
 

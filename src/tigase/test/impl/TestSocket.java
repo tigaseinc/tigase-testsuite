@@ -124,6 +124,7 @@ public class TestSocket extends TestAbstract {
       resultCode = ResultCode.PROCESSING_EXCEPTION;
       exception = e;
       e.printStackTrace();
+			System.out.println("IP: " + serverip + ", PORT:" + port);
       return false;
     } // end of try-catch
   }

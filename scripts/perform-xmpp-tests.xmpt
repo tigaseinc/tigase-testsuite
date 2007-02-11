@@ -18,13 +18,15 @@
 # Other global settings
 -debug-on-error
 
-$(server-host) = localhost
+$(server-host) = dell
 $(repeats)      = 1000
 $(daemon-users) = 1
 $(long-list-user) = long-list-user_1
 $(messages)     = 10
+$(stats-user) = admin
+$(stats-pass) = stats
 
--serverip    = "127.0.0.1"
+-serverip    = "192.168.0.3"
 -host        = $(server-host)
 -socket-wait = 5000
 -base-ns     = "jabber:client"
@@ -44,7 +46,11 @@ $(messages)     = 10
 # get server statistics.
 # It can detect test with names: Version and Statistics
 Version@iq-version: { -loop = 1 } >> Get server version <<
-Statistics@iq-stats: { -loop = 1 -user-name=stats -user-pass=stats } >> Get server statistics <<
+Configuration@command-get-config:
+{ -loop = 1 -user-name=$(stats-user) -user-pass=$(stats-pass) }
+>> Server configuration <<
+Statistics@iq-stats: { -loop = 1 -user-name=$(stats-user) -user-pass=$(stats-pass) }
+ >> Get server statistics <<
 
 # This is not actual test. This is container for all common variables
 # and parameters for other tests which inherits this settings.

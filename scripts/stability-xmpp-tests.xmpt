@@ -14,6 +14,8 @@ $(daemon-users) = 1
 $(messages)     = 10
 $(server-host)  = localhost
 $(long-list-user) = long-list-user_1
+$(stats-user) = admin
+$(stats-pass) = stats
 
 -serverip    = "127.0.0.1"
 -host        = $(server-host)
@@ -21,7 +23,10 @@ $(long-list-user) = long-list-user_1
 -base-ns     = "jabber:client"
 
 Version@iq-version: { -loop = 1 } >> Get server version <<
-Statistics@iq-stats: { -loop = 1 -user-name=stats -user-pass=stats }
+Configuration@command-get-config:
+{ -loop = 1 -user-name=$(stats-user) -user-pass=$(stats-pass) }
+>> Server configuration <<
+Statistics@iq-stats: { -loop = 1 -user-name=$(stats-user) -user-pass=$(stats-pass) }
 >> Get server statistics <<
 
 -loop                 = $(repeats)

@@ -87,6 +87,8 @@ public class TestScriptLoader {
     Params pars = new Params(parser.getGlobalPars());
     pars.putAll(params);
     params = pars;
+// 		System.out.println(params.toString());
+// 		System.exit(1);
     stop_on_fail = params.get("-stop-on-fail", false);
   }
 
@@ -94,7 +96,8 @@ public class TestScriptLoader {
   public void runTests() throws Exception {
     filter = initOutputFilter();
     for (TestNode node: testNodes) {
-      node.addGlobalPars(parser.getGlobalPars());
+			//node.addGlobalPars(parser.getGlobalPars());
+			node.addGlobalPars(params.getMap());
       node.addGlobalVars(parser.getGlobalVars());
       boolean result = runTest(node);
       if (stop_on_fail && !result) {
@@ -184,7 +187,9 @@ public class TestScriptLoader {
     if (test.getResult()) {
       debug("success,  ", true);
     } else {
-      debug("FAILURE,  (" + test.getErrorMsg() + "),  ", true);
+      debug("FAILURE,  " +
+				(test.debug_on_error ? "(" + test.getErrorMsg() + "),  " : ""),
+				true);
     } // end of if (test.getResult()) else
     if (test.getTestsOK() > 0) {
       int loop = test.getParams().get("-loop", 1);
@@ -220,28 +225,28 @@ public class TestScriptLoader {
       (test.getSuccessfulTotalTime() / test.getTestsOK()) : 0;
     switch (output_cols) {
     case 7:
-      filter.addRow(test.getName(), test_result,
+      filter.addRow(test.getName(), "<b>" + test_result + "</b>",
         "" + (test.getTestsTotalTime() / 1000) + " sec",
         "" + test.getTestsOK(),
-        "" + average + " ms",
+        "<b>" + average + "</b> ms",
         test.getDescription(),
         "<a href='" + hist_file + "'>" + test.getName() + "</a>");
       break;
     case 6:
-      filter.addRow(test.getName(), test_result,
+      filter.addRow(test.getName(), "<b>" + test_result + "</b>",
         "" + (test.getTestsTotalTime() / 1000) + " sec",
         "" + test.getTestsOK(),
-        "" + average + " ms",
+        "<b>" + average + "</b> ms",
         test.getDescription());
       break;
     case 5:
-      filter.addRow(test.getName(), test_result,
-        "" + test.getTestsTotalTime() + " ms", test.getDescription(),
+      filter.addRow(test.getName(), "<b>" + test_result + "</b>",
+        "<b>" + test.getTestsTotalTime() + "</b> ms", test.getDescription(),
         "<a href='" + hist_file + "'>" + test.getName() + "</a>");
       break;
     case 4:
     default:
-      filter.addRow(test.getName(), test_result,
+      filter.addRow(test.getName(), "<b>" + test_result + "</b>",
         "" + test.getTestsTotalTime() + " ms", test.getDescription());
       break;
     } // end of switch (output_cols)
@@ -259,14 +264,43 @@ public class TestScriptLoader {
       filter.init(bw, params.get("-title", ""), getDescription());
       Map<String, String> ver_map = getVersion();
       if (ver_map != null && ver_map.size() > 0) {
-        filter.addContent("   <p>Server version info:<br/>\n");
-        for (Map.Entry entry: ver_map.entrySet()) {
-          filter.addContent("     " + entry.getKey() + ": " + entry.getValue()
-            + "<br/>\n");
-        } // end of for ()
+        filter.addContent("   <h3>Server version info:</h3>\n");
+				filter.addContent("   <table width=\"800\">\n");
+				filter.addContent("    <tr valign=\"top\">"
+					+ "<td width=\"15%\">Name:</td>"
+					+ "<td width=\"3%\">&nbsp;</td>"
+					+ "<td width=\"2%\">&nbsp;</td>"
+					+ "<td width=\"80%\"><b>" + ver_map.get("Name") + "</b></td></tr>\n");
+				filter.addContent("    <tr valign=\"top\">"
+					+ "<td width=\"15%\">Version:</td>"
+					+ "<td width=\"3%\">&nbsp;</td>"
+					+ "<td width=\"2%\">&nbsp;</td>"
+					+ "<td width=\"80%\"><b>" + ver_map.get("Version") + "</b></td></tr>\n");
+				filter.addContent("    <tr valign=\"top\">"
+					+ "<td width=\"15%\">OS:</td>"
+					+ "<td width=\"3%\">&nbsp;</td>"
+					+ "<td width=\"2%\">&nbsp;</td>"
+					+ "<td width=\"80%\"><b>" + ver_map.get("OS") + "</b></td></tr>\n");
+				filter.addContent("    <tr valign=\"top\">"
+					+ "<td width=\"15%\">&nbsp;</td>"
+					+ "<td width=\"3%\">&nbsp;</td>"
+					+ "<td width=\"2%\">&nbsp;</td>"
+					+ "<td width=\"80%\">&nbsp;</td></tr>\n");
+				filter.addContent("    <tr valign=\"top\">"
+					+ "<td width=\"15%\">Local IP:</td>"
+					+ "<td width=\"3%\">&nbsp;</td>"
+					+ "<td width=\"2%\">&nbsp;</td>"
+					+ "<td width=\"80%\"><b>" + ver_map.get("Local IP") + "</b></td></tr>\n");
+				filter.addContent("    <tr valign=\"top\">"
+					+ "<td width=\"15%\">Remote IP:</td>"
+					+ "<td width=\"3%\">&nbsp;</td>"
+					+ "<td width=\"2%\">&nbsp;</td>"
+					+ "<td width=\"80%\"><b>" + ver_map.get("Remote IP") + "</b></td></tr>\n");
+				filter.addContent("   </table>\n");
       }
-      List<StatItem> stat_list = getStatistics();
+      List<StatItem> stat_list = getConfiguration();
       filter.addContent(outputStatistics(stat_list, "before"));
+			filter.addContent("   <h3>Tests results:</h3>\n");
       output_cols = params.get("-output-cols", 5);
       output_history = params.get("-output-history", true);
       if (!output_history) {
@@ -305,7 +339,7 @@ public class TestScriptLoader {
   private Map<String, String> getVersion() {
     TestNode node = getTestNode("Version");
     if (node != null) {
-			node.addGlobalPars(parser.getGlobalPars());
+			node.addGlobalPars(params.getMap());
 			node.addGlobalVars(parser.getGlobalVars());
       Test tmp_test = new Test(node);
       tmp_test.runTest();
@@ -317,14 +351,18 @@ public class TestScriptLoader {
   private String outputStatistics(List<StatItem> stats, String when) {
     StringBuilder sb = new StringBuilder();
     if (stats != null && stats.size() > 0) {
-      sb.append("  <p>Server stats " + when + " test:\n");
-      sb.append("   <table>\n");
+			if (when.equals("before")) {
+				sb.append("      <h3>Server basic configuration parameters:</h3>\n");
+			} else {
+				sb.append("      <h3>Server stats " + when + " test:</h3>\n");
+			}
+      sb.append("   <table width=\"800\">\n");
       for (StatItem item : stats) {
-        sb.append("    <tr>"
-          + "<td>" + item.getName() + ":</td>"
-          + "<td>" + item.getValue() + "</td>"
-          + "<td>" + item.getUnit() + "</td>"
-          + "<td>" + item.getDescription() + "</td>" + "</tr>\n");
+        sb.append("    <tr valign=\"top\">"
+          + "<td width=\"20%\">" + item.getName() + ":</td>"
+          + "<td width=\"20%\">" + item.getDescription() + "</td>"
+          + "<td width=\"2%\">&nbsp;</td>"
+          + "<td width=\"58%\"><b>" + item.getValue() + "</b></td></tr>\n");
       } // end of for ()
       sb.append("   </table>\n");
       sb.append("  </p>\n");
@@ -336,11 +374,24 @@ public class TestScriptLoader {
   private List<StatItem> getStatistics() {
     TestNode node = getTestNode("Statistics");
     if (node != null) {
-			node.addGlobalPars(parser.getGlobalPars());
+			node.addGlobalPars(params.getMap());
 			node.addGlobalVars(parser.getGlobalVars());
       Test tmp_test = new Test(node);
       tmp_test.runTest();
       return (List<StatItem>) tmp_test.getParams().get("Statistics");
+    } // end of if (node != null)
+    return null;
+  }
+
+	@SuppressWarnings({"unchecked"})
+  private List<StatItem> getConfiguration() {
+    TestNode node = getTestNode("Configuration");
+    if (node != null) {
+			node.addGlobalPars(params.getMap());
+			node.addGlobalVars(parser.getGlobalVars());
+      Test tmp_test = new Test(node);
+      tmp_test.runTest();
+      return (List<StatItem>) tmp_test.getParams().get("Configuration");
     } // end of if (node != null)
     return null;
   }

@@ -22,44 +22,56 @@
  */
 package tigase.test.impl;
 
-import java.util.Map;
-import java.util.TreeMap;
-import java.net.Socket;
-import javax.management.Attribute;
+import java.util.LinkedList;
+import java.util.List;
 import tigase.test.TestAbstract;
+import tigase.test.StatItem;
 import tigase.test.util.Params;
+import javax.management.Attribute;
+import tigase.test.ResultsDontMatchException;
 import tigase.xml.Element;
+import tigase.xml.XMLUtils;
+import tigase.test.util.ElementUtil;
 
 import static tigase.util.JID.*;
 
 /**
- * Describe class TestIQVersion here.
+ * Describe class TestIQCommandStop here.
  *
  *
- * Created: Thu Jun 16 05:58:19 2005
+ * Created: Wed Jan 24 21:23:38 2007
  *
  * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
-public class TestIQVersion extends TestAbstract {
+public class TestIQCommandStop extends TestAbstract {
 
+  private String user_name = "test_user@localhost";
+  private String user_resr = "xmpp-test";
+  private String user_emil = "test_user@localhost";
   private String hostname = "localhost";
-  private String from = null;
+  private String jid = null;
+  private String id = null;
+	private String xmlns = "http://jabber.org/protocol/commands";
+
   private String[] elems = {"iq"};
   private int counter = 0;
+  private Element expected_result = null;
+  private Attribute[] result = null;
+  private String[] resp_name = null;
 
-  /**
-   * Creates a new <code>TestIQVersion</code> instance.
-   *
-   */
-  public TestIQVersion() {
+	/**
+	 * Creates a new <code>TestIQCommandStop</code> instance.
+	 *
+	 */
+	public TestIQCommandStop() {
     super(
       new String[] {"jabber:client"},
-      new String[] {"iq-version"},
-      new String[] {"socket", "stream-open"},
-      new String[] {"stream-open", "auth", "user-register", "tls-init"}
+      new String[] {"command-stop"},
+      new String[] {"socket", "stream-open", "auth"},
+      new String[] {"user-register", "tls-init"}
       );
-  }
+	}
 
   // Implementation of tigase.test.TestAbstract
 
@@ -71,19 +83,25 @@ public class TestIQVersion extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public String nextElementName(final Element element) throws Exception {
+    if (element != null) {
+      boolean error = true;
+      if (element != null) {
+				if (ElementUtil.equalElemsDeep(expected_result, element)) {
+					error = false;
+				}
+      } else {
+				if (expected_result == null) {
+					error = false;
+				} // end of if (expected_result == null)
+			} // end of else
+      if (error) {
+        throw new ResultsDontMatchException(
+          "Expected: " + expected_result + ", Received: " + element);
+      } // end of if (error)
+    } // end of if (element != null)
     if (counter < elems.length) {
       return elems[counter++];
     } // end of if (counter < elems.length)
-    Map<String, String> ver = new TreeMap<String, String>();
-    ver.put("Name", element.getCData("/iq/query/name"));
-    ver.put("Version", element.getCData("/iq/query/version"));
-    ver.put("OS", element.getCData("/iq/query/os"));
-    Socket socket = (Socket)params.get("socket");
-    String remote = socket.getInetAddress().getHostAddress();
-    String local = socket.getLocalAddress().getHostAddress();
-    ver.put("Local IP", local);
-    ver.put("Remote IP", remote);
-    params.put("Version", ver);
     return null;
   }
 
@@ -95,13 +113,25 @@ public class TestIQVersion extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public String getElementData(final String string) throws Exception {
+    result = new Attribute[] {
+      new Attribute("type", "result"),
+      new Attribute("id", "command_" + counter),
+      new Attribute("to", jid),
+    };
     switch (counter) {
     case 1:
+			expected_result = new Element("iq",
+				new Element[] {new Element("command",
+						new String[] {"xmlns", "status", "node"},
+						new String[] {xmlns, "completed", "controll/stop"})},
+				new String[] {"type", "id", "from"},
+				new String[] {"result", "command_1", "tigase-xmpp-server." + hostname});
+			resp_name = new String[] {"iq"};
       return
-        "<iq type='get' to='" + hostname
-        + "' from='" + from + "' id='version_1'>"
-        + "<query xmlns='jabber:iq:version'/>" +
-        "</iq>";
+				"<iq type=\"set\" to=\"tigase-xmpp-server." + hostname
+				+ "\" id=\"command_1\" >"
+				+ "<command xmlns=\"http://jabber.org/protocol/commands\""
+				+ "node=\"controll/stop\" /></iq>";
     default:
       return null;
     } // end of switch (counter)
@@ -115,7 +145,7 @@ public class TestIQVersion extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public String[] getRespElementNames(final String string) throws Exception {
-    return new String[] {"iq"};
+    return resp_name;
   }
 
   /**
@@ -137,36 +167,33 @@ public class TestIQVersion extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public Attribute[] getRespElementAttributes(final String string) throws Exception {
-    switch (counter) {
-    case 1:
-      return new Attribute[]
-      {
-        new Attribute("type", "result"),
-        new Attribute("id", "version_1")
-      };
-    default:
-      return null;
-    } // end of switch (counter)
+		return result;
   }
 
-  // Implementation of TestIfc
+  // Implementation of tigase.test.TestIfc
 
   /**
    * Describe <code>init</code> method here.
    *
-   * @param map a <code>Map</code> value
+   * @param params a <code>Params</code> value
    */
-  public void init(final Params map) {
-    super.init(map);
+  public void init(final Params params) {
+    super.init(params);
+    user_name = params.get("-user-name", user_name);
+    user_resr = params.get("-user_resr", user_resr);
+    user_emil = params.get("-user-emil", user_emil);
     hostname = params.get("-host", hostname);
-    String user_name = params.get("-user-name", "test_user@localhost");
-    String user_resr = params.get("-user_resr", "xmpp-test");
     String name = getNodeNick(user_name);
     if (name == null || name.equals("")) {
-      from = user_name + "@" + hostname + "/" + user_resr;
+      jid = user_name + "@" + hostname + "/" + user_resr;
     } else {
-      from = user_name + "/" + user_resr;
+      jid = user_name + "/" + user_resr;
+    } // end of else
+    if (name == null || name.equals("")) {
+      id = user_name + "@" + hostname;
+    } else {
+      id = user_name;
     } // end of else
   }
 
-} // TestIQVersion
+}

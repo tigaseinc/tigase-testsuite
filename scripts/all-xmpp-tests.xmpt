@@ -7,18 +7,19 @@
 -output-cols    = 7
 -title          = "XMPP Server functional tests."
 
-$(server-host) = localhost
+$(server-host) = dell
 $(def-user)    = all-xmpp-test
 $(daemon-user) = all-xmpp-test_1
 $(blocking-user) = blocking-test-user_1
 $(long-list-user) = long-list-user_1
 $(ssl-tls-wait) = 5000
+$(stats-user) = admin
+$(stats-pass) = stats
 
--serverip    = "127.0.0.1"
+-serverip    = "192.168.0.3"
 -host        = $(server-host)
 -user-name   = $(def-user)
 -user-pass   = all-xmpp-test-password
--user_resr   = xmpp-test
 -socket-wait = 5000
 -base-ns     = "jabber:client"
 -def-auth    = auth-plain
@@ -29,12 +30,16 @@ $(ssl-tls-wait) = 5000
 
 -debug-on-error
 
-Init 0@user-register: {
--user-name=stats -user-pass=stats -no-record
-}>> JEP-0077 - In-Band Registration, register <<
-Version@auth-sasl;iq-version: { -user-name=stats -user-pass=stats }
+# Init 0@user-register: {
+# -user-name=$(stats-user) -user-pass=$(stats-pass) -no-record
+# } >> JEP-0077 - In-Band Registration, register <<
+Version@auth-sasl;iq-version: { -user-name=$(stats-user) -user-pass=$(stats-pass) }
  >> Get server version <<
-Statistics@iq-stats: { -user-name=stats -user-pass=stats } >> Server statistics <<
+Configuration@command-get-config:
+{ -user-name=$(stats-user) -user-pass=$(stats-pass) }
+>> Server configuration <<
+Statistics@iq-stats: { -user-name=$(stats-user) -user-pass=$(stats-pass) }
+ >> Server statistics <<
 
 Global settings:
 {
@@ -84,7 +89,7 @@ Global settings:
 
   Test 13@iq-version: >> JEP-0092 - get entity version <<
   Test 14@iq-stats: XEP-0039 Statistics Gathering
-  { -user-name=stats -user-pass=stats }
+  { -user-name=$(stats-user) -user-pass=$(stats-pass) }
   >> XEP-0039 Statistics Gathering. <<
 
   Test 15@roster: >> Roster management test <<

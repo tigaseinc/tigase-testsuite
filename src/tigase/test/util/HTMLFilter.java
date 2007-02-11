@@ -112,7 +112,7 @@ public class HTMLFilter implements OutputFilter {
    */
   public void setColumnHeaders(final String ... hd) throws IOException {
     bw.write("  <p>\n");
-    bw.write("  <table border='1'>\n");
+    bw.write("  <table width=\"800\" border='1'>\n");
     bw.write("   <thead valign='middle'>\n");
     bw.write("    <tr>\n");
     for (String header : hd) {
@@ -129,7 +129,7 @@ public class HTMLFilter implements OutputFilter {
    * @param cols a <code>String[]</code> value
    */
   public void addRow(final String ... cols) throws IOException {
-    bw.write("   <tr>\n");
+    bw.write("   <tr valign=\"top\">\n");
     for (String col : cols) {
       bw.write("    <td>" + col + "</td>\n");
     } // end of for ()

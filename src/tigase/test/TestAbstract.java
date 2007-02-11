@@ -298,8 +298,8 @@ public abstract class TestAbstract implements TestIfc {
     switch (resultCode) {
     case PROCESSING_EXCEPTION:
 			if (fullExceptionStack) {
-      return resultCode.getMessage() + exception.toString() + "\n"
-        + stack2String(exception);
+				return resultCode.getMessage() + exception.toString() + "\n"
+					+ stack2String(exception);
 			} else {
 				return exception.getMessage();
 			}

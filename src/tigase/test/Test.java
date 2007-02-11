@@ -65,7 +65,7 @@ public class Test {
   private Test onError = null;
   private TestNode node = null;
   private boolean debug = false;
-  private boolean debug_on_error = false;
+  protected boolean debug_on_error = false;
 
   public Test(TestNode node) {
     this.node = node;
@@ -185,15 +185,6 @@ public class Test {
     DaemonTest dt = new DaemonTest(suite, test_params);
     if (daemon) {
       runThread(dt);
-//       synchronized(dt) {
-//         try { dt.wait(socket_wait); } catch (InterruptedException e) { }
-//       }
-//       if (!dt.isAuthorized()) {
-//         runThread(dt);
-//         synchronized(dt) {
-//           try { dt.wait(5000); } catch (InterruptedException e) { }
-//         }
-//       } // end of if (!dt.isAuthorized())
       return true;
     } // end of if (daemon)
     else {
