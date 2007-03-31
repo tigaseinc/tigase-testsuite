@@ -150,7 +150,7 @@ public class TestIQCommandGetConfig extends TestAbstract {
       return
 				"<iq type=\"set\" to=\"basic-conf." + hostname + "\" id=\"command_1\" >"
 				+ "<command xmlns=\"http://jabber.org/protocol/commands\""
-				+ "node=\"config/list/session_1\" /></iq>";
+				+ "node=\"config/list/sess_man\" /></iq>";
     default:
       return null;
     } // end of switch (counter)

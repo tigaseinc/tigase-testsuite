@@ -358,11 +358,16 @@ public class TestScriptLoader {
 			}
       sb.append("   <table width=\"800\">\n");
       for (StatItem item : stats) {
-        sb.append("    <tr valign=\"top\">"
-          + "<td width=\"20%\">" + item.getName() + ":</td>"
-          + "<td width=\"20%\">" + item.getDescription() + "</td>"
-          + "<td width=\"2%\">&nbsp;</td>"
-          + "<td width=\"58%\"><b>" + item.getValue() + "</b></td></tr>\n");
+				// Configuration results attach one field which is readonly
+				// with warning information about changing parameters
+				// We don't really want this warning to be displayed in report.
+				if (!item.getDescription().equals("Note")) {
+					sb.append("    <tr valign=\"top\">"
+						+ "<td width=\"20%\">" + item.getName() + ":</td>"
+						+ "<td width=\"20%\">" + item.getDescription() + "</td>"
+						+ "<td width=\"2%\">&nbsp;</td>"
+						+ "<td width=\"58%\"><b>" + item.getValue() + "</b></td></tr>\n");
+				}
       } // end of for ()
       sb.append("   </table>\n");
       sb.append("  </p>\n");
