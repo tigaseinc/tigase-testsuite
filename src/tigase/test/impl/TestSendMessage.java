@@ -126,7 +126,7 @@ public class TestSendMessage extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public String[] getRespOptionalNames(final String string) throws Exception {
-    return null;
+    return new String[] {"presence"};
   }
 
   /**
@@ -137,11 +137,12 @@ public class TestSendMessage extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public Attribute[] getRespElementAttributes(final String string) throws Exception {
-    return new Attribute[]
-    {
-      new Attribute("from", remote_address),
-      new Attribute("to", from)
-    };
+		return null;
+//     return new Attribute[]
+//     {
+//       new Attribute("from", remote_address),
+//       new Attribute("to", from)
+//     };
   }
 
   // Implementation of tigase.test.TestIfc
