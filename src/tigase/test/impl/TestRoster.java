@@ -96,8 +96,8 @@ public class TestRoster extends TestAbstract {
 				} // end of if (expected_result == null)
 			} // end of else
       if (error) {
-        throw new ResultsDontMatchException(
-          "Expected: " + expected_result + ", Received: " + element);
+        throw new ResultsDontMatchException(getClass().getName() +
+          ", expected: '" + expected_result + "', Received: '" + element + "'");
       } // end of if (error)
     } // end of if (element != null)
     if (counter < elems.length) {

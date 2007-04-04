@@ -97,8 +97,9 @@ public class TestPrivacyListBlockMsg extends TestAbstract {
 				} // end of if (expected_query == null)
 			} // end of else
       if (error) {
-        throw new ResultsDontMatchException(
-          "Expected: " + expected_query + ", Received: " + element.toString());
+        throw new ResultsDontMatchException(getClass().getName() +
+          ", expected: '" + expected_query
+					+ "', Received: '" + element.toString() + "'");
       } // end of if (error)
     } // end of if (element != null)
     if (counter < elems.length) {

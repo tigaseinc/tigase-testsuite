@@ -315,6 +315,8 @@ $(repeats) times, processing time is measured for each XMPP/Jabber feature <<
 Multi thread tests:
 {
 
+  -socket-wait = 10000
+
   Register@user-register:
   {
     -no-record

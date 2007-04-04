@@ -213,8 +213,8 @@ public abstract class TestAbstract implements TestIfc {
         } // end of for ()
       }
     } // end of else
-		error_message =
-			"Expected: " + response + ", Received: " + reply.toString();
+		error_message = getClass().getName() +
+			", expected: '" + response + "', Received: '" + reply.toString() + "'";
     return false;
   }
 
