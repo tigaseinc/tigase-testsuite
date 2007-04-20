@@ -18,7 +18,7 @@
 # Other global settings
 -debug-on-error
 
-$(server-host) = dell
+$(server-host) = test-d
 $(repeats)      = 1000
 $(daemon-users) = 1
 $(long-list-user) = long-list-user_1

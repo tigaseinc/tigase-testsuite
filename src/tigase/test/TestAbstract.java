@@ -181,16 +181,16 @@ public abstract class TestAbstract implements TestIfc {
 			}	else {
 				resultCode = ResultCode.PROCESSING_EXCEPTION;
 				exception = e;
-				addInput(e.getMessage());
+				addInput(getClass().getName() + ", " + e.getMessage());
 				return false;
 			} // end of if (timeoutOk) else
 		} catch (ResultsDontMatchException e) {
 			resultCode = ResultCode.PROCESSING_EXCEPTION;
 			exception = e;
-			addInput(e.getMessage());
+			addInput(getClass().getName() + ", " + e.getMessage());
 			return false;
     } catch (Exception e) {
-      addInput("" + e + "\n" + TestUtil.stack2String(e));
+      addInput(getClass().getName() + ", " + e + "\n" + TestUtil.stack2String(e));
       resultCode = ResultCode.PROCESSING_EXCEPTION;
       exception = e;
       e.printStackTrace();
@@ -298,13 +298,14 @@ public abstract class TestAbstract implements TestIfc {
     switch (resultCode) {
     case PROCESSING_EXCEPTION:
 			if (fullExceptionStack) {
-				return resultCode.getMessage() + exception.toString() + "\n"
+				return getClass().getName() + ", " +
+					resultCode.getMessage() + exception.toString() + "\n"
 					+ stack2String(exception);
 			} else {
-				return exception.getMessage();
+				return getClass().getName() + ", " + exception.getMessage();
 			}
     default:
-      return resultCode.getMessage()
+      return getClass().getName() + ", " + resultCode.getMessage()
 				+ ", "
 				+ error_message;
     } // end of switch (resultCode)

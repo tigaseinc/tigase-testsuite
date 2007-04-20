@@ -7,7 +7,7 @@
 -output-cols    = 7
 -title          = "XMPP Server functional tests."
 
-$(server-host) = dell
+$(server-host) = test-d
 $(def-user)    = all-xmpp-test
 $(daemon-user) = all-xmpp-test_1
 $(blocking-user) = blocking-test-user_1
