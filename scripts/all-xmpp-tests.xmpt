@@ -136,6 +136,12 @@ Global settings:
   Test 20@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
   >> Test for feature-not-implemented error which should be returned when client sends unsupported stanza <<
 
+  Test 21@common: { -source-file = "tests/data/vcard-temp.cot" }
+  >> XEP-0054: vcard-temp <<
+
+  Test 22@common: { -source-file = "tests/data/UrnXmppPing.cot" }
+  >> XEP-0199: XMPP Ping <<
+
   Test end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<
 

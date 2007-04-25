@@ -22,38 +22,18 @@
 ## $Date:  $
 ##
 
-# Test for feature-not-implemented error which should be returned when
-# client sends unsupported stanza
+# Test for XMPP Ping - XEP-0199: XMPP protocol extension for sending pings
+# over XML streams.
+# http://www.xmpp.org/extensions/xep-0199.html
 # @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
 # @version $Rev: $
 
-### 1. Send some, non existen element to the server:
 send: {
-<iq type="get" id="1">
-  <not-yet-supported xmlns="test:unsupported:feature"/>
+<iq to='$(hostname)' id='ping123' type='get'>
+  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
-expect: {
-<iq id="1" type="error">
-  <not-yet-supported xmlns="test:unsupported:feature"/>
-  <error type="cancel">
-    <feature-not-implemented xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
-  </error>
-</iq>
-}
-
-### 2. This is old service discovery request which is not supported
-###    by Tigase server so the same error should be returned
-send: {
-<iq xmlns="jabber:client" id="agsXMPP_3" type="get" to="$(hostname)">
-  <query xmlns="jabber:iq:agents" />
-</iq>
-}
-expect: {
-<iq id="agsXMPP_3" type="error" from="$(hostname)">
-  <query xmlns="jabber:iq:agents" />
-  <error type="cancel">
-    <feature-not-implemented xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
-  </error>
-</iq>
+expect:
+{
+<iq from='$(hostname)' id='ping123' type='result'/>
 }
