@@ -100,12 +100,15 @@ public class ElementUtil {
 			return true;
 		} // end of if (children == null)
 		for (Element child1: children) {
-			Element child2 = el2.getChild(child1.getName());
-			if (child2 == null) {
+			List<Element> children2 = el2.getChildren();
+			if (children2 == null || children2.size() == 0) {
 				return false;
 			} // end of if (child2 == null)
-			equal = equalElems(child1, child2);
-			if (!equal) {
+			boolean found_child = false;
+			for (Element child2: children2) {
+				found_child |= equalElemsDeep(child1, child2);
+			} // end of for (Element child2: children2)
+			if (!found_child) {
 				return false;
 			} // end of if (!res)
 		} // end of for (Element child: children)
