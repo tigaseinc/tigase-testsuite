@@ -32,7 +32,7 @@ $(stats-pass) = stats
 
 # Init 0@user-register: {
 # -user-name=$(stats-user) -user-pass=$(stats-pass) -no-record
-# } >> JEP-0077 - In-Band Registration, register <<
+# } >> XEP-0077 - In-Band Registration, register <<
 Version@auth-sasl;iq-version: { -user-name=$(stats-user) -user-pass=$(stats-pass) }
  >> Get server version <<
 Configuration@command-get-config:
@@ -49,10 +49,10 @@ Global settings:
   Test 2@stream-open: >> Stream open to server. <<
   Test 3@ssl-init: { -port = 5223 -socket-wait = $(ssl-tls-wait) }
   >> SSL socket connect. <<
-  Test 4@user-register: >> JEP-0077 - In-Band Registration, register <<
+  Test 4@user-register: >> XEP-0077 - In-Band Registration, register <<
 
-  Test 5@auth-plain: >> JEP-0078 Non-SASL authorization with plain password. <<
-  Test 6@auth-digest: >> JEP-0078 Non-SASL authorization with digest password. <<
+  Test 5@auth-plain: >> XEP-0078 Non-SASL authorization with plain password. <<
+  Test 6@auth-digest: >> XEP-0078 Non-SASL authorization with digest password. <<
 
   Test 7@tls-init: { -socket-wait = $(ssl-tls-wait) } >> TLS connection open <<
   Test 8@auth-sasl: { -socket-wait = $(ssl-tls-wait) } >> SASL authorization <<
@@ -80,7 +80,7 @@ Global settings:
   >> Send a message to $(daemon-user)@$(server-host)/xmpp-test user
   and wait for message response <<
 
-  Test 13@iq-version: >> JEP-0092 - get entity version <<
+  Test 13@iq-version: >> XEP-0092 - get entity version <<
   Test 14@iq-stats: XEP-0039 Statistics Gathering
   { -user-name=$(stats-user) -user-pass=$(stats-pass) }
   >> XEP-0039 Statistics Gathering. <<
@@ -130,8 +130,11 @@ Global settings:
   } >> Send a message to $(long-list-user)@$(server-host)/xmpp-test user
   with very long privacy list and wait for message response <<
 
+  Test 19@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
+  >> XEP-0049: Private XML Storage <<
+
   Test end@user-unregister:
-  >> JEP-0077 - In-Band Registration - user unregister <<
+  >> XEP-0077 - In-Band Registration - user unregister <<
 
 }
 >> Script with functional tests for all basic XMPP/Jabber features <<
@@ -155,16 +158,16 @@ Multi thread tests:
     -loop = 5
 
     Register@user-register: { -user-name = "multi-reg_1_$(loop)" }
-    >> JEP-0077 <<
+    >> XEP-0077 <<
     Register@user-register: { -user-name = "multi-reg_2_$(loop)" }
-    >> JEP-0077 <<
+    >> XEP-0077 <<
     Register@user-register: { -user-name = "multi-reg_3_$(loop)" }
-    >> JEP-0077 <<
+    >> XEP-0077 <<
     Register@user-register: { -user-name = "multi-reg_4_$(loop)" }
-    >> JEP-0077 <<
+    >> XEP-0077 <<
     Register@user-register: { -user-name = "multi-reg_5_$(loop)" }
-    >> JEP-0077 <<
-  } >> Multi-thread test of JEP-0077 - In-Band Registration, user register <<
+    >> XEP-0077 <<
+  } >> Multi-thread test of XEP-0077 - In-Band Registration, user register <<
 
   Multi 3: {
     -multi-thread
@@ -272,15 +275,15 @@ Multi thread tests:
     -loop = 5
 
     Register@user-unregister: { -user-name = "multi-reg_1_$(loop)" }
-    !! Remove user@user-unregister: { -loop = 1 } >> JEP-0077 <<
+    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
     Register@user-unregister: { -user-name = "multi-reg_2_$(loop)" }
-    !! Remove user@user-unregister: { -loop = 1 } >> JEP-0077 <<
+    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
     Register@user-unregister: { -user-name = "multi-reg_3_$(loop)" }
-    !! Remove user@user-unregister: { -loop = 1 } >> JEP-0077 <<
+    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
     Register@user-unregister: { -user-name = "multi-reg_4_$(loop)" }
-    !! Remove user@user-unregister: { -loop = 1 } >> JEP-0077 <<
+    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
     Register@user-unregister: { -user-name = "multi-reg_5_$(loop)" }
-    !! Remove user@user-unregister: { -loop = 1 } >> JEP-0077 <<
-  } >> Multi-thread test of JEP-0077 - In-Band Registration, user unregister <<
+    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
+  } >> Multi-thread test of XEP-0077 - In-Band Registration, user unregister <<
 
 } >> Multi-threaded tests for various XMPP functions <<
