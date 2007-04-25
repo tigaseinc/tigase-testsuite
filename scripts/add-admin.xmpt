@@ -1,0 +1,35 @@
+-version = "2.0.0"
+
+-output-format  = html
+-output-file    = "../www/functional-tests.html"
+-output-history = yes
+-history-format = separate-file
+-output-cols    = 7
+-title          = "XMPP Server functional tests."
+
+$(server-host) = test-d
+$(def-user)    = all-xmpp-test
+$(daemon-user) = all-xmpp-test_1
+$(blocking-user) = blocking-test-user_1
+$(long-list-user) = long-list-user_1
+$(ssl-tls-wait) = 5000
+$(stats-user) = admin
+$(stats-pass) = stats
+
+-serverip    = "192.168.0.3"
+-host        = $(server-host)
+-user-name   = $(def-user)
+-user-pass   = all-xmpp-test-password
+-socket-wait = 5000
+-base-ns     = "jabber:client"
+-def-auth    = auth-plain
+-keys-file-password   = keystore
+-trusts-file-password = truststore
+-keys-file            = "certs/keystore"
+-trusts-file          = "certs/client_truststore"
+
+-debug-on-error
+
+Init 0@user-register: {
+-user-name=$(stats-user) -user-pass=$(stats-pass) -no-record
+} >> JEP-0077 - In-Band Registration, register <<
