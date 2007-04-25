@@ -45,8 +45,6 @@ Global settings:
 {
   -loop = 1
 
-  Init 1@user-unregister: { -no-record } >> Remove test account. <<
-
   Test 1@socket: >> Plain socket connect. <<
   Test 2@stream-open: >> Stream open to server. <<
   Test 3@ssl-init: { -port = 5223 -socket-wait = $(ssl-tls-wait) }
@@ -62,11 +60,6 @@ Global settings:
   Test 10@xmpp-session: { -socket-wait = $(ssl-tls-wait) } >> Establish XMPP session <<
   Test 11@msg-send: { -to-jid = $(self) }
   >> Send a message to self user and don't wait for response <<
-
-  Prep 1@user-unregister: {
-    -no-record
-    -user-name = $(daemon-user)
-  } >> Remove test account. <<
 
   Prep 2@user-register: {
     -no-record
@@ -96,11 +89,6 @@ Global settings:
 
   Test 16@privacy-lists: >> Privacy lists management test <<
 
-  Prep 4@user-unregister: {
-    -no-record
-    -user-name = $(blocking-user)
-  } >> Remove test account. <<
-
   Prep 5@user-register: {
     -no-record
     -user-name = $(blocking-user)
@@ -121,11 +109,6 @@ Global settings:
     -socket-wait = 1000
     -time-out-ok
   } >> Privacy lists test - send a message to $(blocking-user) user blocking all messages and wait for error response <<
-
-  Prep 7@user-unregister: {
-    -no-record
-    -user-name = $(long-list-user)
-  } >> Remove test account. <<
 
   Prep 8@user-register: {
     -no-record

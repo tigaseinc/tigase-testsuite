@@ -4,7 +4,12 @@ VERSION="2.0.0"
 
 SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
 [[ -f ${SETTINGS_FILE} ]] && source ${SETTINGS_FILE} \
-  || { echo "Can't find settings file: ${SETTINGS_FILE}" ; exit 1 ; }
+  || {
+	echo "Can't find settings file: ${SETTINGS_FILE} using defaults"  
+	server_dir="../server"
+	database="xmldb"
+	server_ip="127.0.0.1"
+}
 
 FUNCTIONS_FILE=`dirname ${0}`/tests-runner-functions.sh
 [[ -f ${FUNCTIONS_FILE} ]] && source ${FUNCTIONS_FILE} \
@@ -30,6 +35,7 @@ function usage() {
 	echo "              configurations"
 	echo "  --all-tests Run all functionality and performance tests for"
 	echo "              database configurations"
+	echo "  --single test_file.cot"
 	echo "	-----------"
 	echo "  Other possible parameters are in following order:"
 	echo "  [server-dir] [server-ip]"
@@ -52,6 +58,9 @@ case "${1}" in
 	--func-all|--perf-all|--all-tests)
 		[[ -z ${2} ]] || server_dir=${2}
 		[[ -z ${3} ]] || server_ip=${3}
+		;;
+	--single)
+		# Do nothing
 		;;
 	*)
 		[[ -z "${1}" ]] || echo "Invalid command '$1'"
@@ -95,6 +104,9 @@ case "${1}" in
 	--all-tests)
 		${0} --func-all ${server_dir}
 		${0} --perf-all ${server_dir}
+		;;
+	--single)
+		run_single_test ${database} ${server_dir} ${server_ip} ${2}
 		;;
 	*)
 		[[ -z "${1}" ]] || echo "Invalid command '$1'"

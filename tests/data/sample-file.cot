@@ -1,0 +1,34 @@
+# Possible variables:
+# $(hostname)
+# $(to-jid)
+# $(from-jid)
+
+send: {
+<iq type="set" id="1001">
+  <query xmlns="jabber:iq:private">
+    <exodus xmlns="exodus:prefs">
+      <defaultnick>Hamlet</defaultnick>
+    </exodus>
+  </query>
+</iq>
+}
+expect:
+{
+<iq type="result" id="1001"/>
+}
+send: {
+<iq type="get" id="1002">
+  <query xmlns="jabber:iq:private">
+    <exodus xmlns="exodus:prefs"/>
+  </query>
+</iq>
+}
+expect: {
+<iq type="result" id="1002">
+  <query xmlns="jabber:iq:private">
+    <exodus xmlns="exodus:prefs">
+      <defaultnick>Hamlet</defaultnick>
+    </exodus>
+  </query>
+</iq>
+}

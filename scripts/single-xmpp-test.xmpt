@@ -1,0 +1,36 @@
+-version = "2.0.0"
+
+-output-format  = html
+-output-file    = "../www/single-test.html"
+-output-history = yes
+-history-format = separate-file
+-output-cols    = 7
+-title          = "XMPP Server single, common test."
+
+$(server-host) = test-d
+$(def-user)    = all-xmpp-test
+$(daemon-user) = all-xmpp-test_1
+$(blocking-user) = blocking-test-user_1
+$(long-list-user) = long-list-user_1
+$(ssl-tls-wait) = 5000
+$(stats-user) = admin
+$(stats-pass) = stats
+
+-serverip    = "127.0.0.1"
+-host        = $(server-host)
+-user-name   = $(stats-user)
+-user-pass   = $(stats-pass)
+-socket-wait = 5000
+-base-ns     = "jabber:client"
+-def-auth    = auth-plain
+-keys-file-password   = keystore
+-trusts-file-password = truststore
+-keys-file            = "certs/keystore"
+-trusts-file          = "certs/client_truststore"
+
+-debug-on-error
+
+Version@auth-sasl;iq-version: >> Get server version <<
+Configuration@command-get-config: >> Server configuration <<
+Statistics@iq-stats: >> Server statistics <<
+Common test@common: >> Common test <<

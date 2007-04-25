@@ -49,7 +49,7 @@ public interface TestIfc {
 
   boolean run();
 
-  int getResultCode();
+  ResultCode getResultCode();
 
   String getResultMessage();
 

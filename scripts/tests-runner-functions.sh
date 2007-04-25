@@ -70,10 +70,13 @@ function ts_start() {
 	[[ -z ${2} ]] && local _server_ip="" || local _server_ip="-serverip ${2}"
 	[[ -z ${3} ]] && local _output_file="" \
 		|| local _output_file="-output-file ${3}"
+	[[ -z ${4} ]] && local _extra_par_1="" || local _extra_par_1=${4}
+	[[ -z ${5} ]] && local _extra_par_2="" || local _extra_par_2=${5}
+	[[ -z ${6} ]] && local _extra_par_3="" || local _extra_par_3=${6}
 
 	java ${_options} ${_properties} -cp "${_classpath}" \
-		tigase.test.TestSuite -script ${_test_script} \
-		${_output_file} ${_server_ip}
+		tigase.test.TestSuite -script ${_test_script} ${_output_file} \
+		${_server_ip} ${_extra_par_1} ${_extra_par_2} ${_extra_par_3}
 
 }
 
@@ -83,6 +86,7 @@ function run_test() {
 	[[ -z ${2} ]] && local _database=${database} || local _database=${2}
 	[[ -z ${3} ]] && local _server_dir=${server_dir} || local _server_dir=${3}
 	[[ -z ${4} ]] && local _server_ip=${server_ip} || local _server_ip=${4}
+	[[ -z ${5} ]] && local _extra_par="" || local _extra_par=${5}
 
 	local _output_dir="${output_dir}/${_test_type}/${_database}"
 
@@ -95,12 +99,23 @@ function run_test() {
 			local _output_file="${_output_dir}/performance-tests.html"
 			local _script_file="scripts/perform-xmpp-tests.xmpt"
 			;;
+		sing)
+			local _output_file="${_output_dir}/single-test.html"
+			local _script_file="scripts/single-xmpp-test.xmpt"
+			local _extra_params="-source-file ${_extra_par}"
+			;;
 		*)
 			echo "Unsupported test type: '${_test_type}'"
 			usage
 			exit 1
 			;;
 	esac
+
+	echo "Test type:        ${_test_type}"
+	echo "Database:         ${_database}"
+	echo "Server directory: ${_server_dir}"
+	echo "Server IP:        ${_server_ip}"
+	echo "Extra parameters: ${_extra_par}"
 
 	case ${_database} in
 		mysql|sm-mysql)
@@ -127,7 +142,7 @@ function run_test() {
 	mkdir -p "${_output_dir}"
 	echo -e "\nRunning: ${ver}-${_database} test, IP ${_server_ip}..."
 	start_test=`date +%s`
-	ts_start ${_script_file} ${_server_ip} ${_output_file}
+	ts_start ${_script_file} ${_server_ip} ${_output_file} ${_extra_params}
 	end_test=`date +%s`
 	total_time=$((end_test-start_test))
 	total_str=`date -u -d @$total_time +%H:%M:%S`
@@ -157,3 +172,15 @@ function run_performance_test() {
 	run_test "perf" ${_database} ${_server_dir} ${_server_ip}
 
 }
+
+function run_single_test() {
+
+	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
+	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
+	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
+	[[ -z ${4} ]] && local _stanza_file= || local _stanza_file=${4}
+
+	run_test "sing" ${_database} ${_server_dir} ${_server_ip} ${_stanza_file}
+
+}
+
