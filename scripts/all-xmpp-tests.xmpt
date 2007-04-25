@@ -133,6 +133,9 @@ Global settings:
   Test 19@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
   >> XEP-0049: Private XML Storage <<
 
+  Test 20@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
+  >> Test for feature-not-implemented error which should be returned when client sends unsupported stanza <<
+
   Test end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<
 
