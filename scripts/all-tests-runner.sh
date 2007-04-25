@@ -5,7 +5,7 @@ VERSION="2.0.0"
 SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
 [[ -f ${SETTINGS_FILE} ]] && source ${SETTINGS_FILE} \
   || {
-	echo "Can't find settings file: ${SETTINGS_FILE} using defaults"  
+	echo "Can't find settings file: ${SETTINGS_FILE} using defaults"
 	server_dir="../server"
 	database="xmldb"
 	server_ip="127.0.0.1"

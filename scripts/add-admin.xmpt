@@ -1,7 +1,7 @@
 -version = "2.0.0"
 
 -output-format  = html
--output-file    = "../www/functional-tests.html"
+-output-file    = "test-acc.html"
 -output-history = yes
 -history-format = separate-file
 -output-cols    = 7
