@@ -60,7 +60,8 @@ case "${1}" in
 		[[ -z ${3} ]] || server_ip=${3}
 		;;
 	--single)
-		# Do nothing
+		[[ -z ${3} ]] || server_dir=${3}
+		[[ -z ${4} ]] || server_ip=${4}
 		;;
 	*)
 		[[ -z "${1}" ]] || echo "Invalid command '$1'"
