@@ -34,8 +34,6 @@ function db_reload_pgsql() {
 
 function fs_prepare_files() {
 	rm -f etc/*.xml
-	cp -f func-rep.html_tmp func-rep.html
-	cp -f perf-rep.html_tmp perf-rep.html
 }
 
 function tig_start_server() {
@@ -136,7 +134,7 @@ function run_test() {
 	fs_prepare_files
 	sleep 1
 	tig_start_server ${_server_dir} "etc/tigase-${_database}.conf"
-	sleep 2
+	sleep 5
 	ts_start scripts/add-admin.xmpt ${_server_ip}
 	sleep 1
 	mkdir -p "${_output_dir}"
