@@ -84,6 +84,7 @@ case "${1}" in
 		run_functional_test ${database} ${server_dir} ${server_ip}
 		;;
 	--func-all)
+		cp -f func-rep.html_tmp func-rep.html
 		echo "<tr><th>${ver}</th>" >> func-rep.html
 		run_functional_test xmldb ${server_dir} ${IPS[0]}
 		run_functional_test mysql ${server_dir} ${IPS[1]}
@@ -95,6 +96,7 @@ case "${1}" in
 		run_performance_test ${database} ${server_dir} ${server_ip}
 		;;
 	--perf-all)
+		cp -f perf-rep.html_tmp perf-rep.html
 		echo "<tr><th>${ver}</th>" >> perf-rep.html
 		run_performance_test xmldb ${server_dir} ${IPS[0]}
 		run_performance_test mysql ${server_dir} ${IPS[1]}
