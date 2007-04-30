@@ -1,0 +1,67 @@
+##
+## Tigase Project
+## Copyright (C) 2001-2007
+## "Artur Hefczyc" <artur.hefczyc@tigase.org>
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software Foundation,
+## Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+## $Rev$
+## Last modified by $Author$
+## $Date$
+##
+
+# Test for XMPP ServiceDiscovery - XEP-0030: make sure the server returns
+# all expected elements including whole features set.
+# http://www.xmpp.org/extensions/xep-0030.html
+# @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
+# @version $Rev$
+
+### Request discovery info:
+send: {
+<iq to='$(hostname)' id='disco_1' type='get'>
+  <query xmlns="http://jabber.org/protocol/disco#info"/>
+</iq>
+}
+expect:
+{
+<iq from="$(hostname)" type="result" id="disco_1" >
+  <query xmlns="http://jabber.org/protocol/disco#info">
+    <identity category="server" type="im"/>
+		<feature var="http://jabber.org/protocol/disco#info" />
+		<feature var="http://jabber.org/protocol/disco#items" />
+		<feature var="http://jabber.org/protocol/commands" />
+		<feature var="http://jabber.org/protocol/stats" />
+		<feature var="jabber:iq:register" />
+		<feature var="jabber:iq:version" />
+		<feature var="msgoffline" />
+  </query>
+</iq>
+}
+
+### Request discovery items:
+send: {
+<iq type="get" to="$(hostname)" id="disco_2" >
+  <query xmlns="http://jabber.org/protocol/disco#items"/>
+</iq>
+}
+expect: {
+<iq from="$(hostname)" type="result" id="disco_2" >
+  <query xmlns="http://jabber.org/protocol/disco#items">
+    <item node="config" name="Server configuration" jid="basic-conf.$(hostname)" />
+		<item node="sm" name="Session manager" jid="sess_man.$(hostname)" />
+		<item node="stats" name="Server statistics" jid="stat_1.$(hostname)" />
+  </query>
+</iq>
+}

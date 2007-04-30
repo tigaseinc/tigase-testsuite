@@ -142,6 +142,9 @@ Global settings:
   Test 22@common: { -source-file = "tests/data/UrnXmppPing.cot" }
   >> XEP-0199: XMPP Ping <<
 
+  Test 23@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
+  >> XEP-0030: XMPP Service Discovery <<
+
   Test end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<
 
