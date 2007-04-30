@@ -107,7 +107,7 @@ Global settings:
   {
     -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
     -socket-wait = 1000
-    -time-out-ok
+#    -time-out-ok
   } >> Privacy lists test - send a message to $(blocking-user) user blocking all messages and wait for error response <<
 
   Prep 8@user-register: {
@@ -248,7 +248,7 @@ Multi thread tests:
     -loop   = 5
     -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
     -socket-wait = 1000
-    -time-out-ok
+#    -time-out-ok
 
     Message send@msg-send: { -user-name = "multi-reg_1_$(loop)" }
     >> Send a message to daemon user <<
