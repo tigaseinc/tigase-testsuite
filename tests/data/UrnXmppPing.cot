@@ -28,6 +28,7 @@
 # @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
 # @version $Rev: $
 
+### Send ping to "this" server where the test user has got his account:
 send: {
 <iq to='$(hostname)' id='ping123' type='get'>
   <ping xmlns='urn:xmpp:ping'/>
@@ -36,4 +37,16 @@ send: {
 expect:
 {
 <iq from='$(hostname)' id='ping123' type='result'/>
+}
+
+### Send a ping to virtual domain of the server. Assuming test environment
+### includes also support for 'test-domain'
+send: {
+<iq to='test-domain' id='ping1234' type='get'>
+  <ping xmlns='urn:xmpp:ping'/>
+</iq>
+}
+expect:
+{
+<iq from='test-domain' id='ping1234' type='result'/>
 }
