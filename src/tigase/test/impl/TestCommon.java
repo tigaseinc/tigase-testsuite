@@ -69,7 +69,7 @@ public class TestCommon extends TestEmpty {
   protected ResultCode resultCode = ResultCode.TEST_OK;
   protected Exception exception = null;
 	private String error_message = "";
-	private Queue<StanzaEntry> stanzas = new LinkedList<StanzaEntry>();
+	private Queue<StanzaEntry> stanzas = null;
 
 	/**
 	 * Creates a new <code>TestCommon</code> instance.
@@ -200,6 +200,7 @@ public class TestCommon extends TestEmpty {
 		timeoutOk = params.containsKey("-time-out-ok");
 		fullExceptionStack = params.containsKey("-full-stack-trace");
 		source_file = params.get("-source-file", source_file);
+		stanzas = new LinkedList<StanzaEntry>();
 		loadSourceFile(source_file);
   }
 
