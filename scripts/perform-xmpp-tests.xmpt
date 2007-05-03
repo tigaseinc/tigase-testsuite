@@ -99,9 +99,9 @@ Global settings:
 
 # Real tests section
 
-  Test 0@xmpp-session:
-  Bind XMPP session over TLS $(repeats) times
-  >> Bind XMPP session over TLS $(repeats) times <<
+#  Test 0@xmpp-session:
+#  Bind XMPP session over TLS $(repeats) times
+#  >> Bind XMPP session over TLS $(repeats) times <<
 
   Init 1@user-unregister: Remove test account { -no-record -loop = 1 }
   >> Remove test account - just in case if there is already such account <<
@@ -270,11 +270,11 @@ Global settings:
   Bind XMPP session over TLS $(repeats) times
   >> Bind XMPP session over TLS $(repeats) times <<
 
-  Prep 10@user-unregister: {
-    -no-record
-    -user-name = $(long-list-user)
-    -loop = 1
-  } >> Remove test account. <<
+#  Prep 10@user-unregister: {
+#    -no-record
+#    -user-name = $(long-list-user)
+#    -loop = 1
+#  } >> Remove test account. <<
 
   Prep 11@user-register: {
     -no-record
