@@ -28,7 +28,7 @@ import tigase.test.TestAbstract;
 import javax.management.Attribute;
 import tigase.xml.Element;
 
-import static tigase.util.JID.*;
+import static tigase.util.JIDUtils.*;
 
 /**
  * Describe class TestUnregister here.

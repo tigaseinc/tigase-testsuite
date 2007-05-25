@@ -28,7 +28,7 @@ import tigase.test.util.Params;
 import tigase.test.util.TestUtil;
 import tigase.xml.Element;
 
-import static tigase.util.JID.*;
+import static tigase.util.JIDUtils.*;
 
 /**
  * Describe class TestSendMessage here.

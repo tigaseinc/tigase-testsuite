@@ -30,7 +30,7 @@ import tigase.test.TestAbstract;
 import tigase.test.util.Params;
 import tigase.xml.Element;
 
-import static tigase.util.JID.*;
+import static tigase.util.JIDUtils.*;
 
 /**
  * Describe class TestIQVersion here.

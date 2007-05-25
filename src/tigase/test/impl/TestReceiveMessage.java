@@ -33,7 +33,7 @@ import tigase.test.util.SocketXMLIO;
 import tigase.test.util.TestUtil;
 import tigase.xml.Element;
 
-import static tigase.util.JID.*;
+import static tigase.util.JIDUtils.*;
 
 /**
  * Describe class TestReceiveMessage here.
@@ -81,7 +81,7 @@ public class TestReceiveMessage extends TestAbstract {
    */
   public String nextElementName(final Element element) throws Exception {
     if (element == null) {
-      //      System.out.println("JID = " + jid);
+      //      System.out.println("JIDUtils = " + jid);
       TestUtil.addDaemonJID(jid, (Socket)params.get("socket"));
       data = null;
       return "";

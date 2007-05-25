@@ -29,7 +29,7 @@ import tigase.test.ResultsDontMatchException;
 import tigase.xml.Element;
 import tigase.test.util.ElementUtil;
 
-import static tigase.util.JID.*;
+import static tigase.util.JIDUtils.*;
 
 /**
  * Describe class TestPrivacyList here.

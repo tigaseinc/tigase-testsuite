@@ -35,7 +35,7 @@ import tigase.test.util.ElementUtil;
 import tigase.test.util.Params;
 import tigase.test.util.SocketXMLIO;
 import tigase.test.util.TestUtil;
-import tigase.util.JID;
+import tigase.util.JIDUtils;
 import tigase.xml.DomBuilderHandler;
 import tigase.xml.Element;
 import tigase.xml.SimpleParser;
@@ -185,7 +185,7 @@ public class TestCommon extends TestEmpty {
     user_resr = params.get("-user_resr", user_resr);
     user_emil = params.get("-user-emil", user_emil);
     hostname = params.get("-host", hostname);
-    String name = JID.getNodeNick(user_name);
+    String name = JIDUtils.getNodeNick(user_name);
     if (name == null || name.equals("")) {
       jid = user_name + "@" + hostname + "/" + user_resr;
     } else {

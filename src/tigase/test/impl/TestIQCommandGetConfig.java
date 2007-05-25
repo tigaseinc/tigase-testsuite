@@ -33,7 +33,7 @@ import tigase.xml.Element;
 import tigase.xml.XMLUtils;
 import tigase.test.util.ElementUtil;
 
-import static tigase.util.JID.*;
+import static tigase.util.JIDUtils.*;
 
 /**
  * Describe class TestIQCommandGetConfig here.

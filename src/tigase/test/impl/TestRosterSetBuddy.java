@@ -27,7 +27,7 @@ import tigase.test.TestAbstract;
 import tigase.xml.Element;
 import tigase.test.util.Params;
 
-import static tigase.util.JID.*;
+import static tigase.util.JIDUtils.*;
 
 /**
  * Describe class TestRosterSetBuddy here.
