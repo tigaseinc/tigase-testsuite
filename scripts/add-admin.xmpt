@@ -31,5 +31,5 @@ $(stats-pass) = stats
 -debug-on-error
 
 Init 0@user-register: {
--user-name=$(stats-user) -user-pass=$(stats-pass) -no-record
+-user-name=$(stats-user) -user-pass=$(stats-pass)
 } >> JEP-0077 - In-Band Registration, register <<
