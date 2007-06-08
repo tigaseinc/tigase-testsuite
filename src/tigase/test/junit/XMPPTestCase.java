@@ -7,23 +7,17 @@ import tigase.test.util.Params;
 
 public abstract class XMPPTestCase {
 
-	private String configFile;
-
-	/**
-	 * 
-	 * @param sourceFile file with test script
-	 */
-	public XMPPTestCase(String sourceFile) {
-		this.configFile = sourceFile;
-	}
-
 	/**
 	 * Method run test.
+	 * 
 	 * @param xmlio
 	 */
-	public void test(final JUnitXMLIO xmlio) {
+	public static void test(final String configFile, final JUnitXMLIO xmlio) {
+		if (configFile == null) {
+			throw new RuntimeException("Script file must be specified.");
+		}
 		tigase.test.util.Params par = new Params();
-		par.put("-source-file", this.configFile);
+		par.put("-source-file", configFile);
 		par.put("socketxmlio", xmlio);
 
 		TestCommon t = new TestCommon();
@@ -35,6 +29,25 @@ public abstract class XMPPTestCase {
 			fail(t.getResultMessage());
 		}
 
+	}
+
+	private String configFile;
+
+	public XMPPTestCase() {
+		this.configFile = null;
+	}
+
+	/**
+	 * 
+	 * @param sourceFile
+	 *            file with test script
+	 */
+	public XMPPTestCase(String sourceFile) {
+		this.configFile = sourceFile;
+	}
+
+	public void test(final JUnitXMLIO xmlio) {
+		test(this.configFile, xmlio);
 	}
 
 }

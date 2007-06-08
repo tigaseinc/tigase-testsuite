@@ -8,10 +8,6 @@ import tigase.xml.Element;
 
 public class TestTest extends XMPPTestCase {
 
-	public TestTest() {
-		super("junit-test.cor");
-	}
-
 	@Test
 	public void test_1() {
 		final ExampleService service = new ExampleService();
@@ -21,7 +17,7 @@ public class TestTest extends XMPPTestCase {
 				send(service.doSomething(data));
 			}
 		};
-		test(xmlio);
+		test("junit-test.cor", xmlio);
 	}
 
 	@Test
@@ -33,7 +29,7 @@ public class TestTest extends XMPPTestCase {
 				send(service.doSomethingElse(data));
 			}
 		};
-		test(xmlio);
+		test("junit-test-other.cor", xmlio);
 	}
 
 }
