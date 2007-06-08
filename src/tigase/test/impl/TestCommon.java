@@ -33,8 +33,8 @@ import tigase.test.ResultCode;
 import tigase.test.TestEmpty;
 import tigase.test.util.ElementUtil;
 import tigase.test.util.Params;
-import tigase.test.util.SocketXMLIO;
 import tigase.test.util.TestUtil;
+import tigase.test.util.XMLIO;
 import tigase.util.JIDUtils;
 import tigase.xml.DomBuilderHandler;
 import tigase.xml.Element;
@@ -93,7 +93,7 @@ public class TestCommon extends TestEmpty {
 		try {
 			StanzaEntry entry = null;
 			while ((entry = stanzas.poll()) != null) {
-        SocketXMLIO io = (SocketXMLIO)params.get("socketxmlio");
+        XMLIO io = (XMLIO)params.get("socketxmlio");
         if (io == null) {
           resultCode = ResultCode.SOCKET_NOT_INITALIZED;
           return false;

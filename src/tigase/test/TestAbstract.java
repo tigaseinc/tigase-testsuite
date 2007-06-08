@@ -30,9 +30,9 @@ import java.util.Queue;
 import java.util.Arrays;
 import javax.management.Attribute;
 import tigase.xml.Element;
-import tigase.test.util.SocketXMLIO;
 import tigase.test.util.Params;
 import tigase.test.util.TestUtil;
+import tigase.test.util.XMLIO;
 
 import static tigase.test.util.TestUtil.*;
 
@@ -117,7 +117,7 @@ public abstract class TestAbstract extends TestEmpty {
       String elem = null;
       while ((elem = nextElementName(reply)) != null) {
         debug("Processing element: " + elem + "\n");
-        SocketXMLIO io = (SocketXMLIO)params.get("socketxmlio");
+        XMLIO io = (XMLIO)params.get("socketxmlio");
         if (io == null) {
           resultCode = ResultCode.SOCKET_NOT_INITALIZED;
           return false;

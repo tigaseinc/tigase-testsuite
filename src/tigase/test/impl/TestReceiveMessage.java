@@ -29,8 +29,8 @@ import javax.management.Attribute;
 import tigase.test.ResultCode;
 import tigase.test.TestAbstract;
 import tigase.test.util.Params;
-import tigase.test.util.SocketXMLIO;
 import tigase.test.util.TestUtil;
+import tigase.test.util.XMLIO;
 import tigase.xml.Element;
 
 import static tigase.util.JIDUtils.*;
@@ -166,7 +166,7 @@ public class TestReceiveMessage extends TestAbstract {
   public boolean run() {
     try {
       String elem = null;
-      SocketXMLIO io = (SocketXMLIO)params.get("socketxmlio");
+      XMLIO io = (XMLIO)params.get("socketxmlio");
       if (io == null) {
 				TestUtil.removeDaemonJID(jid);
         resultCode = ResultCode.SOCKET_NOT_INITALIZED;

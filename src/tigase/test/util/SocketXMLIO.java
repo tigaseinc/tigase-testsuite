@@ -43,7 +43,7 @@ import tigase.xml.DefaultElementFactory;
  * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
-public class SocketXMLIO {
+public class SocketXMLIO implements XMLIO {
 
   private static final int BUFF_SIZE = 16*1024;
 
@@ -66,15 +66,28 @@ public class SocketXMLIO {
     parser = new SimpleParser();
   }
 
-  public void write(String data) throws IOException {
+  /* (non-Javadoc)
+ * @see tigase.test.util.XMLIO#write(tigase.xml.Element)
+ */
+public void write(Element data) throws IOException {
+	  write(data.toString());
+  }
+  
+  /* (non-Javadoc)
+ * @see tigase.test.util.XMLIO#write(java.lang.String)
+ */
+public void write(String data) throws IOException {
     if (!socket.isConnected()) {
       throw new ConnectException("Socket is not connected.");
     } // end of if (!socket.isConnected())
     //    System.out.println("OUTPUT: " + data);
-    out.write(data.getBytes());
+    out.write(data.toString().getBytes());
   }
 
-  public Queue<Element> read() throws IOException {
+  /* (non-Javadoc)
+ * @see tigase.test.util.XMLIO#read()
+ */
+public Queue<Element> read() throws IOException {
     if (!socket.isConnected()) {
       throw new ConnectException("Socket is not connected.");
     } // end of if (!socket.isConnected())

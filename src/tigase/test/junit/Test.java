@@ -12,10 +12,17 @@ public class Test {
 
 		tigase.test.util.Params par = new Params();
 		par.put("-source-file", "tests/data/vcard-temp.cot");
+		par.put("socketxmlio", new JUnitXMLIO());
 
 		TestCommon t = new TestCommon();
 		t.init(par);
 
+		t.run();
+		
+		
+		System.out.println(t.getResultCode());
+		System.out.println(t.getResultMessage());
+		
 	}
 
 }
