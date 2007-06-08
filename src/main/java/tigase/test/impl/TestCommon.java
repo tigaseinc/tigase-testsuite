@@ -232,7 +232,7 @@ public class TestCommon extends TestEmpty {
 					if (!line.equals("{")
 						&& !line.equals("}")
 						&& !line.startsWith("#")) {
-						buff.append(line);
+						buff.append(line+'\n');
 					}
 					if (line.equals("}")) {
 						Element[] elems = parseXMLData(buff.toString());
