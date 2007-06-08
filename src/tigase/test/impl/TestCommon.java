@@ -103,7 +103,7 @@ public class TestCommon extends TestEmpty {
 					for (Element elem: entry.stanza) {
 						debug("\nSending: " + elem.toString());
 						addOutput(elem.toString());
-						io.write(elem.toString());
+						io.write(elem);
 					} // end of for (Element elem: stanza)
 					break;
 				case expect:

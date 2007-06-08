@@ -1,35 +1,35 @@
 package tigase.test.junit;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import tigase.test.util.XMLIO;
 import tigase.xml.Element;
 
-public class JUnitXMLIO implements XMLIO {
+public abstract class JUnitXMLIO implements XMLIO {
+
+	private Queue<Element> outQueue = new LinkedList<Element>();
 
 	@Override
 	public Queue<Element> read() throws IOException {
-		System.out.println("read");
-		final Element iq = new Element("iq", new String[] { "id", "type" }, new String[] { "1", "result" });
-		iq.addChild(new Element("vCard", new String[]{"xmlns"}, new String[]{"vcard-temp"}));
-		return new LinkedList<Element>() {
-			{
-				add(iq);
-			}
-		};
+		return this.outQueue;
 	}
 
-	@Override
-	public void write(Element data) throws IOException {
-		System.out.println(data);
-
+	protected void send(Collection<Element> elements) {
+		this.outQueue.addAll(elements);
 	}
+
+	protected void send(Element element) {
+		this.outQueue.add(element);
+	}
+
+	public abstract void write(Element data) throws IOException;
 
 	@Override
 	public void write(String data) throws IOException {
-		System.out.println(data);
+		throw new RuntimeException("Please use write(Element data)");
 	}
 
 }
