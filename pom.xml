@@ -1,11 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd ">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd ">
     <modelVersion>4.0.0</modelVersion>
     <groupId>tigase</groupId>
     <artifactId>tigase-testsuite</artifactId>
     <packaging>jar</packaging>
     <name>Tigase Test Suite</name>
     <description>Tigase Test Suite - automated testing framework for Tigase Jabber/XMPP Server.</description>
-    <version>2.1.1.2-SNAPSHOT</version>
+    <version>2.1.1.1-SNAPSHOT</version>
     <url>http://www.tigase.org</url>
     <inceptionYear>2005</inceptionYear>
     <developers>
@@ -34,8 +37,12 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:https://svn.tigase.org/reps/tigase-testsuite/trunk</connection>
-        <developerConnection>scm:svn:https://svn.tigase.org/reps/tigase-testsuite/trunk</developerConnection>
+        <connection>
+            scm:svn:https://svn.tigase.org/reps/tigase-testsuite/trunk
+        </connection>
+        <developerConnection>
+            scm:svn:https://svn.tigase.org/reps/tigase-testsuite/trunk
+        </developerConnection>
         <url>https://svn.tigase.org/reps/tigase-testsuite</url>
     </scm>
     <organization>
