@@ -58,7 +58,6 @@ expect: {
 <iq from="$(hostname)" type="result" id="disco_2" >
   <query xmlns="http://jabber.org/protocol/disco#items">
     <item node="config" name="Server configuration" jid="basic-conf.$(hostname)" />
-		<item node="sm" name="Session manager" jid="sess-man.$(hostname)" />
 		<item node="stats" name="Server statistics" jid="stat-1.$(hostname)" />
   </query>
 </iq>
