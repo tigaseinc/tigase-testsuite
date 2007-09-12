@@ -10,14 +10,14 @@
    (quote
     (
      "$JAVA_HOME/jre/lib/rt.jar"
-     "$PROJECTS_HOME/tigase/testsuite/classes/"
+     "$PROJECTS_HOME/tigase/testsuite/target/classes/"
      "$PROJECTS_HOME/tigase/testsuite/libs/junit.jar"
      "$PROJECTS_HOME/tigase/server/libs/tigase-xmltools.jar"
      "$PROJECTS_HOME/tigase/server/libs/tigase-utils.jar")))
  '(jde-sourcepath
    (quote
     (
-     "$PROJECTS_HOME/tigase/testsuite/src"
+     "$PROJECTS_HOME/tigase/testsuite/src/main/java"
      "$PROJECTS_HOME/tigase/testsuite/tests/unittests/src"
      "$JAVA_HOME/share/src"
      "$JAVA_HOME/share/tests/src")))
