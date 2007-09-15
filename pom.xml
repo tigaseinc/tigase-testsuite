@@ -74,12 +74,12 @@
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>tigase-utils</artifactId>
-			<version>3.0.1-SNAPSHOT</version>
+			<version>3.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>tigase-xmltools</artifactId>
-			<version>3.0.1-SNAPSHOT</version>
+			<version>3.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
