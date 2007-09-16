@@ -69,7 +69,7 @@
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>tigase-server</artifactId>
-			<version>3.0.1-SNAPSHOT</version>
+			<version>3.0.1-beta</version>
 		</dependency>
 		<dependency>
 			<groupId>tigase</groupId>
