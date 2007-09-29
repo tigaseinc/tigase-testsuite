@@ -22,7 +22,11 @@
 # Possible variables:
 # $(hostname)
 # $(to-jid)
-# $(from-jid)
+# $(from-jid) - full user JID
+# $(from-id) - user jid witout resource part
+# $(number) - number generated somehow or taken from the loop
+# $(counter) - simple internal counter if the action is executed in loop
+# $(cdata) - cdata given in the script or genrated in the loop
 
 send: {
 <iq type="set" id="1001">
