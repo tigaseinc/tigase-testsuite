@@ -5,7 +5,7 @@
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
-##  the Free Software Foundation, either version 3 of the License.
+##  the Free Software Foundation version 3 of the License.
 ##
 ##  This program is distributed in the hope that it will be useful,
 ##  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -57,17 +57,37 @@ function usage() {
 	echo "  --all-tests Run all functionality and performance tests for"
 	echo "              database configurations"
 	echo "  --single test_file.cot"
-	echo "	-----------"
+	echo "  --other script_file.xmpt"
+	echo "----"
+	echo "  Special parameters only at the beginning of the parameters list"
+	echo "  --debug|-d                 Turns on debug mode"
+	echo "  --skip-db-relad|-no-db     Turns off reloading database"
+	echo "  --skip-server|-no-serv     Turns off Tigase server start"
+	echo "-----------"
 	echo "  Other possible parameters are in following order:"
 	echo "  [server-dir] [server-ip]"
 }
 
-case "${1}" in
+found=1
+while [ "${found}" == "1" ] ; do
+	case "${1}" in
     --debug|-d)
-	set -x
-	shift
-	;;
-esac
+			set -x
+			shift
+			;;
+		--skip-db-relad|-no-db)
+			export SKIP_DB_RELOAD=1
+			shift
+			;;
+		--skip-server|-no-serv)
+			export SKIP_SERVER_START=1
+			shift
+			;;
+		*)
+			found=0
+			;;
+	esac
+done
 
 
 case "${1}" in
@@ -80,7 +100,7 @@ case "${1}" in
 		[[ -z ${2} ]] || server_dir=${2}
 		[[ -z ${3} ]] || server_ip=${3}
 		;;
-	--single)
+	--single|--other)
 		[[ -z ${3} ]] || server_dir=${3}
 		[[ -z ${4} ]] || server_ip=${4}
 		;;
@@ -132,73 +152,12 @@ case "${1}" in
 	--single)
 		run_single_test ${database} ${server_dir} ${server_ip} ${2}
 		;;
+	--other)
+		run_other_test ${database} ${server_dir} ${server_ip} ${2}
+		;;
 	*)
 		[[ -z "${1}" ]] || echo "Invalid command '$1'"
 		usage
 		exit 1
 		;;
 esac
-
-
-#### Prepare DB
-
-# cnt=0
-# for t in ${TESTS} ; do
-# 	${th}/scripts/tigase.sh start etc/tigase-${t}.conf
-# 	sleep 5
-# 	./scripts/add-admin.sh -output-file "${dr}/tmp.html" -serverip ${IPS[$cnt]}
-# 	sleep 3
-# 	${th}/scripts/tigase.sh stop etc/tigase-${t}.conf
-# 	sleep 2
-# 	killall java
-# 	sleep 1
-# 	(( ++cnt ))
-# done
-
-# #### Start functional tests
-
-# cnt=0
-# echo "<tr><th>${ver}</th>" >> ${func_rep}
-# for t in ${TESTS} ; do
-# 	start_test=`date +%s`
-# 	echo -e "\nRunning: ${ver}-${t} test, IP ${IPS[$cnt]}..."
-# 	${th}/scripts/tigase.sh start etc/tigase-${t}.conf
-# 	sleep 5
-# 	mkdir -p "${dr}/func/${t}"
-# 	./scripts/functional-tests.sh -output-file "${dr}/func/${t}/functional-tests.html" -serverip ${IPS[$cnt]}
-# 	end_test=`date +%s`
-# 	total_time=$((end_test-start_test))
-# 	total_str=`date -u -d @$total_time +%H:%M:%S`
-# 	echo "<td><A href=\"/${dr}/func/${t}/functional-tests.html\">${total_str}</A></td>" >> ${func_rep}
-# 	sleep 3
-# 	${th}/scripts/tigase.sh stop etc/tigase-${t}.conf
-# 	sleep 2
-# 	killall java
-# 	sleep 1
-# 	(( ++cnt ))
-# done
-# echo "</tr>" >> ${func_rep}
-
-# #### Start performance tests
-
-# cnt=0
-# echo "<tr><th>${ver}</th>" >> ${perf_rep}
-# for t in ${TESTS} ; do
-# 	start_test=`date +%s`
-# 	echo -e "\nRunning: ${ver}-${t} test, IP ${IPS[$cnt]}..."
-# 	${th}/scripts/tigase.sh start etc/tigase-${t}.conf
-# 	sleep 5
-# 	mkdir -p "${dr}/perf/${t}"
-# 	./scripts/performance_tests.sh -output-file "${dr}/perf/${t}/performance-tests.html" -serverip ${IPS[$cnt]}
-# 	end_test=`date +%s`
-# 	total_time=$((end_test-start_test))
-# 	total_str=`date -u -d @$total_time +%H:%M:%S`
-# 	echo "<td><A href=\"/${dr}/perf/${t}/performance-tests.html\">${total_str}</A></td>" >> ${perf_rep}
-# 	sleep 3
-# 	${th}/scripts/tigase.sh stop etc/tigase-${t}.conf
-# 	sleep 2
-# 	killall java
-# 	sleep 1
-# 	(( ++cnt ))
-# done
-# echo "</tr>" >> ${perf_rep}

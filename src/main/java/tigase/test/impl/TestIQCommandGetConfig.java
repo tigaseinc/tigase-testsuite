@@ -32,6 +32,7 @@ import tigase.test.ResultsDontMatchException;
 import tigase.xml.Element;
 import tigase.xml.XMLUtils;
 import tigase.test.util.ElementUtil;
+import tigase.test.util.EqualError;
 
 import static tigase.util.JIDUtils.*;
 
@@ -56,7 +57,7 @@ public class TestIQCommandGetConfig extends TestAbstract {
 
   private String[] elems = {"iq"};
   private int counter = 0;
-  private Element expected_result = null;
+  private Element expected_result, optional_result = null;
   private Attribute[] result = null;
   private String[] resp_name = null;
 
@@ -85,8 +86,10 @@ public class TestIQCommandGetConfig extends TestAbstract {
   public String nextElementName(final Element element) throws Exception {
     if (element != null) {
       boolean error = true;
+			String message = null;
       if (element != null) {
-				if (ElementUtil.equalElemsDeep(expected_result, element)) {
+				EqualError res1 = ElementUtil.equalElemsDeep(expected_result, element);
+				if (res1.equals) {
 					error = false;
 					List<StatItem> stats = new LinkedList<StatItem>();
 					List<Element> items = element.getChildren("/iq/command/x");
@@ -104,6 +107,8 @@ public class TestIQCommandGetConfig extends TestAbstract {
 								"&nbsp;",	stat));
 					} // end of for (Element item: items)
 					params.put("Configuration", stats);
+				} else {
+					message = res1.message;
 				}
       } else {
 				if (expected_result == null) {
@@ -112,7 +117,8 @@ public class TestIQCommandGetConfig extends TestAbstract {
 			} // end of else
       if (error) {
         throw new ResultsDontMatchException(
-          "Expected: " + expected_result + ", Received: " + element);
+          "Expected: " + expected_result + ", Received: " + element + "'"
+					+ ", equals error: " + message);
       } // end of if (error)
     } // end of if (element != null)
     if (counter < elems.length) {

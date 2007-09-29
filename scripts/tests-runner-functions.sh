@@ -26,7 +26,7 @@
 
 _classpath="jars/tigase-xmpp-testsuite.jar:libs/tigase-utils.jar:libs/tigase-xmltools.jar"
 _properties="-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dcom.sun.management.jmxremote"
-_options=" -server -Xmx100M"
+_options=" -server -Xmx200M"
 
 function db_reload_mysql() {
 
@@ -109,6 +109,8 @@ function run_test() {
 
 	local _output_dir="${output_dir}/${_test_type}/${_database}"
 
+	server_timeout=5
+
 	case ${_test_type} in
 		func)
 			local _output_file="${_output_dir}/functional-tests.html"
@@ -123,6 +125,11 @@ function run_test() {
 			local _script_file="scripts/single-xmpp-test.xmpt"
 			local _extra_params="-source-file ${_extra_par}"
 			;;
+		other)
+			local _output_file="${_output_dir}/other-test.html"
+			local _script_file="${_extra_par}"
+			server_timeout=15
+			;;
 		*)
 			echo "Unsupported test type: '${_test_type}'"
 			usage
@@ -136,28 +143,41 @@ function run_test() {
 	echo "Server IP:        ${_server_ip}"
 	echo "Extra parameters: ${_extra_par}"
 
-	case ${_database} in
-		mysql|sm-mysql)
-			db_reload_mysql
-			;;
-		pgsql)
-			db_reload_pgsql
-			;;
-		xmldb)
-			rm -f user-repository.xml
-			;;
-		*)
-			echo "Not supported database: '${database}'"
-			usage
-			exit 1
-			;;
-	esac
+	if [ -z "${SKIP_DB_RELOAD}" ] ; then
+		case ${_database} in
+			mysql|sm-mysql)
+				db_reload_mysql
+				;;
+			pgsql)
+				db_reload_pgsql
+				;;
+			xmldb)
+				rm -f user-repository.xml
+				;;
+			*)
+				echo "Not supported database: '${database}'"
+				usage
+				exit 1
+				;;
+		esac
+	else
+		echo "Skipped database reloading."
+	fi
+
 	fs_prepare_files
 	sleep 1
-	tig_start_server ${_server_dir} "etc/tigase-${_database}.conf"
-	sleep 5
-	ts_start scripts/add-admin.xmpt ${_server_ip}
-	sleep 1
+	if [ -z "${SKIP_SERVER_START}" ] ; then
+		tig_start_server ${_server_dir} "etc/tigase-${_database}.conf"
+		sleep ${server_timeout}
+	else
+		echo "Skipped Tigase server starting."
+	fi
+	if [ -z "${SKIP_DB_RELOAD}" ] ; then
+		ts_start scripts/add-admin.xmpt ${_server_ip}
+		sleep 1
+	else
+		echo "Skipped adming account reloading."
+	fi
 	mkdir -p "${_output_dir}"
 	echo -e "\nRunning: ${ver}-${_database} test, IP ${_server_ip}..."
 	start_test=`date +%s`
@@ -197,8 +217,20 @@ function run_single_test() {
 	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
 	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
 	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
-	[[ -z ${4} ]] && local _stanza_file= || local _stanza_file=${4}
+	[[ -z ${4} ]] && local _stanza_file="" || local _stanza_file=${4}
 
 	run_test "sing" ${_database} ${_server_dir} ${_server_ip} ${_stanza_file}
+
+}
+
+function run_other_test() {
+
+	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
+	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
+	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
+	[[ -z ${4} ]] && local _script_file="scripts/load-xmpp-test.xmpt" \
+		|| local _script_file=${4}
+
+	run_test "other" ${_database} ${_server_dir} ${_server_ip} ${_script_file}
 
 }

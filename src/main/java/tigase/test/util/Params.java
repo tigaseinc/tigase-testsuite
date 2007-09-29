@@ -161,6 +161,10 @@ public class Params implements Map<String, Object> {
     return map.containsKey(key) ? Integer.decode(map.get(key).toString()) : def;
   }
 
+  public long get(final String key, final long def) {
+    return map.containsKey(key) ? Long.decode(map.get(key).toString()) : def;
+  }
+
   public static boolean decodeBoolean(final String val) {
     if (val == null) {
       return false;

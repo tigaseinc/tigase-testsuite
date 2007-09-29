@@ -67,27 +67,28 @@ public class SocketXMLIO implements XMLIO {
   }
 
   /* (non-Javadoc)
- * @see tigase.test.util.XMLIO#write(tigase.xml.Element)
- */
-public void write(Element data) throws IOException {
+	 * @see tigase.test.util.XMLIO#write(tigase.xml.Element)
+	 */
+	public void write(Element data) throws IOException {
 	  write(data.toString());
   }
-  
+
   /* (non-Javadoc)
- * @see tigase.test.util.XMLIO#write(java.lang.String)
- */
-public void write(String data) throws IOException {
+	 * @see tigase.test.util.XMLIO#write(java.lang.String)
+	 */
+	public void write(String data) throws IOException {
     if (!socket.isConnected()) {
       throw new ConnectException("Socket is not connected.");
     } // end of if (!socket.isConnected())
     //    System.out.println("OUTPUT: " + data);
     out.write(data.toString().getBytes());
+		out.flush();
   }
 
   /* (non-Javadoc)
- * @see tigase.test.util.XMLIO#read()
- */
-public Queue<Element> read() throws IOException {
+	 * @see tigase.test.util.XMLIO#read()
+	 */
+	public Queue<Element> read() throws IOException {
     if (!socket.isConnected()) {
       throw new ConnectException("Socket is not connected.");
     } // end of if (!socket.isConnected())

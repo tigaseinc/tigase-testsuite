@@ -28,6 +28,7 @@ import javax.management.Attribute;
 import tigase.test.ResultsDontMatchException;
 import tigase.xml.Element;
 import tigase.test.util.ElementUtil;
+import tigase.test.util.EqualError;
 
 import static tigase.util.JIDUtils.*;
 
@@ -55,7 +56,7 @@ public class TestPrivacyList extends TestAbstract {
 	 , "iq", "iq", "iq", "iq", "iq"};
   private int counter = 0;
 
-  private Element expected_result = null;
+  private Element expected_result, optional_result = null;
   private Attribute[] result = null;
   private String[] resp_name = null;
 
@@ -82,24 +83,35 @@ public class TestPrivacyList extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public String nextElementName(final Element element) throws Exception {
-    if (element != null) {
-      boolean error = true;
-      if (element != null) {
-				if (ElementUtil.equalElemsDeep(expected_result, element)
-					//					&& ElementUtil.equalElemsDeep(element, expected_result)
-						) {
-					error = false;
+		boolean error = false;
+		String message = null;
+		if (element != null) {
+			if (expected_result != null) {
+				EqualError res1 = ElementUtil.equalElemsDeep(expected_result, element);
+				if (!res1.equals && optional_result != null) {
+					EqualError res2 = ElementUtil.equalElemsDeep(optional_result, element);
+					if (!res2.equals) {
+						error = true;
+						message = res1.message + ", " + res2.message;
+					}
+				} else {
+					if (!res1.equals) {
+						error = true;
+						message = res1.message;
+					}
 				}
-      } else {
-				if (expected_result == null) {
-					error = false;
-				} // end of if (expected_result == null)
-			} // end of else
-      if (error) {
-        throw new ResultsDontMatchException(getClass().getName() +
-          ", expected: '" + expected_result + "', Received: '" + element + "'");
-      } // end of if (error)
-    } // end of if (element != null)
+			} // end of if (ElementUtil.equalElemsDeep(expected_result, query))
+		} else {
+			if (expected_result != null) {
+				error = true;
+				message = "Missing expected element: " + expected_result.getName();
+			} // end of if (expected_result == null)
+		} // end of else
+		if (error) {
+			throw new ResultsDontMatchException(getClass().getName() +
+				", expected: '" + expected_result + "', Received: '" + element + "'"
+				+ ", equals error: " + message);
+		} // end of if (error)
     if (counter < elems.length) {
       return elems[counter++];
     } // end of if (counter < elems.length)

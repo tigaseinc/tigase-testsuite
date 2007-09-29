@@ -85,7 +85,8 @@ public class Test {
     } // end of if (node.getOnError() != null)
 
     if (!main_params.isFalse("-output-history")
-      && !main_params.containsKey("-daemon")) {
+      && !main_params.containsKey("-daemon")
+			&& !main_params.containsKey("-background")) {
       collectHistory = true;
       history = new LinkedList<HistoryEntry>();
     } // end of if (!main_params.isFalse())
@@ -102,6 +103,7 @@ public class Test {
     debug_on_error = (main_params.containsKey("-debug-on-error")
         && !main_params.containsKey("-no-record"));
     int loop = main_params.get("-loop", 1);
+		int loop_start = main_params.get("-loop-start", 0);
     String user_name = (String)main_params.get("-user-name");
     boolean loop_user_name = false;
     if (user_name != null && user_name.contains("$(loop)")) {
@@ -115,7 +117,7 @@ public class Test {
     List<TestIfc> suite = null;
     Params test_params = null;
     boolean this_result = false;
-    for (int cnt = 0; cnt < loop; cnt++) {
+    for (int cnt = loop_start; cnt < loop+loop_start; cnt++) {
       try {
         if (on_one_socket && cnt > 0 && this_result) {
           List<TestIfc> suite_tmp = getDependsTree(test_ns, test_params);
@@ -181,21 +183,26 @@ public class Test {
 
   private boolean runTest(List<TestIfc> suite, Params test_params) {
     boolean daemon = test_params.containsKey("-daemon");
+		boolean background = test_params.containsKey("-background");
 		long socket_wait = test_params.get("-socket-wait", 5000);
     DaemonTest dt = new DaemonTest(suite, test_params);
     if (daemon) {
-      runThread(dt);
+      runThread(dt, true);
       return true;
-    } // end of if (daemon)
-    else {
-      dt.run();
-      return dt.getResult();
+    } else {
+			if (background) {
+				runThread(dt, false);
+				return true;
+			} else {
+				dt.run();
+				return dt.getResult();
+			}
     } // end of if (daemon) else
   }
 
-  private void runThread(Runnable task) {
+  private void runThread(Runnable task, boolean daemon) {
     Thread t = new Thread(task);
-    t.setDaemon(true);
+    t.setDaemon(daemon);
     t.start();
   }
 

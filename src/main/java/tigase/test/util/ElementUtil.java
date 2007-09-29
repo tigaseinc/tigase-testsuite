@@ -61,19 +61,23 @@ public class ElementUtil {
     return true;
   }
 
-	public static boolean equalElems(Element el1, Element el2) {
+	public static EqualError equalElems(Element el1, Element el2) {
 		if (!el1.getName().equals(el2.getName())) {
-			return false;
+			return new EqualError(false,
+				"Element names are different: " + el1.getName()	+ " and " + el2.getName());
 		} // end of if (!el1.getName().equals(el2.getName()))
 		Map<String, String> attrs = el1.getAttributes();
 		if (attrs != null) {
 			for (String key: attrs.keySet()) {
 				String atval2 = el2.getAttribute(key);
 				if (atval2 == null) {
-					return false;
+					return new EqualError(false, "Element: " + el2.getName()
+						+ " missing attribute: " + key);
 				} // end of if (at2 == null)
 				if (!attrs.get(key).equals(atval2)) {
-					return false;
+					return new EqualError(false, "Element: " + el2.getName()
+						+ " different value for attribute: " + key + ", " + attrs.get(key)
+						+ " != " + atval2);
 				} // end of if (!attrs.get(key).equals(atval2))
 			} // end of for (String key: attrs.keySet())
 		} // end of if (attrs != null)
@@ -81,38 +85,42 @@ public class ElementUtil {
 		if (cdata1 != null) {
 			String cdata2 = el2.getCData();
 			if (cdata2 == null) {
-				return false;
+				return new EqualError(false, "Missing CData for element: " + el2.getName()
+					+ ", expected: " + cdata1);
 			} // end of if (cdata2 == null)
 			if (!cdata1.equals(cdata2)) {
-				return false;
+				return new EqualError(false, "Different CData for element: " + el2.getName()
+					+ ", expected: " + cdata1 + ", found: " + cdata2);
 			} // end of if (!cdata1.equals(cdata2))
 		} // end of if (cdata1 != null)
-		return true;
+		return new EqualError(true, null);
 	}
 
-	public static boolean equalElemsDeep(Element el1, Element el2) {
-		boolean equal = equalElems(el1, el2);
-		if (!equal) {
-			return false;
+	public static EqualError equalElemsDeep(Element el1, Element el2) {
+		EqualError result = equalElems(el1, el2);
+		if (!result.equals) {
+			return result;
 		} // end of if (!res)
 		List <Element> children = el1.getChildren();
 		if (children == null) {
-			return true;
+			return result;
 		} // end of if (children == null)
 		for (Element child1: children) {
 			List<Element> children2 = el2.getChildren();
 			if (children2 == null || children2.size() == 0) {
-				return false;
+				return new EqualError(false,
+					"Missing children for element: " + el1.getName());
 			} // end of if (child2 == null)
 			boolean found_child = false;
 			for (Element child2: children2) {
-				found_child |= equalElemsDeep(child1, child2);
+				found_child |= equalElemsDeep(child1, child2).equals;
 			} // end of for (Element child2: children2)
 			if (!found_child) {
-				return false;
+				return new EqualError(false, "Element: " + el2.getName()
+					+ ", missing child: " + child1.toString());
 			} // end of if (!res)
 		} // end of for (Element child: children)
-		return true;
+		return result;
 	}
 
 } // ElementUtil

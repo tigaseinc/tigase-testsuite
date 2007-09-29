@@ -27,11 +27,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import tigase.test.ResultCode;
 import tigase.test.TestEmpty;
 import tigase.test.util.ElementUtil;
+import tigase.test.util.EqualError;
 import tigase.test.util.Params;
 import tigase.test.util.TestUtil;
 import tigase.test.util.XMLIO;
@@ -69,7 +72,10 @@ public class TestCommon extends TestEmpty {
   protected ResultCode resultCode = ResultCode.TEST_OK;
   protected Exception exception = null;
 	private String error_message = "";
-	private Queue<StanzaEntry> stanzas = null;
+	private Queue<StanzaEntry> stanzas_buff = null;
+	private List<Element> all_results = new ArrayList<Element>();
+	private long repeat_max = 1;
+	private long repeat_wait = 1;
 
 	/**
 	 * Creates a new <code>TestCommon</code> instance.
@@ -90,66 +96,91 @@ public class TestCommon extends TestEmpty {
 	 * @return a <code>boolean</code> value
 	 */
 	public boolean run() {
-		try {
-			StanzaEntry entry = null;
-			while ((entry = stanzas.poll()) != null) {
-        XMLIO io = (XMLIO)params.get("socketxmlio");
-        if (io == null) {
-          resultCode = ResultCode.SOCKET_NOT_INITALIZED;
-          return false;
-        } // end of if (sock == null)
-				switch (entry.action) {
-				case send:
-					for (Element elem: entry.stanza) {
-						debug("\nSending: " + elem.toString());
-						addOutput(elem.toString());
-						io.write(elem);
-					} // end of for (Element elem: stanza)
-					break;
-				case expect:
-					boolean found = false;
-					Queue<Element> all_results = new LinkedList<Element>();
-					Queue<Element> results = null;
-					while (results == null || results.size() == 0) {
-						results = io.read();
-					} // end of while (!found)
-					all_results.addAll(results);
-					for (int exp = 0; exp < entry.stanza.length && !found; ++exp) {
-						Element received = null;
-						while ((received = results.poll()) != null && !found) {
-							addInput(received.toString());
-							found = ElementUtil.equalElemsDeep(entry.stanza[exp], received);
-						} // end of for (int res = 0; res < results.size() && !found; res++)
-					} // end of for (Element expected: entry.stanza)
-					if (!found) {
-            resultCode = ResultCode.RESULT_DOESNT_MATCH;
-						error_message = "Expected one of: " + Arrays.toString(entry.stanza)
-							+ ", received: "
-							+ Arrays.toString(all_results.toArray(new Element[0]));
-            return false;
-					} // end of if (!found)
-					break;
-				default:
-					break;
-				} // end of switch (entry.action)
-			} // end of while ((entry = stanzas.poll()) != null)
-			return true;
-		} catch (SocketTimeoutException e) {
-			if (timeoutOk) {
-				return true;
-			}	else {
+		for (int repeat = 0; repeat < repeat_max; repeat++) {
+			Queue<StanzaEntry> stanzas = new LinkedList<StanzaEntry>(stanzas_buff);
+			try {
+				StanzaEntry entry = null;
+				while ((entry = stanzas.poll()) != null) {
+					XMLIO io = (XMLIO)params.get("socketxmlio");
+					if (io == null) {
+						resultCode = ResultCode.SOCKET_NOT_INITALIZED;
+						return false;
+					} // end of if (sock == null)
+					switch (entry.action) {
+					case send:
+						for (Element elem: entry.stanza) {
+							debug("\nSending: " + elem.toString());
+							addOutput(elem.toString());
+							io.write(elem);
+						} // end of for (Element elem: stanza)
+						break;
+					case expect:
+						boolean found = false;
+						Queue<Element> results = null;
+						error_message = "\n Expected: " + Arrays.toString(entry.stanza);
+						while (all_results.size() == 0
+							&& (results == null || results.size() == 0)) {
+							results = io.read();
+						} // end of while (!found)
+						if (results != null) {
+							// 						for (Element el: results) {
+							// 							System.out.println("RECEIVED: " + el.toString());
+							// 						}
+							all_results.addAll(results);
+							results.clear();
+						}
+						String eq_msg = "";
+						for (int exp = 0; exp < entry.stanza.length && !found; ++exp) {
+							for (int idx = 0; idx < all_results.size(); idx++) {
+								Element received = all_results.get(idx);
+								addInput(received.toString());
+								EqualError res =
+									ElementUtil.equalElemsDeep(entry.stanza[exp], received);
+								found = res.equals;
+								eq_msg += (found ? "" : res.message + "\n");
+								if (found) {
+									// 								System.out.println("FOUND: " + received.toString());
+									all_results.remove(idx);
+									break;
+								}
+							}
+						} // end of for (Element expected: entry.stanza)
+						if (!found) {
+							//System.out.println("\nFound: " + found + ", message: " + eq_msg);
+							resultCode = ResultCode.RESULT_DOESNT_MATCH;
+							error_message = "Expected one of: " + Arrays.toString(entry.stanza)
+								+ ", received: "
+								+ Arrays.toString(all_results.toArray(new Element[0]))
+								+ "\n equals error message: " + eq_msg;
+							return false;
+						} // end of if (!found)
+						break;
+					default:
+						break;
+					} // end of switch (entry.action)
+				} // end of while ((entry = stanzas.poll()) != null)
+			} catch (SocketTimeoutException e) {
+				if (timeoutOk) {
+					return true;
+				}	else {
+					resultCode = ResultCode.PROCESSING_EXCEPTION;
+					exception = e;
+					addInput(getClass().getName() + ", " + e.getMessage()
+						+ error_message);
+					return false;
+				} // end of if (timeoutOk) else
+			} catch (Exception e) {
+				addInput(getClass().getName() + ", " + e + "\n" + TestUtil.stack2String(e)
+					+ error_message);
 				resultCode = ResultCode.PROCESSING_EXCEPTION;
 				exception = e;
-				addInput(getClass().getName() + ", " + e.getMessage());
+				e.printStackTrace();
 				return false;
-			} // end of if (timeoutOk) else
-		} catch (Exception e) {
-      addInput(getClass().getName() + ", " + e + "\n" + TestUtil.stack2String(e));
-      resultCode = ResultCode.PROCESSING_EXCEPTION;
-      exception = e;
-      e.printStackTrace();
-      return false;
-		} // end of catch
+			} // end of catch
+			try { Thread.sleep(repeat_wait);
+			} catch (InterruptedException e) { } // end of try-catch
+		}
+		return true;
 	}
 
   /**
@@ -167,9 +198,11 @@ public class TestCommon extends TestEmpty {
 			if (fullExceptionStack) {
 				return getClass().getName() + ", " +
 					resultCode.getMessage() + exception.toString() + "\n"
-					+ TestUtil.stack2String(exception);
+					+ TestUtil.stack2String(exception)
+					+ error_message;
 			} else {
-				return getClass().getName() + ", " + exception.getMessage();
+				return getClass().getName() + ", " + exception.getMessage()
+					+ error_message;
 			}
     default:
       return resultCode.getMessage()
@@ -188,20 +221,19 @@ public class TestCommon extends TestEmpty {
     String name = JIDUtils.getNodeNick(user_name);
     if (name == null || name.equals("")) {
       jid = user_name + "@" + hostname + "/" + user_resr;
-    } else {
-      jid = user_name + "/" + user_resr;
-    } // end of else
-    if (name == null || name.equals("")) {
       id = user_name + "@" + hostname;
     } else {
+      jid = user_name + "/" + user_resr;
       id = user_name;
     } // end of else
     to = params.get("-to-jid", to);
 		timeoutOk = params.containsKey("-time-out-ok");
 		fullExceptionStack = params.containsKey("-full-stack-trace");
 		source_file = params.get("-source-file", source_file);
-		stanzas = new LinkedList<StanzaEntry>();
+		stanzas_buff = new LinkedList<StanzaEntry>();
 		loadSourceFile(source_file);
+		repeat_max = params.get("-repeat-script", repeat_max);
+		repeat_wait = params.get("-repeat-wait", repeat_wait);
   }
 
 	private enum ParserState {
@@ -239,10 +271,10 @@ public class TestCommon extends TestEmpty {
 						if (elems != null) {
 							switch (state) {
 							case send_stanza:
-								stanzas.offer(new StanzaEntry(Action.send, elems));
+								stanzas_buff.offer(new StanzaEntry(Action.send, elems));
 								break;
 							case expect_stanza:
-								stanzas.offer(new StanzaEntry(Action.expect, elems));
+								stanzas_buff.offer(new StanzaEntry(Action.expect, elems));
 								break;
 							default:
 								break;
@@ -265,6 +297,7 @@ public class TestCommon extends TestEmpty {
 
 		// Replace a few "variables"
 		data = data.replace("$(from-jid)", jid);
+		data = data.replace("$(from-id)", id);
 		data = data.replace("$(to-jid)", to);
 		data = data.replace("$(hostname)", hostname);
 		data = data.replace("$(number)", "");
