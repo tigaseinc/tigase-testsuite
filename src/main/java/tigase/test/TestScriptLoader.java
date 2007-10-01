@@ -36,6 +36,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import tigase.test.parser.TestNode;
 import tigase.test.parser.TestScript;
+import tigase.test.util.HTMLContentFilter;
 import tigase.test.util.HTMLFilter;
 import tigase.test.util.NullFilter;
 import tigase.test.util.OutputFilter;
@@ -255,17 +256,22 @@ public class TestScriptLoader {
   private OutputFilter initOutputFilter() throws IOException {
     OutputFilter filter = null;
     if (params.get("-output-format") != null
-      && params.get("-output-format", "html").equals("html")) {
+      && (params.get("-output-format", "html").equals("html")
+				|| params.get("-output-format", "html").equals("html-content"))) {
       File file_name =
         new File(params.get("-output-file", "functional-tests.html"));
       dir_name = file_name.getAbsoluteFile().getParentFile();
       BufferedWriter bw = new BufferedWriter(new FileWriter(file_name, false));
-      filter = new HTMLFilter();
+			if (params.get("-output-format", "html").equals("html")) {
+				filter = new HTMLFilter();
+			} else {
+				filter = new HTMLContentFilter();
+			}
       filter.init(bw, params.get("-title", ""), getDescription());
       Map<String, String> ver_map = getVersion();
       if (ver_map != null && ver_map.size() > 0) {
         filter.addContent("   <h3>Server version info:</h3>\n");
-				filter.addContent("   <table width=\"800\">\n");
+				filter.addContent("   <table>\n");
 				filter.addContent("    <tr valign=\"top\">"
 					+ "<td width=\"15%\">Name:</td>"
 					+ "<td width=\"3%\">&nbsp;</td>"
@@ -356,7 +362,7 @@ public class TestScriptLoader {
 			} else {
 				sb.append("      <h3>Server stats " + when + " test:</h3>\n");
 			}
-      sb.append("   <table width=\"800\">\n");
+      sb.append("   <table>\n");
       for (StatItem item : stats) {
 				// Configuration results attach one field which is readonly
 				// with warning information about changing parameters
