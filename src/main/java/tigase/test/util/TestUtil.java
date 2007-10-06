@@ -121,7 +121,7 @@ public class TestUtil {
     return all_tests;
   }
 
-  private static List<TestIfc> calculateDependsTree(
+  private static LinkedList<TestIfc> calculateDependsTree(
     String[] test_ns, List<TestIfc> tests, Params params) throws Exception {
 
     for (int i = 0; i < test_ns.length; ++i) {
@@ -129,7 +129,7 @@ public class TestUtil {
         test_ns[i] = params.get("-def-auth", "auth-digest");
       } // end of if (test_ns[i].equals("auth"))
     } // end of for (int  = 0;  < i; ++)
-    List<TestIfc> result = new LinkedList<TestIfc>();
+    LinkedList<TestIfc> result = new LinkedList<TestIfc>();
     ListIterator<TestIfc> it = tests.listIterator();
     while (it.hasNext()) {
       TestIfc test = it.next();
@@ -158,7 +158,7 @@ public class TestUtil {
     return result;
   }
 
-  public static List<TestIfc> getDependsTree(String[] test_ns, Params params)
+  public static LinkedList<TestIfc> getDependsTree(String[] test_ns, Params params)
     throws Exception {
 
     if (all_tests == null) {

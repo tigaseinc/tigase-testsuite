@@ -368,6 +368,7 @@ expect: {
 <status>Tester task</status>
 </presence>
 <presence from="tester_1@srecv.$(hostname)" to="$(from-jid)" type="subscribed"/>
+<presence from="tester_1@srecv.$(hostname)" to="$(from-jid)" type="unavailable"/>
 }
 
 expect: {
@@ -390,6 +391,7 @@ expect: {
 <status>Tester task</status>
 </presence>
 <presence from="tester_1@srecv.$(hostname)" to="$(from-jid)" type="subscribed"/>
+<presence from="tester_1@srecv.$(hostname)" to="$(from-jid)" type="unavailable"/>
 }
 
 expect: {
@@ -412,4 +414,5 @@ expect: {
 <status>Tester task</status>
 </presence>
 <presence from="tester_1@srecv.$(hostname)" to="$(from-jid)" type="subscribed"/>
+<presence from="tester_1@srecv.$(hostname)" to="$(from-jid)" type="unavailable"/>
 }

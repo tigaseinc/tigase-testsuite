@@ -75,7 +75,10 @@ public abstract class TestEmpty implements TestIfc {
 	 * @param params a <code>Params</code> value
 	 */
 	public void init(final Params params) {
-    collectHistory = !params.containsKey("-daemon");
+    collectHistory = params.get("-output-history", true)
+			&&
+			!(params.containsKey("-daemon")
+				|| params.containsKey("-background"));
     if (collectHistory) {
       history = new LinkedList<HistoryEntry>();
     } // end of if (collectHistory)
@@ -156,12 +159,14 @@ public abstract class TestEmpty implements TestIfc {
 
   public void addInput(String input) {
     if (collectHistory) {
+			//System.out.println("Adding input!!");
       history.add(new HistoryEntry(Direction.INPUT, input));
     }
   }
 
   public void addOutput(String output) {
     if (collectHistory) {
+			//System.out.println("Adding output!!");
       history.add(new HistoryEntry(Direction.OUTPUT, output));
     }
   }

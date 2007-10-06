@@ -26,6 +26,8 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import tigase.test.parser.TestNode;
 import tigase.test.util.Params;
 import tigase.xml.Element;
@@ -65,7 +67,16 @@ public class Test {
   private Test onError = null;
   private TestNode node = null;
   private boolean debug = false;
-  protected boolean debug_on_error = false;
+	protected boolean debug_on_error = false;
+
+	private static Timer[] backroundTasks = new Timer[100];
+	private static int timer_idx = 0;
+
+	static {
+		for (int i = 0; i < backroundTasks.length; i++) {
+			backroundTasks[i] = new Timer("Background Timer " + i, false);
+		}
+	}
 
   public Test(TestNode node) {
     this.node = node;
@@ -114,13 +125,13 @@ public class Test {
     if (main_params.containsKey("-loop-delay")) {
       loop_delay = main_params.get("-loop-delay", 10);
     } // end of if (main_params.containsKey("-delay"))
-    List<TestIfc> suite = null;
+    LinkedList<TestIfc> suite = null;
     Params test_params = null;
     boolean this_result = false;
     for (int cnt = loop_start; cnt < loop+loop_start; cnt++) {
       try {
         if (on_one_socket && cnt > 0 && this_result) {
-          List<TestIfc> suite_tmp = getDependsTree(test_ns, test_params);
+          LinkedList<TestIfc> suite_tmp = getDependsTree(test_ns, test_params);
           suite = suite_tmp.subList(suite_tmp.size() - 1, suite_tmp.size());
         } else {
           test_params = new Params();

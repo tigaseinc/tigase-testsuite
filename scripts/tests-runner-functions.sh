@@ -26,7 +26,7 @@
 
 _classpath="jars/tigase-xmpp-testsuite.jar:libs/tigase-utils.jar:libs/tigase-xmltools.jar"
 _properties="-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dcom.sun.management.jmxremote"
-_options=" -server -Xmx200M"
+_options=" -server -Xmx400M"
 
 function db_reload_mysql() {
 
@@ -188,7 +188,9 @@ function run_test() {
 	echo "<td><A href=\"/${_output_file}\">${total_str}</A></td>" >> "${_test_type}-rep.html"
 	echo "Test finished after: ${total_str}"
 	sleep 1
-	tig_stop_server ${_server_dir} "etc/tigase-${_database}.conf"
+	if [ -z "${SKIP_SERVER_START}" ] ; then
+	        tig_stop_server ${_server_dir} "etc/tigase-${_database}.conf"
+        fi
 
 }
 
