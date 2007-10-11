@@ -74,8 +74,8 @@ public class TestCommon extends TestEmpty {
 	private String error_message = "";
 	private Queue<StanzaEntry> stanzas_buff = null;
 	private List<Element> all_results = new ArrayList<Element>();
-	private long repeat_max = 1;
-	private long repeat_wait = 1;
+	private long repeat = 0;
+// 	private long repeat_wait = 1;
 
 	/**
 	 * Creates a new <code>TestCommon</code> instance.
@@ -96,8 +96,9 @@ public class TestCommon extends TestEmpty {
 	 * @return a <code>boolean</code> value
 	 */
 	public boolean run() {
-		for (int repeat = 0; repeat < repeat_max; repeat++) {
-			Queue<StanzaEntry> stanzas = new LinkedList<StanzaEntry>(stanzas_buff);
+// 		for (int repeat = 0; repeat < repeat_max; repeat++) {
+		++repeat;
+		Queue<StanzaEntry> stanzas = new LinkedList<StanzaEntry>(stanzas_buff);
 			try {
 				StanzaEntry entry = null;
 				while ((entry = stanzas.poll()) != null) {
@@ -177,9 +178,9 @@ public class TestCommon extends TestEmpty {
 				e.printStackTrace();
 				return false;
 			} // end of catch
-			try { Thread.sleep(repeat_wait);
-			} catch (InterruptedException e) { } // end of try-catch
-		}
+// 			try { Thread.sleep(repeat_wait);
+// 			} catch (InterruptedException e) { } // end of try-catch
+// 		}
 		return true;
 	}
 
@@ -214,26 +215,28 @@ public class TestCommon extends TestEmpty {
   public void init(final Params params) {
 		super.init(params);
     this.params = params;
-    user_name = params.get("-user-name", user_name);
-    user_resr = params.get("-user_resr", user_resr);
-    user_emil = params.get("-user-emil", user_emil);
-    hostname = params.get("-host", hostname);
-    String name = JIDUtils.getNodeNick(user_name);
-    if (name == null || name.equals("")) {
-      jid = user_name + "@" + hostname + "/" + user_resr;
-      id = user_name + "@" + hostname;
-    } else {
-      jid = user_name + "/" + user_resr;
-      id = user_name;
-    } // end of else
-    to = params.get("-to-jid", to);
-		timeoutOk = params.containsKey("-time-out-ok");
-		fullExceptionStack = params.containsKey("-full-stack-trace");
-		source_file = params.get("-source-file", source_file);
-		stanzas_buff = new LinkedList<StanzaEntry>();
-		loadSourceFile(source_file);
-		repeat_max = params.get("-repeat-script", repeat_max);
-		repeat_wait = params.get("-repeat-wait", repeat_wait);
+		if (stanzas_buff == null) {
+			user_name = params.get("-user-name", user_name);
+			user_resr = params.get("-user_resr", user_resr);
+			user_emil = params.get("-user-emil", user_emil);
+			hostname = params.get("-host", hostname);
+			String name = JIDUtils.getNodeNick(user_name);
+			if (name == null || name.equals("")) {
+				jid = user_name + "@" + hostname + "/" + user_resr;
+				id = user_name + "@" + hostname;
+			} else {
+				jid = user_name + "/" + user_resr;
+				id = user_name;
+			} // end of else
+			to = params.get("-to-jid", to);
+			timeoutOk = params.containsKey("-time-out-ok");
+			fullExceptionStack = params.containsKey("-full-stack-trace");
+			source_file = params.get("-source-file", source_file);
+			stanzas_buff = new LinkedList<StanzaEntry>();
+			loadSourceFile(source_file);
+			// 		repeat_max = params.get("-repeat-script", repeat_max);
+			// 		repeat_wait = params.get("-repeat-wait", repeat_wait);
+		}
   }
 
 	private enum ParserState {

@@ -69,14 +69,14 @@ public class Test {
   private boolean debug = false;
 	protected boolean debug_on_error = false;
 
-	private static Timer[] backroundTasks = new Timer[100];
+	private static TimerThread[] backroundTasks = new TimerThread[100];
 	private static int timer_idx = 0;
 
-	static {
-		for (int i = 0; i < backroundTasks.length; i++) {
-			backroundTasks[i] = new Timer("Background Timer " + i, false);
-		}
-	}
+// 	static {
+// 		for (int i = 0; i < backroundTasks.length; i++) {
+// 			backroundTasks[i] = new Timer("Background Timer " + i, false);
+// 		}
+// 	}
 
   public Test(TestNode node) {
     this.node = node;
@@ -105,7 +105,8 @@ public class Test {
 
   private void initParams() {
     on_one_socket = main_params.containsKey("-on-one-socket");
-    active_connection = main_params.containsKey("-active-connection");
+    active_connection = main_params.containsKey("-active-connection")
+			|| main_params.containsKey("-background");
   }
 
   public void runTest() {
@@ -125,14 +126,15 @@ public class Test {
     if (main_params.containsKey("-loop-delay")) {
       loop_delay = main_params.get("-loop-delay", 10);
     } // end of if (main_params.containsKey("-delay"))
-    LinkedList<TestIfc> suite = null;
+    LinkedList<TestIfc> suite = new LinkedList<TestIfc>();
     Params test_params = null;
     boolean this_result = false;
     for (int cnt = loop_start; cnt < loop+loop_start; cnt++) {
       try {
         if (on_one_socket && cnt > 0 && this_result) {
           LinkedList<TestIfc> suite_tmp = getDependsTree(test_ns, test_params);
-          suite = suite_tmp.subList(suite_tmp.size() - 1, suite_tmp.size());
+					suite.clear();
+          suite.addAll(suite_tmp.subList(suite_tmp.size() - 1, suite_tmp.size()));
         } else {
           test_params = new Params();
           test_params.putAll(main_params);
@@ -192,7 +194,7 @@ public class Test {
     } // end of if (main_params.containsKey("-delay"))
   }
 
-  private boolean runTest(List<TestIfc> suite, Params test_params) {
+  private boolean runTest(LinkedList<TestIfc> suite, Params test_params) {
     boolean daemon = test_params.containsKey("-daemon");
 		boolean background = test_params.containsKey("-background");
 		long socket_wait = test_params.get("-socket-wait", 5000);
@@ -202,7 +204,7 @@ public class Test {
       return true;
     } else {
 			if (background) {
-				runThread(dt, false);
+				runTimerTask(dt);
 				return true;
 			} else {
 				dt.run();
@@ -211,11 +213,27 @@ public class Test {
     } // end of if (daemon) else
   }
 
-  private void runThread(Runnable task, boolean daemon) {
+  private void runThread(DaemonTest task, boolean daemon) {
     Thread t = new Thread(task);
     t.setDaemon(daemon);
     t.start();
   }
+
+	private void runTimerTask(DaemonTest task) {
+		TimerThread timer = null;
+		synchronized (backroundTasks) {
+			timer = backroundTasks[timer_idx];
+			if (timer == null) {
+				timer = new TimerThread(timer_idx, false);
+				backroundTasks[timer_idx] = timer;
+			}
+			if (++timer_idx >= backroundTasks.length) {
+				timer_idx = 0;
+			}
+		}
+		TimerTest tt = new TimerTest(task, timer);
+		timer.schedule(tt, tt.repeat_wait, tt.repeat_wait);
+	}
 
   public int getTestsOK() {
     return tests_ok;
@@ -297,14 +315,65 @@ public class Test {
     return description;
   }
 
-  class DaemonTest implements Runnable {
+	class TimerThread extends Timer {
+		private int idx = 0;
+		private int counter = 0;
+		public TimerThread(int idx, boolean daemon) {
+			super("Background Timer " + idx, daemon);
+			this.idx = idx;
+		}
+		public void schedule(TimerTask task, long delay, long period) {
+			++counter;
+			super.schedule(task, delay, period);
+		}
+		public void stopped() {
+			--counter;
+			if (counter <= 0) {
+				backroundTasks[idx] = null;
+				this.cancel();
+			}
+		}
+	}
+
+	class TimerTest extends TimerTask {
+
+		private DaemonTest dt = null;
+		private TimerThread tt = null;
+		private long repeat_max = 1;
+		private long repeat_wait = 1;
+		private long counter = 0;
+
+		public TimerTest(DaemonTest dt, TimerThread tt) {
+			this.dt = dt;
+			this.tt = tt;
+			repeat_max = dt.params.get("-repeat-script", 1);
+			repeat_wait = dt.params.get("-repeat-wait", 1);
+// 			System.out.println("repeat_max = " + repeat_max
+// 				+ ", repeat_wait = " + repeat_wait);
+		}
+
+		public void run() {
+			++counter;
+			if (counter == 2 && dt.suite.size() > 1) {
+				dt.suite.subList(0, dt.suite.size()-1).clear();
+			}
+// 			System.out.println("TimerTest run...");
+			dt.run();
+			if (counter >= repeat_max) {
+				cancel();
+				tt.stopped();
+			}
+		}
+	}
+
+	class DaemonTest implements Runnable {
 
     private List<TestIfc> suite = null;
     private Params params = null;
     private boolean result = false;
     private boolean authorized = false;
 
-    public DaemonTest(List<TestIfc> suite, Params params) {
+    public DaemonTest(LinkedList<TestIfc> suite, Params params) {
       this.suite = suite;
       this.params = params;
     }
