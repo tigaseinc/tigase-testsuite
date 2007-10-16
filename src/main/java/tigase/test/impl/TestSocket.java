@@ -45,6 +45,12 @@ import tigase.test.util.SocketXMLIO;
  */
 public class TestSocket extends TestAbstract {
 
+	/**
+	 * <code>RECEIVE_BUFFER_SIZE</code> defines a size for TCP/IP packets.
+	 * XMPP data packets are quite small usually, below 1kB so we don't need
+	 * big TCP/IP data buffers.
+	 */
+	private static final int RECEIVE_BUFFER_SIZE = 2*1024;
   private String hostname = null;
 	private String serverip = null;
   private int port = 5222;
@@ -102,6 +108,7 @@ public class TestSocket extends TestAbstract {
       client.setReuseAddress(true);
       //      debug("socket setting so timeout...\n");
       client.setSoTimeout(socket_wait);
+			client.setReceiveBufferSize(RECEIVE_BUFFER_SIZE);
       //      debug("socket connecting...\n");
       //      System.out.println("socket-wait = " + socket_wait);
       long timeStart = System.currentTimeMillis();
