@@ -45,11 +45,12 @@ import tigase.xml.DefaultElementFactory;
  */
 public class SocketXMLIO implements XMLIO {
 
-  private static final int BUFF_SIZE = 16*1024;
+  private static final int BUFF_SIZE = 2*1024;
 
   private Socket socket = null;
   private OutputStream out = null;
-  private BufferedReader inp = null;
+	//  private BufferedReader inp = null;
+  private InputStreamReader inp = null;
   private DomBuilderHandler dom = null;
   private SimpleParser parser = null;
   private char[] in_data = new char[BUFF_SIZE];
@@ -61,7 +62,8 @@ public class SocketXMLIO implements XMLIO {
   public SocketXMLIO(Socket sock) throws IOException {
     socket = sock;
     out = sock.getOutputStream();
-    inp = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+		//    inp = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+    inp = new InputStreamReader(sock.getInputStream());
     dom = new DomBuilderHandler(new DefaultElementFactory());
     parser = new SimpleParser();
   }
