@@ -93,7 +93,7 @@ public class HTMLFilter implements OutputFilter {
     cal.setTimeInMillis(System.currentTimeMillis() - start);
     //cal.computeFields();
     bw.write("  <p>Total test time:");
-		bw.write(" " + (cal.get(Calendar.HOUR_OF_DAY)) + " hours");
+		bw.write(" " + (cal.get(Calendar.HOUR_OF_DAY)-1) + " hours");
     //bw.write(" " + cal.get(Calendar.HOUR_OF_DAY) + " hours");
     bw.write(", " + cal.get(Calendar.MINUTE) + " minutes");
     bw.write(", " + cal.get(Calendar.SECOND) + " seconds");
@@ -131,7 +131,15 @@ public class HTMLFilter implements OutputFilter {
   public void addRow(final String ... cols) throws IOException {
     bw.write("   <tr valign=\"top\">\n");
     for (String col : cols) {
-      bw.write("    <td>" + col + "</td>\n");
+			if (col.equals("<b>success</b>")) {
+				bw.write("    <td bgcolor=\"#90FF90\">" + col + "</td>\n");
+			} else {
+				if (col.equals("<b>FAILURE</b>")) {
+					bw.write("    <td bgcolor=\"#FF9090\">" + col + "</td>\n");
+				} else {
+					bw.write("    <td>" + col + "</td>\n");
+				}
+			}
     } // end of for ()
     bw.write("   </tr>\n");
     bw.flush();

@@ -229,7 +229,10 @@ public class TestRoster extends TestAbstract {
 			expected_result =  new Element("iq",
 				new String[] {"type", "id"},
 				new String[] {"result", "roster_6"});
-      resp_name = new String[] {"iq"};
+			optional_result = new Element("iq",
+				new String[] {"type"},
+				new String[] {"set"});
+      resp_name = new String[] {"iq", "iq"};
       return
         "<iq type=\"set\" id=\"roster_6\" from=\"" + jid + "\">"
         + "<query xmlns=\"jabber:iq:roster\">"

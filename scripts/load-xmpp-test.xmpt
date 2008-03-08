@@ -35,7 +35,7 @@ $(ssl-tls-wait) = 5000
 $(stats-user) = admin
 $(stats-pass) = stats
 
--serverip    = "192.168.0.13"
+-serverip    = "127.0.0.1"
 -host        = $(server-host)
 -user-name   = $(stats-user)
 -user-pass   = $(stats-pass)
@@ -64,16 +64,17 @@ Statistics@iq-stats: >> Server statistics <<
 Load tests:
 {
   -multi-thread
-  -loop = 500
+  -loop = 200
   -loop-delay = 1000
 #  -on-one-socket
   -repeat-script = 1000
-  -repeat-wait = 10000
+  -repeat-wait = 25000
 
   Test 1@auth-plain;common: Send a message to $(daemon-user) user
   {
+#    -debug
     -delay = 5000
-    -loop-start = 0
+    -loop-start = 1
     -background
     -user-name = "load-tester_$(loop)"
     -to-jid = "$(daemon-user)@srecv.$(server-host)"
@@ -83,7 +84,7 @@ Load tests:
   Test 2@auth-plain;common: Send a message to $(daemon-user) user
   {
     -delay = 5000
-    -loop-start = 1000
+    -loop-start = 10000
     -background
     -user-name = "load-tester_$(loop)"
     -to-jid = "$(daemon-user)@srecv.$(server-host)"
@@ -93,7 +94,7 @@ Load tests:
   Test 3@auth-plain;common: Send a message to $(daemon-user) user
   {
     -delay = 5000
-    -loop-start = 2000
+    -loop-start = 20000
     -background
     -user-name = "load-tester_$(loop)"
     -to-jid = "$(daemon-user)@srecv.$(server-host)"
@@ -102,7 +103,7 @@ Load tests:
 
   Test 4@auth-plain;common: Send a message to $(daemon-user) user
   {
-    -delay = 5000
+    -delay = 50000
     -loop-start = 3000
     -background
     -user-name = "load-tester_$(loop)"
@@ -113,7 +114,7 @@ Load tests:
   Test 5@auth-plain;common: Send a message to $(daemon-user) user
   {
     -delay = 5000
-    -loop-start = 4000
+    -loop-start = 40000
     -background
     -user-name = "load-tester_$(loop)"
     -to-jid = "$(daemon-user)@srecv.$(server-host)"
@@ -123,7 +124,7 @@ Load tests:
   Test 6@auth-plain;common: Send a message to $(daemon-user) user
   {
     -delay = 5000
-    -loop-start = 5000
+    -loop-start = 50000
     -background
     -user-name = "load-tester_$(loop)"
     -to-jid = "$(daemon-user)@srecv.$(server-host)"
@@ -133,7 +134,7 @@ Load tests:
   Test 7@auth-plain;common: Send a message to $(daemon-user) user
   {
     -delay = 5000
-    -loop-start = 6000
+    -loop-start = 60000
     -background
     -user-name = "load-tester_$(loop)"
     -to-jid = "$(daemon-user)@srecv.$(server-host)"
@@ -143,7 +144,7 @@ Load tests:
   Test 8@auth-plain;common: Send a message to $(daemon-user) user
   {
     -delay = 5000
-    -loop-start = 7000
+    -loop-start = 70000
     -background
     -user-name = "load-tester_$(loop)"
     -to-jid = "$(daemon-user)@srecv.$(server-host)"
@@ -153,7 +154,7 @@ Load tests:
   Test 9@auth-plain;common: Send a message to $(daemon-user) user
   {
     -delay = 5000
-    -loop-start = 8000
+    -loop-start = 80000
     -background
     -user-name = "load-tester_$(loop)"
     -to-jid = "$(daemon-user)@srecv.$(server-host)"
@@ -163,7 +164,7 @@ Load tests:
   Test 10@auth-plain;common: Send a message to $(daemon-user) user
   {
     -delay = 5000
-    -loop-start = 9000
+    -loop-start = 90000
     -background
     -user-name = "load-tester_$(loop)"
     -to-jid = "$(daemon-user)@srecv.$(server-host)"

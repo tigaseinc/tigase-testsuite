@@ -106,7 +106,8 @@ Global settings:
   { -user-name=$(stats-user) -user-pass=$(stats-pass) }
   >> XEP-0039 Statistics Gathering. <<
 
-  Test 15@roster: >> Roster management test <<
+  Test 15@common: { -source-file = "tests/data/RosterTest.cot" }
+  >> Roster management test <<
 
   Test 16@privacy-lists: >> Privacy lists management test <<
 
@@ -221,16 +222,17 @@ Multi thread tests:
   Multi 4: {
     -multi-thread
     -loop = 5
+    -source-file = "tests/data/RosterTest.cot"
 
-    Roster@roster: { -user-name = "multi-reg_1_$(loop)" }
+    Roster@common: { -user-name = "multi-reg_1_$(loop)" }
     >> Roster management test <<
-    Roster@roster: { -user-name = "multi-reg_2_$(loop)" }
+    Roster@common: { -user-name = "multi-reg_2_$(loop)" }
     >> Roster management test <<
-    Roster@roster: { -user-name = "multi-reg_3_$(loop)" }
+    Roster@common: { -user-name = "multi-reg_3_$(loop)" }
     >> Roster management test <<
-    Roster@roster: { -user-name = "multi-reg_4_$(loop)" }
+    Roster@common: { -user-name = "multi-reg_4_$(loop)" }
     >> Roster management test <<
-    Roster@roster: { -user-name = "multi-reg_5_$(loop)" }
+    Roster@common: { -user-name = "multi-reg_5_$(loop)" }
     >> Roster management test <<
   } >> Multi-thread test Roster management functions <<
 

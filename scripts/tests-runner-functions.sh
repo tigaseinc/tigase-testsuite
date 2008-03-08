@@ -26,7 +26,8 @@
 
 _classpath="jars/tigase-xmpp-testsuite.jar:libs/tigase-utils.jar:libs/tigase-xmltools.jar"
 _properties="-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dcom.sun.management.jmxremote"
-_options=" -server -Xmx400M"
+#_options=" -agentlib:yjpagent -server -Xmx400M"
+_options=" -server -Xmx300M"
 
 function db_reload_mysql() {
 
@@ -109,7 +110,7 @@ function run_test() {
 
 	local _output_dir="${output_dir}/${_test_type}/${_database}"
 
-	server_timeout=5
+	server_timeout=15
 
 	case ${_test_type} in
 		func)

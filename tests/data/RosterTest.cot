@@ -1,10 +1,128 @@
 send: {
-<iq type="get" id="aacaa" >
-<query xmlns="jabber:iq:roster"/>
+<iq type="get" id="roster_1" >
+  <query xmlns="jabber:iq:roster"/>
 </iq>
 }
 expect: {
-<iq type="result" id="aacaa" >
-<query xmlns="jabber:iq:roster"/>
+<iq type="result" id="roster_1" >
+  <query xmlns="jabber:iq:roster"/>
 </iq>
 }
+
+send: {
+<iq type="set" id="roster_2">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" name="claus"/>
+  </query>
+</iq>
+}
+expect: {
+<iq type="result" id="roster_2"/>
+<iq type="set">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" name="claus" subscription="none"/>
+  </query>
+</iq>
+}
+expect: {
+<iq type="result" id="roster_2"/>
+<iq type="set">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" name="claus" subscription="none"/>
+  </query>
+</iq>
+}
+
+send: {
+<iq type="get" id="roster_3">
+  <query xmlns="jabber:iq:roster"/>
+</iq>
+}
+expect: {
+<iq type="result" id="roster_3">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" name="claus" subscription="none"/>
+  </query>
+</iq>
+}
+
+send: {
+<iq type="set" id="roster_4">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" name="claus">
+		  <group>guests</group>
+		</item>
+  </query>
+</iq>
+}
+expect: {
+<iq type="result" id="roster_4"/>
+<iq type="set">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" name="claus" subscription="none">
+		  <group>guests</group>
+		</item>
+  </query>
+</iq>
+}
+expect: {
+<iq type="result" id="roster_4"/>
+<iq type="set">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" name="claus" subscription="none">
+		  <group>guests</group>
+		</item>
+  </query>
+</iq>
+}
+
+send: {
+<iq type="get" id="roster_5">
+  <query xmlns="jabber:iq:roster"/>
+</iq>
+}
+expect: {
+<iq type="result" id="roster_5">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" name="claus" subscription="none">
+		  <group>guests</group>
+		</item>
+  </query>
+</iq>
+}
+
+send: {
+<iq type="set" id="roster_6">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" name="claus" subscription="remove"/>
+  </query>
+</iq>
+}
+expect: {
+<iq type="result" id="roster_6"/>
+<iq type="set">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" subscription="remove"/>
+  </query>
+</iq>
+}
+expect: {
+<iq type="result" id="roster_6"/>
+<iq type="set">
+  <query xmlns="jabber:iq:roster">
+    <item jid="santa.claus@north.pole" subscription="remove"/>
+  </query>
+</iq>
+}
+
+send: {
+<iq type="get" id="roster_7" >
+  <query xmlns="jabber:iq:roster"/>
+</iq>
+}
+expect: {
+<iq type="result" id="roster_7" >
+  <query xmlns="jabber:iq:roster"/>
+</iq>
+}
+
