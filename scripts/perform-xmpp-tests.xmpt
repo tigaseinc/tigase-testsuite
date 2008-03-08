@@ -219,7 +219,7 @@ Global settings:
 #   { -no-record -loop = 1 }
 #   >> Cleanup - test user unregister <<
 
-  Test 7@auth-plain;common: Send $(repeats) messages on $(daemon-users) connections to $(daemon-user) user
+  Test 7@auth-plain;common: Setup $(daemon-users) daemon connections sending $(repeats) messages to $(daemon-user) user
   {
 #      -debug
     $(daemon-users) = 10
