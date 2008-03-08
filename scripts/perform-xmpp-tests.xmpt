@@ -76,6 +76,7 @@ Statistics@iq-stats: { -loop = 1 -user-name=$(stats-user) -user-pass=$(stats-pas
  >> Get server statistics <<
 Common test@auth-plain;common: {
   -loop = 1
+  -no-record
 #  -debug
   -source-file = "tests/data/CreateTesterTask.cot"
 }
@@ -165,10 +166,10 @@ Global settings:
   !! Remove user@user-unregister: { -loop = 1 }
   >> Remove $(repeats) number of user accounts over plain socket <<
 
-  Prep 8@user-unregister: Unregister test user { -no-record -loop = 1 }
-  >> Unregister test user <<
+#   Prep 8@user-unregister: Unregister test user { -no-record -loop = 1 }
+#   >> Unregister test user <<
 
-  Test 7@ssl-init;user-register;user-unregister:
+  Test 4@ssl-init;user-register;user-unregister:
   Add and remove account $(repeats) times over SSL
   { -port = 5223 }
   !! Unregister user@user-unregister: { -port = 5222 -loop = 1 }
@@ -177,7 +178,7 @@ Global settings:
   Prep 9@user-register: Create test user account { -no-record -loop = 1 }
   >> Create test user account for using by later tests  <<
 
-  Test 8@xmpp-session:
+  Test 5@xmpp-session:
   Bind XMPP session over TLS $(repeats) times
   >> Bind XMPP session over TLS $(repeats) times <<
 
@@ -203,7 +204,7 @@ Global settings:
     -delay       = 10000
   } >> Setup a user daemon with very long privacy list <<
 
-  Test 9@msg-send: Send $(repeats) * $(messages) * 2 messages to $(long-list-user) user with very long privacy list
+  Test 6@msg-send: Send $(repeats) * $(messages) * 2 messages to $(long-list-user) user with very long privacy list
   {
     -on-one-socket
 
@@ -218,7 +219,7 @@ Global settings:
 #   { -no-record -loop = 1 }
 #   >> Cleanup - test user unregister <<
 
-  Test 4@auth-plain;common: Send $(repeats) messages on $(daemon-users) connections to $(daemon-user) user
+  Test 7@auth-plain;common: Send $(repeats) messages on $(daemon-users) connections to $(daemon-user) user
   {
 #      -debug
     $(daemon-users) = 10
@@ -235,7 +236,7 @@ Global settings:
     -source-file = "tests/data/TesterMessage.cot"
   } >> Send a message to $(daemon-user) user <<
 
-  Test 5@auth-plain;common: Setup $(daemon-users) daemon connections sending $(repeats) messages to $(daemon-user) user
+  Test 8@auth-plain;common: Setup $(daemon-users) daemon connections sending $(repeats) messages to $(daemon-user) user
   {
 #      -debug
     $(daemon-users) = 100
@@ -252,7 +253,7 @@ Global settings:
     -source-file = "tests/data/TesterMessage.cot"
   } >> Send a message to $(daemon-user) user <<
 
-  Test 6@auth-plain;common: Setup $(daemon-users) daemon connections sending $(repeats) messages to $(daemon-user) user
+  Test 9@auth-plain;common: Setup $(daemon-users) daemon connections sending $(repeats) messages to $(daemon-user) user
   {
 #      -debug
     $(daemon-users) = 500
