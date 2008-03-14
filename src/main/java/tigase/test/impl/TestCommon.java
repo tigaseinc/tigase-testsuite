@@ -184,6 +184,13 @@ public class TestCommon extends TestEmpty {
 		return true;
 	}
 
+	public void release() {
+		try {
+			XMLIO io = (XMLIO)params.get("socketxmlio");
+			io.close();
+		} catch (Exception e) {	}
+	}
+
   /**
    * Describe <code>getResultCode</code> method here.
    *
@@ -291,6 +298,7 @@ public class TestCommon extends TestEmpty {
 				}
 				line = buffr.readLine();
 			}
+			buffr.close();
 		} catch (IOException e) {
 			throw new RuntimeException("Can't read source file: " + file, e);
 		}

@@ -127,8 +127,8 @@ Global settings:
   >> Send $(repeats) messages to self user over SSL and don\'t wait for
   response on one connection <<
 
-  Prep 1@user-register: Create $(daemon-users) user account {
-    $(daemon-users) = 611
+  Prep 1@user-register: Register $(daemon-users) test user accounts {
+    $(daemon-users) = 1100
     -no-record
     -on-one-socket
     -loop-start = 1
@@ -201,7 +201,7 @@ Global settings:
     -loop = 1
     -socket-wait = 0
     -user-name   = $(long-list-user)
-    -delay       = 10000
+    -delay       = 5000
   } >> Setup a user daemon with very long privacy list <<
 
   Test 6@msg-send: Send $(repeats) * $(messages) * 2 messages to $(long-list-user) user with very long privacy list
@@ -209,6 +209,7 @@ Global settings:
     -on-one-socket
 
     -delay       = 0
+    -socket-wait = 5000
     -loop        = $(repeats)
     -messages    = $(messages)
     -to-jid = "$(long-list-user)@$(server-host)/xmpp-test"
@@ -227,7 +228,6 @@ Global settings:
     -multi-thread
     -repeat-script = $(repeats)
     -repeat-wait = 1
-    -delay = 5000
     -loop-start = 1
     -loop          = $(daemon-users)
     -background
@@ -244,8 +244,7 @@ Global settings:
     -multi-thread
     -repeat-script = $(repeats)
     -repeat-wait = 1
-    -delay = 5000
-    -loop-start = 11
+    -loop-start = 1
     -loop          = $(daemon-users)
     -background
     -user-name     = "perf-test_$(loop)"
@@ -257,13 +256,29 @@ Global settings:
   {
 #      -debug
     $(daemon-users) = 500
-    -delay = 1000
+    -delay = 500
 
     -multi-thread
     -repeat-script = $(repeats)
     -repeat-wait = 1
-    -delay = 5000
-    -loop-start = 111
+    -loop-start = 1
+    -loop          = $(daemon-users)
+    -background
+    -user-name     = "perf-test_$(loop)"
+    -to-jid = "$(daemon-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterMessage.cot"
+  } >> Send a message to $(daemon-user) user <<
+
+  Test 9@auth-plain;common: Setup $(daemon-users) daemon connections sending $(repeats) messages to $(daemon-user) user
+  {
+#      -debug
+    $(daemon-users) = 900
+    -delay = 500
+
+    -multi-thread
+    -repeat-script = $(repeats)
+    -repeat-wait = 1
+    -loop-start = 1
     -loop          = $(daemon-users)
     -background
     -user-name     = "perf-test_$(loop)"

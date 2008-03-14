@@ -107,7 +107,14 @@ public abstract class TestAbstract extends TestEmpty {
 
   // Implementation of tigase.test.TestIfc
 
-  /**
+	public void release() {
+		try {
+			XMLIO io = (XMLIO)params.get("socketxmlio");
+			io.close();
+		} catch (Exception e) {	}
+	}
+
+	/**
    * Describe <code>run</code> method here.
    *
    * @return a <code>boolean</code> value

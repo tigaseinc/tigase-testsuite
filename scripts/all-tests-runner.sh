@@ -130,7 +130,7 @@ case "${1}" in
 		run_functional_test xmldb ${server_dir} ${IPS[0]}
 		run_functional_test mysql ${server_dir} ${IPS[1]}
 		run_functional_test pgsql ${server_dir} ${IPS[2]}
-		run_functional_test sm-mysql ${server_dir} ${IPS[3]}
+		#run_functional_test sm-mysql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> func-rep.html
 		;;
 	--perf)
@@ -142,7 +142,7 @@ case "${1}" in
 		run_performance_test xmldb ${server_dir} ${IPS[0]}
 		run_performance_test mysql ${server_dir} ${IPS[1]}
 		run_performance_test pgsql ${server_dir} ${IPS[2]}
-		run_performance_test sm-mysql ${server_dir} ${IPS[3]}
+		#run_performance_test sm-mysql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> perf-rep.html
 		;;
 	--all-tests)

@@ -31,6 +31,7 @@ import java.util.TimerTask;
 import tigase.test.parser.TestNode;
 import tigase.test.util.Params;
 import tigase.xml.Element;
+import java.util.concurrent.CountDownLatch;
 
 import static tigase.test.util.TestUtil.*;
 
@@ -67,6 +68,7 @@ public class Test {
   private Test onError = null;
   private TestNode node = null;
   private boolean debug = false;
+	private CountDownLatch latch = null;
 	protected boolean debug_on_error = false;
 
 	private static TimerThread[] backroundTasks = new TimerThread[100];
@@ -115,6 +117,7 @@ public class Test {
     debug_on_error = (main_params.containsKey("-debug-on-error")
         && !main_params.containsKey("-no-record"));
     int loop = main_params.get("-loop", 1);
+		latch = new CountDownLatch(loop);
 		int loop_start = main_params.get("-loop-start", 0);
     String user_name = (String)main_params.get("-user-name");
     boolean loop_user_name = false;
@@ -129,6 +132,7 @@ public class Test {
     LinkedList<TestIfc> suite = new LinkedList<TestIfc>();
     Params test_params = null;
     boolean this_result = false;
+		long all_tests_start_time = System.currentTimeMillis();
     for (int cnt = loop_start; cnt < loop+loop_start; cnt++) {
       try {
         if (on_one_socket && cnt > 0 && this_result) {
@@ -192,6 +196,9 @@ public class Test {
       try { Thread.sleep(delay);
       } catch (InterruptedException e) { } // end of try-catch
     } // end of if (main_params.containsKey("-delay"))
+		try { latch.await();
+		} catch (InterruptedException e) { } // end of try-catch
+		total_time = System.currentTimeMillis() - all_tests_start_time;
   }
 
   private boolean runTest(LinkedList<TestIfc> suite, Params test_params) {
@@ -201,6 +208,7 @@ public class Test {
     DaemonTest dt = new DaemonTest(suite, test_params);
     if (daemon) {
       runThread(dt, true);
+			latch.countDown();
       return true;
     } else {
 			if (background) {
@@ -208,6 +216,8 @@ public class Test {
 				return true;
 			} else {
 				dt.run();
+				//dt.suite.get(0).release();
+				latch.countDown();
 				return dt.getResult();
 			}
     } // end of if (daemon) else
@@ -362,6 +372,8 @@ public class Test {
 			if (counter >= repeat_max) {
 				cancel();
 				tt.stopped();
+				dt.suite.get(0).release();
+				latch.countDown();
 			}
 		}
 	}

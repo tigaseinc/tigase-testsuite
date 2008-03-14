@@ -68,7 +68,13 @@ public class SocketXMLIO implements XMLIO {
     parser = new SimpleParser();
   }
 
-  /* (non-Javadoc)
+	public void close() {
+		try {
+			socket.close();
+		} catch (Exception e) {	}
+	}
+
+	/* (non-Javadoc)
 	 * @see tigase.test.util.XMLIO#write(tigase.xml.Element)
 	 */
 	public void write(Element data) throws IOException {

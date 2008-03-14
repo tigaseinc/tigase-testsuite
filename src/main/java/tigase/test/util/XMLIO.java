@@ -13,4 +13,6 @@ public interface XMLIO {
 
 	void write(String data) throws IOException;
 
+	void close();
+
 }

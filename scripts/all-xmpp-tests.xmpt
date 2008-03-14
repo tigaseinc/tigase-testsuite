@@ -143,7 +143,7 @@ Global settings:
 
     -socket-wait = 0
     -user-name   = $(long-list-user)
-    -delay       = 10000
+    -delay       = 5000
   } >> Setup a user daemon with very long privacy list <<
 
   Test 18@msg-send: Send a message to $(long-list-user) user

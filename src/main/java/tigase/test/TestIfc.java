@@ -47,6 +47,8 @@ public interface TestIfc {
 
   void init(Params params);
 
+	void release();
+
   boolean run();
 
   ResultCode getResultCode();
