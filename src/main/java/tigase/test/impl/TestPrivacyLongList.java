@@ -143,7 +143,7 @@ public class TestPrivacyLongList extends TestAbstract {
         "<iq type=\"set\" id=\"privacy_" + counter + "\" from=\"" + jid + "\">"
         + "<query xmlns=\"" + xmlns + "\">"
 				+ "<list name='long-list'>";
-			for (int i = 1; i < 101; i++) {
+			for (int i = 1; i < 100; i++) {
 				list +=
 					"<item type='jid'	value='tybalt-" + i +
 					"@example-" + i + ".com' action='deny' order='" + i + "'>"
