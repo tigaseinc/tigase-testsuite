@@ -121,6 +121,10 @@ function run_test() {
 			local _output_file="${_output_dir}/performance-tests.html"
 			local _script_file="scripts/perform-xmpp-tests.xmpt"
 			;;
+		stab)
+			local _output_file="${_output_dir}/stability-tests.html"
+			local _script_file="scripts/stab-xmpp-tests.xmpt"
+			;;
 		sing)
 			local _output_file="${_output_dir}/single-test.html"
 			local _script_file="scripts/single-xmpp-test.xmpt"
@@ -212,6 +216,16 @@ function run_performance_test() {
 	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
 
 	run_test "perf" ${_database} ${_server_dir} ${_server_ip}
+
+}
+
+function run_stability_test() {
+
+	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
+	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
+	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
+
+	run_test "stab" ${_database} ${_server_dir} ${_server_ip}
 
 }
 

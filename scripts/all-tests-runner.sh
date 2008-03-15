@@ -45,14 +45,19 @@ function usage() {
 	echo "----"
 	echo "  --help|-h	This help message"
 	echo "  --func [mysql|pgsql|xmldb|sm-mysql]"
-	echo "              Run all functional tests for single database"
-	echo "		          configuration"
+	echo "              Run all functional tests for a single database"
+	echo "		    configuration"
 	echo "  --perf [mysql|pgsql|xmldb|sm-mysql]"
-	echo "              Run all performance tests for single database"
+	echo "              Run all performance tests for a single database"
+	echo "              configuration"
+	echo "  --stab [mysql|pgsql|xmldb|sm-mysql]"
+	echo "              Run all stability tests for a single database"
 	echo "              configuration"
 	echo "  --func-all  Run all functional tests for all database"
 	echo "              configurations"
 	echo "  --perf-all  Run all performance tests for all database"
+	echo "              configurations"
+	echo "  --stab-all  Run all stability tests for all database"
 	echo "              configurations"
 	echo "  --all-tests Run all functionality and performance tests for"
 	echo "              database configurations"
@@ -91,12 +96,12 @@ done
 
 
 case "${1}" in
-	--func|--perf)
+	--func|--perf|--stab)
 		[[ -z ${2} ]] || database=${2}
 		[[ -z ${3} ]] || server_dir=${3}
 		[[ -z ${4} ]] || server_ip=${4}
 		;;
-	--func-all|--perf-all|--all-tests)
+	--func-all|--perf-all|--stab-all|--all-tests)
 		[[ -z ${2} ]] || server_dir=${2}
 		[[ -z ${3} ]] || server_ip=${3}
 		;;
@@ -136,6 +141,9 @@ case "${1}" in
 	--perf)
 		run_performance_test ${database} ${server_dir} ${server_ip}
 		;;
+	--stab)
+		run_stability_test ${database} ${server_dir} ${server_ip}
+		;;
 	--perf-all)
 		cp -f perf-rep.html_tmp perf-rep.html
 		echo "<tr><th>${ver}</th>" >> perf-rep.html
@@ -145,9 +153,19 @@ case "${1}" in
 		#run_performance_test sm-mysql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> perf-rep.html
 		;;
+	--stab-all)
+		cp -f stab-rep.html_tmp stab-rep.html
+		echo "<tr><th>${ver}</th>" >> stab-rep.html
+		run_stability_test xmldb ${server_dir} ${IPS[0]}
+		run_stability_test mysql ${server_dir} ${IPS[1]}
+		run_stability_test pgsql ${server_dir} ${IPS[2]}
+		#run_stability_test sm-mysql ${server_dir} ${IPS[3]}
+		echo "</tr>" >> stab-rep.html
+		;;
 	--all-tests)
 		${0} --func-all ${server_dir}
 		${0} --perf-all ${server_dir}
+		${0} --stab-all ${server_dir}
 		;;
 	--single)
 		run_single_test ${database} ${server_dir} ${server_ip} ${2}

@@ -25,7 +25,7 @@
 # Additional global settings
 
 -output-format  = html
--output-file    = "../www/performance-tests.html"
+-output-file    = "../www/stability-tests.html"
 -output-history = no
 # Only valid values for setting below are: 5 or 7
 # 7 means:
@@ -34,13 +34,13 @@
 # "Test name", "Result", "Test time", "Description" [, "History" ]
 # History column is optional if -output-history is "true | yes | 1 | on | tak"
 -output-cols    = 7
--title          = "XMPP Server performance tests."
+-title          = "XMPP Server stability tests."
 
 # Other global settings
 -debug-on-error
 
 $(server-host) = test-d
-$(repeats)      = 1000
+$(repeats)      = 100000
 $(daemon-users) = 1
 $(daemon-user) = tester_1
 $(def-user)    = perf-tester
@@ -287,5 +287,5 @@ Global settings:
   } >> Send a message to $(daemon-user) user <<
 
 }
->> Script with performance tests, selected tests are repeated
+>> Script with stability tests, selected tests are repeated
 $(repeats) times, processing time is measured for each XMPP/Jabber feature <<

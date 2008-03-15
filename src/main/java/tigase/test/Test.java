@@ -352,6 +352,7 @@ public class Test {
 		private long repeat_max = 1;
 		private long repeat_wait = 1;
 		private long counter = 0;
+		private boolean failure = false;
 
 		public TimerTest(DaemonTest dt, TimerThread tt) {
 			this.dt = dt;
@@ -367,8 +368,17 @@ public class Test {
 			if (counter == 2 && dt.suite.size() > 1) {
 				dt.suite.subList(0, dt.suite.size()-1).clear();
 			}
+			if (counter >= 2) {
+				failure = !dt.params.get("authorized", false);
+			}
 // 			System.out.println("TimerTest run...");
-			dt.run();
+			if (!failure) {
+				dt.run();
+			} else {
+				System.out.println("Test run " + counter + " failed for user: "
+					+ dt.params.get("-user-name", "uknown"));
+				counter = repeat_max;
+			}
 			if (counter >= repeat_max) {
 				cancel();
 				tt.stopped();
@@ -432,10 +442,11 @@ public class Test {
         } // end of for ()
       } // end of try
       catch (Exception e) {
-        e.printStackTrace();
+        //e.printStackTrace();
         exception = e;
         errorMsg = e.toString();
         result = false;
+				params.put("authorized", false);
         synchronized(this) { this.notifyAll(); }
         return;
       } // end of try-catch
