@@ -129,7 +129,7 @@ Global settings:
 
   Prep 1@user-register: Register $(daemon-users) test user accounts {
     $(daemon-users) = 5000
-    -no-record
+#    -no-record
     -on-one-socket
     -loop-start = 1
     -delay     = 0
@@ -269,7 +269,7 @@ Global settings:
     -source-file = "tests/data/TesterMessage.cot"
   } >> Send a message to $(daemon-user) user <<
 
-  Test 9@auth-plain;common: Setup $(daemon-users) daemon connections sending $(repeats) messages to $(daemon-user) user
+  Test 10@auth-plain;common: Setup $(daemon-users) daemon connections sending $(repeats) messages to $(daemon-user) user
   {
 #      -debug
     $(daemon-users) = 1000

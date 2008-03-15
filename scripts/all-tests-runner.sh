@@ -165,7 +165,7 @@ case "${1}" in
 	--all-tests)
 		${0} --func-all ${server_dir}
 		${0} --perf-all ${server_dir}
-		${0} --stab-all ${server_dir}
+		#${0} --stab-all ${server_dir}
 		;;
 	--single)
 		run_single_test ${database} ${server_dir} ${server_ip} ${2}
