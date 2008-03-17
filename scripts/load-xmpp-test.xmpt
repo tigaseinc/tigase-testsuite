@@ -66,7 +66,7 @@ Statistics@iq-stats: >> Server statistics <<
 Load tests:
 {
   -multi-thread
-  -loop = ${connections}
+  -loop = $(connections)
   -loop-delay = 500
 #  -on-one-socket
   -repeat-script = 1000
