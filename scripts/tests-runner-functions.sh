@@ -94,7 +94,7 @@ function ts_start() {
 	[[ -z ${5} ]] && local _extra_par_2="" || local _extra_par_2=${5}
 	[[ -z ${6} ]] && local _extra_par_3="" || local _extra_par_3=${6}
 
-	java ${_options} ${_properties} -cp "${_classpath}" \
+	${JAVA_HOME}/bin/java ${_options} ${_properties} -cp "${_classpath}" \
 		tigase.test.TestSuite -script ${_test_script} ${_output_file} \
 		${_server_ip} ${_extra_par_1} ${_extra_par_2} ${_extra_par_3}
 
