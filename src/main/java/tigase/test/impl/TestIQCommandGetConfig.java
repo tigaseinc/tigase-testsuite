@@ -150,10 +150,10 @@ public class TestIQCommandGetConfig extends TestAbstract {
 						new String[] {"xmlns", "status", "node"},
 						new String[] {xmlns, "completed", "config/list/sess-man"})},
 				new String[] {"type", "id", "from"},
-				new String[] {"result", "command_1", "basic-conf." + hostname});
+				new String[] {"result", "command_1", "basic-conf@" + hostname});
       resp_name = new String[] {"iq"};
       return
-				"<iq type=\"set\" to=\"basic-conf." + hostname + "\" id=\"command_1\" >"
+				"<iq type=\"set\" to=\"basic-conf@" + hostname + "\" id=\"command_1\" >"
 				+ "<command xmlns=\"http://jabber.org/protocol/commands\""
 				+ "node=\"config/list/sess-man\" /></iq>";
     default:

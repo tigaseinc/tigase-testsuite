@@ -74,9 +74,9 @@ public class TestIQStats extends TestAbstract {
       return elems[counter++];
     } // end of if (counter < elems.length)
     List<StatItem> stats = new LinkedList<StatItem>();
-    List<Element> items = element.getChildren("/iq/query");
+    List<Element> items = element.getChildren("/iq/command/x");
 		for (Element item: items) {
-			String name = item.getAttribute("name");
+			String name = item.getAttribute("var");
 			int idx = name.indexOf("/");
 			String comp = "unknown";
 			String stat = name;
@@ -85,7 +85,7 @@ public class TestIQStats extends TestAbstract {
 			 stat = name.substring(idx+1);
 			}
 			stats.add(new StatItem(comp,
-					item.getAttribute("value"), item.getAttribute("units"), stat));
+					item.getCData("/field/value"), "none", stat));
     } // end of for (Element item: items)
     params.put("Statistics", stats);
     return null;
@@ -102,10 +102,15 @@ public class TestIQStats extends TestAbstract {
     switch (counter) {
     case 1:
       return
-        "<iq type='get' to='" + hostname
-        + "' from='" + from + "' id='stats_1'>"
-        + "<query xmlns='http://jabber.org/protocol/stats'/>" +
-        "</iq>";
+        "<iq type='set' id='stats_1' to='stats@tigase.org'>"
+        + "<command xmlns='http://jabber.org/protocol/commands' node='stats'>"
+        + "<x xmlns='jabber:x:data' type='submit'>"
+        + "<field type='list-single' var='Stats level' >"
+        + "<value>FINEST</value>"
+        + "</field>"
+        + "</x>"
+        + "</command>"
+        + "</iq>";
     default:
       return null;
     } // end of switch (counter)
