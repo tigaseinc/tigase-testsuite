@@ -39,7 +39,7 @@ function db_reload_mysql() {
 	mysqladmin -u ${_db_user} -p${_db_pass} -f drop ${_db_name}
 	mysqladmin -u ${_db_user} -p${_db_pass} create ${_db_name}
 	mysql -u ${_db_user} -p${_db_pass} ${_db_name} \
-		< ${_src_dir}/database/mysql-schema.sql
+		< ${_src_dir}/database/mysql-schema-4.sql
 }
 
 function db_reload_pgsql() {

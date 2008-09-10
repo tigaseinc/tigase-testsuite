@@ -102,7 +102,7 @@ public class TestIQStats extends TestAbstract {
     switch (counter) {
     case 1:
       return
-        "<iq type='set' id='stats_1' to='stats@tigase.org'>"
+        "<iq type='set' id='stats_1' to='stats@" + hostname + "'>"
         + "<command xmlns='http://jabber.org/protocol/commands' node='stats'>"
         + "<x xmlns='jabber:x:data' type='submit'>"
         + "<field type='list-single' var='Stats level' >"

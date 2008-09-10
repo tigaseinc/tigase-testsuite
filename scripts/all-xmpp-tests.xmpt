@@ -33,7 +33,7 @@ $(def-user)    = all-xmpp-test
 $(daemon-user) = all-xmpp-test_1
 $(blocking-user) = blocking-test-user_1
 $(long-list-user) = long-list-user_1
-$(ssl-tls-wait) = 5000
+$(ssl-tls-wait) = 15000
 $(stats-user) = admin
 $(stats-pass) = stats
 
@@ -41,7 +41,7 @@ $(stats-pass) = stats
 -host        = $(server-host)
 -user-name   = $(def-user)
 -user-pass   = all-xmpp-test-password
--socket-wait = 5000
+-socket-wait = 15000
 -base-ns     = "jabber:client"
 -def-auth    = auth-plain
 -keys-file-password   = keystore
@@ -128,7 +128,7 @@ Global settings:
   Test 17@msg-send: Privacy lists - send a message to $(blocking-user) user
   {
     -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
-    -socket-wait = 1000
+#    -socket-wait = 1000
 #    -time-out-ok
   } >> Privacy lists test - send a message to $(blocking-user) user blocking all messages and wait for error response <<
 
