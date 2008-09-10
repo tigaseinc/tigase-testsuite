@@ -38,8 +38,10 @@ function db_reload_mysql() {
 
 	mysqladmin -u ${_db_user} -p${_db_pass} -f drop ${_db_name}
 	mysqladmin -u ${_db_user} -p${_db_pass} create ${_db_name}
-	mysql -u ${_db_user} -p${_db_pass} ${_db_name} \
-		< ${_src_dir}/database/mysql-schema-4.sql
+	mysql -N -u ${_db_user} -p${_db_pass} ${_db_name} \
+		< database/mysql-schema.sql
+	mysql -N -u ${_db_user} -p${_db_pass} ${_db_name} \
+		< database/mysql-schema-upgrade-to-4.sql
 }
 
 function db_reload_pgsql() {
@@ -51,11 +53,12 @@ function db_reload_pgsql() {
 	dropdb -U ${_db_user} ${_db_name}
 	createdb -U ${_db_user} ${_db_name}
 	psql -q -U ${_db_user} -d ${_db_name} \
-		-f ${_src_dir}/database/postgresql-schema.sql
+		-f database/postgresql-schema.sql
 }
 
 function fs_prepare_files() {
 	rm -f etc/*.xml
+	cp -f ${server_dir}/database/* database/
 }
 
 function tig_start_server() {
@@ -148,9 +151,11 @@ function run_test() {
 	echo "Server IP:        ${_server_ip}"
 	echo "Extra parameters: ${_extra_par}"
 
+	fs_prepare_files
+
 	if [ -z "${SKIP_DB_RELOAD}" ] ; then
 		case ${_database} in
-			mysql|sm-mysql)
+			mysql|mysql-auth|sm-mysql)
 				db_reload_mysql
 				;;
 			pgsql)
@@ -169,7 +174,6 @@ function run_test() {
 		echo "Skipped database reloading."
 	fi
 
-	fs_prepare_files
 	sleep 1
 	if [ -z "${SKIP_SERVER_START}" ] ; then
 		tig_start_server ${_server_dir} "etc/tigase-${_database}.conf"

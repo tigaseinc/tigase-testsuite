@@ -25,6 +25,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Queue;
 import java.util.Arrays;
 import javax.management.Attribute;
@@ -145,6 +147,9 @@ public abstract class TestAbstract extends TestEmpty {
           while (index < resp_found.length
             && (rep = results.poll()) != null) {
             reply = rep;
+						if (reply.getName().equals("stream:features")) {
+							processStreamFeatures(reply);
+						}
             replyElement(reply);
             debug("Response data: " + reply.toString() + "\n");
             addInput(reply.toString());
@@ -205,6 +210,17 @@ public abstract class TestAbstract extends TestEmpty {
 			", expected: '" + response + "', Received: '" + reply.toString() + "'";
     return false;
   }
+
+	private void processStreamFeatures(Element features) {
+		List<Element> children = features.getChildren("/stream:features/mechanisms");
+		if (children != null && children.size() > 0) {
+			Set<String> mechs = new HashSet<String>();
+			for (Element child: children) {
+				mechs.add(child.getCData());
+			}
+			params.put("features", mechs);
+		}
+	}
 
   /**
    * Describe <code>init</code> method here.

@@ -21,6 +21,8 @@
  */
 package tigase.test.impl;
 
+import tigase.util.Base64;
+import java.util.Set;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -76,9 +78,29 @@ public class TestSASL extends TestAbstract {
 
   public String nextElementName(final Element reply) throws Exception {
     if (reply == null) {
-      data =
-        "<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='DIGEST-MD5'/>";
       response = "challenge";
+			Set<String> mechs = (Set<String>)params.get("features");
+			if (mechs == null) {
+				data =
+          "<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='CRAP-NO-MECHS-IN-FEATURES'/>";
+			} else {
+				if (mechs.contains("DIGEST-MD5")) {
+					data =
+            "<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='DIGEST-MD5'/>";
+				} else {
+					if (mechs.contains("PLAIN")) {
+						data =
+              "<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='PLAIN'>";
+						data += Base64.encode(new String("\0" + user_name
+								+ "\0" + user_pass).getBytes());
+						data += "</auth>";
+						response = "success";
+					} else {
+						data =
+              "<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='CRAP-NO-KNOWN-MECHS'/>";
+					}
+				}
+			}
       return "auth";
     } // end of if (success)
     String rname = reply.getName();
@@ -87,7 +109,7 @@ public class TestSASL extends TestAbstract {
         Map<String, String> props = new TreeMap<String, String>();
         props.put(Sasl.QOP, "auth");
         sasl = Sasl.createSaslClient(
-          new String[] {"DIGEST-MD5", "CRAM-MD5", "GSSAPI"},
+          new String[] {"DIGEST-MD5", "CRAM-MD5", "GSSAPI", "PLAIN"},
           user_name,
           //          null,
           "xmpp", hostname, props, new AuthCallbackHandler());
