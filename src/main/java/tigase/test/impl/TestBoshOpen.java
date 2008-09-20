@@ -37,7 +37,7 @@ import tigase.test.util.ElementUtil;
 import tigase.xml.Element;
 
 /**
- * Describe class TestStreamOpen here.
+ * Describe class TestBoshOpen here.
  *
  *
  * Created: Tue May 17 20:23:58 2005
@@ -45,33 +45,23 @@ import tigase.xml.Element;
  * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
-public class TestStreamOpen extends TestAbstract {
+public class TestBoshOpen extends TestAbstract {
 
   protected String hostname = "localhost";
 
-  private String[] elems = {"stream:stream"};
+  private String[] elems = {"body"};
   private int counter = 0;
 
-  private Attribute[] expectedAttributes() {
-    return new Attribute[]
-    {
-      new Attribute("xmlns", "jabber:client"),
-      new Attribute("xmlns:stream", "http://etherx.jabber.org/streams"),
-      new Attribute("from", hostname),
-      new Attribute("version", "1.0")
-    };
-  }
-
   /**
-   * Creates a new <code>TestStreamOpen</code> instance.
+   * Creates a new <code>TestBoshOpen</code> instance.
    *
    */
-  public TestStreamOpen() {
+  public TestBoshOpen() {
     super(
       new String[]
       {"jabber:client", "jabber:server", "jabber:component:accept"},
-      new String[] {"stream-client"},
-      new String[] {"socket"},
+      new String[] {"stream-bosh"},
+      new String[] {"socket-bosh"},
       null
       );
   }
@@ -89,35 +79,28 @@ public class TestStreamOpen extends TestAbstract {
     }
   }
 
-
   public String getElementData(final String element) throws Exception {
-    if (element.equals("stream:stream")) {
-      return "<stream:stream "
-        + "xmlns='jabber:client' "
-        + "xmlns:stream='http://etherx.jabber.org/streams' "
+    if (element.equals("body")) {
+      return "<body "
+        + "xmlns='http://jabber.org/protocol/httpbind' "
+        + "xmlns:xmpp='urn:xmpp:xbosh' "
+        + "xml:lang='en' "
+        + "rid='1216' "
+        + "content='text/xml; charset=utf-8' "
         + "to='" + hostname + "' "
-        + "version='1.0'>";
+        + "ver='1.6'/>";
     }
     return null;
   }
 
   public String[] getRespElementNames(final String element) {
-    if (element.equals("stream:stream")) {
-      return new String[] {"stream:stream", "stream:features"};
+    if (element.equals("body")) {
+      return new String[] {"stream:features"};
     }
     return null;
   }
 
   public Attribute[] getRespElementAttributes(final String element) {
-    if (element.equals("stream:stream")) {
-      return new Attribute[]
-      {
-        new Attribute("xmlns", "jabber:client"),
-        new Attribute("xmlns:stream", "http://etherx.jabber.org/streams"),
-        new Attribute("from", hostname),
-        new Attribute("version", "1.0")
-      };
-    }
     if (element.equals("stream:features")) {
       return new Attribute[] { };
     }
@@ -140,4 +123,4 @@ public class TestStreamOpen extends TestAbstract {
     hostname = params.get("-host", hostname);
   }
 
-} // TestStreamOpen
+} // TestBoshOpen

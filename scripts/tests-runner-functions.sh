@@ -54,6 +54,8 @@ function db_reload_pgsql() {
 	createdb -U ${_db_user} ${_db_name}
 	psql -q -U ${_db_user} -d ${_db_name} \
 		-f database/postgresql-schema.sql
+	psql -q -U ${_db_user} -d ${_db_name} \
+		-f database/postgresql-schema-upgrade-to-4.sql
 }
 
 function fs_prepare_files() {
@@ -158,7 +160,7 @@ function run_test() {
 			mysql|mysql-auth|sm-mysql)
 				db_reload_mysql
 				;;
-			pgsql)
+			pgsql|pgsql-auth)
 				db_reload_pgsql
 				;;
 			xmldb)

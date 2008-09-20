@@ -55,7 +55,7 @@ public class TestIQStats extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"iq-stats"},
-      new String[] {"socket", "stream-open", "auth"},
+      new String[] {"stream-open", "auth"},
       new String[] {"stream-open", "auth", "user-register", "tls-init"}
       );
   }

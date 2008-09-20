@@ -68,7 +68,7 @@ public class TestPrivacyLongList extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"privacy-long-list"},
-      new String[] {"socket", "stream-open", "auth"},
+      new String[] {"stream-open", "auth"},
       new String[] {"user-register", "tls-init"}
       );
 	}

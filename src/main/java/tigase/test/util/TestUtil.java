@@ -125,7 +125,10 @@ public class TestUtil {
 
     for (int i = 0; i < test_ns.length; ++i) {
       if (test_ns[i].equals("auth")) {
-        test_ns[i] = params.get("-def-auth", "auth-digest");
+        test_ns[i] = params.get("-def-auth", "auth-sasl");
+      } // end of if (test_ns[i].equals("auth"))
+      if (test_ns[i].equals("stream-open")) {
+        test_ns[i] = params.get("-def-stream", "stream-client");
       } // end of if (test_ns[i].equals("auth"))
     } // end of for (int  = 0;  < i; ++)
     LinkedList<TestIfc> result = new LinkedList<TestIfc>();
@@ -142,17 +145,20 @@ public class TestUtil {
         } // end of if (Arrays.binarySearch(impl_ns, ns) >= 0)
       } // end of for ()
     } // end of for ()
+// 		System.err.println("Results: " + result.toString());
     List<TestIfc> tmp = new LinkedList<TestIfc>();
     for (TestIfc test : result) {
       if (test.depends() != null) {
+// 				System.err.println("Depends on: " + Arrays.toString(test.depends()));
         List<TestIfc> deps =
           calculateDependsTree(test.depends(), tests, params);
         if (deps != null) {
-          tmp.addAll(deps);
+// 					System.err.println("New deps: " + deps.toString());
+          tmp.addAll(0, deps);
         } // end of if (deps != null)
       } // end of if (test.depends() != null)
     } // end of for ()
-    result.addAll(tmp);
+    result.addAll(0, tmp);
     Collections.sort(result, DependsComparator.getInstance());
     return result;
   }
@@ -163,8 +169,10 @@ public class TestUtil {
     if (all_tests == null) {
       all_tests = ClassUtil.getImplementations(TestIfc.class);
     } // end of if (tests == null)
-    return
+		LinkedList<TestIfc> result =
       calculateDependsTree(test_ns, new LinkedList<TestIfc>(all_tests), params);
+// 		System.err.println(result.toString());
+    return result;
   }
 
   public static String toStringArrayNS(String[] arr, String delim) {

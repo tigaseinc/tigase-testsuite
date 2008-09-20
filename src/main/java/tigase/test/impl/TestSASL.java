@@ -61,6 +61,7 @@ public class TestSASL extends TestAbstract {
   private String data = null;
   private String response = null;
   private SaslClient sasl = null;
+	private boolean bosh_mode = false;
 
   /**
    * Creates a new <code>TestSASL</code> instance.
@@ -71,8 +72,8 @@ public class TestSASL extends TestAbstract {
       new String[]
       {"jabber:client", "jabber:server", "jabber:component:accept"},
       new String[] {"auth-sasl"},
-      new String[] {"socket", "stream-open", "tls-init"},
-      new String[] {"user-register"}
+      new String[] {"stream-open"},
+      new String[] {"tls-init", "user-register"}
       );
   }
 
@@ -158,7 +159,11 @@ public class TestSASL extends TestAbstract {
 
   public String[] getRespElementNames(final String element) {
     if (element.equals("stream:stream")) {
-      return new String[] {"stream:stream", "stream:features"};
+			if (bosh_mode) {
+				return new String[] {"stream:features"};
+			} else {
+				return new String[] {"stream:stream", "stream:features"};
+			}
     }
     return new String[] {response};
   }
@@ -233,6 +238,7 @@ public class TestSASL extends TestAbstract {
     user_pass = params.get("-user-pass", user_pass);
     user_resr = params.get("-user_resr", user_resr);
     hostname = params.get("-host", hostname);
+		bosh_mode = params.get("bosh-mode") != null;
   }
 
 } // TestSASL

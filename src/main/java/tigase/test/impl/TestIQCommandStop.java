@@ -68,7 +68,7 @@ public class TestIQCommandStop extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"command-stop"},
-      new String[] {"socket", "stream-open", "auth"},
+      new String[] {"stream-open", "auth"},
       new String[] {"user-register", "tls-init"}
       );
 	}

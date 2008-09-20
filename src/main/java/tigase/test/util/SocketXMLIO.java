@@ -46,7 +46,7 @@ public class SocketXMLIO implements XMLIO {
 
   private static final int BUFF_SIZE = 2*1024;
 
-  private Socket socket = null;
+  protected Socket socket = null;
   private OutputStream out = null;
 	//  private BufferedReader inp = null;
   private InputStreamReader inp = null;
@@ -59,13 +59,17 @@ public class SocketXMLIO implements XMLIO {
    *
    */
   public SocketXMLIO(Socket sock) throws IOException {
+		setSocket(sock);
+  }
+
+	public void setSocket(Socket sock) throws IOException {
     socket = sock;
     out = sock.getOutputStream();
 		//    inp = new BufferedReader(new InputStreamReader(sock.getInputStream()));
     inp = new InputStreamReader(sock.getInputStream());
     dom = new DomBuilderHandler(new DefaultElementFactory());
     parser = new SimpleParser();
-  }
+	}
 
 	public void close() {
 		try {

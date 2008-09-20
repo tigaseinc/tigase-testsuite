@@ -44,11 +44,13 @@ $(stats-pass) = stats
 -socket-wait = 15000
 -base-ns     = "jabber:client"
 -def-auth    = auth-plain
+-def-stream  = stream-client
 -keys-file-password   = keystore
 -trusts-file-password = truststore
 -keys-file            = "certs/keystore"
 -trusts-file          = "certs/client_truststore"
 
+#-debug
 -debug-on-error
 
 # Init 0@user-register: {
@@ -76,11 +78,14 @@ Global settings:
   Test 6@auth-digest: >> XEP-0078 Non-SASL authorization with digest password. <<
 
   Test 7@tls-init: { -socket-wait = $(ssl-tls-wait) } >> TLS connection open <<
-  Test 8@auth-sasl: { -socket-wait = $(ssl-tls-wait) } >> SASL authorization <<
-  Test 9@xmpp-bind: { -socket-wait = $(ssl-tls-wait) } >> XMPP resource bind <<
-  Test 10@xmpp-session: { -socket-wait = $(ssl-tls-wait) } >> Establish XMPP session <<
+  Test 8@tls-init;auth-sasl: { -socket-wait = $(ssl-tls-wait) }
+    >> SASL authorization <<
+  Test 9@tls-init;auth-sasl;xmpp-bind: { -socket-wait = $(ssl-tls-wait) }
+    >> XMPP resource bind <<
+  Test 10@tls-init;xmpp-session: { -socket-wait = $(ssl-tls-wait) }
+    >> Establish XMPP session <<
   Test 11@msg-send: { -to-jid = $(self) }
-  >> Send a message to self user and don't wait for response <<
+    >> Send a message to self user and don't wait for response <<
 
   Prep 2@user-register: {
     -no-record
@@ -98,13 +103,13 @@ Global settings:
 
   Test 12@msg-send: Send a message to $(daemon-user) user
   { -to-jid = "$(daemon-user)@$(server-host)/xmpp-test" }
-  >> Send a message to $(daemon-user)@$(server-host)/xmpp-test user
-  and wait for message response <<
+    >> Send a message to $(daemon-user)@$(server-host)/xmpp-test user
+    and wait for message response <<
 
   Test 13@iq-version: >> XEP-0092 - get entity version <<
   Test 14@iq-stats: XEP-0039 Statistics Gathering
-  { -user-name=$(stats-user) -user-pass=$(stats-pass) }
-  >> XEP-0039 Statistics Gathering. <<
+    { -user-name=$(stats-user) -user-pass=$(stats-pass) }
+    >> XEP-0039 Statistics Gathering. <<
 
   Test 15@common: { -source-file = "tests/data/RosterTest.cot" }
   >> Roster management test <<
@@ -172,6 +177,73 @@ Global settings:
 
 }
 >> Script with functional tests for all basic XMPP/Jabber features <<
+
+Bosh Tests:
+{
+    -port = 5280
+    -def-stream  = stream-bosh
+
+  -loop = 1
+
+  Test 24@socket-bosh: >> BOSH socket connect. <<
+  Test 25@stream-open: { } >> BOSH open to server. <<
+  Test 26@user-register: { } >> BOSH XEP-0077 - In-Band Registration, register <<
+
+  Test 27@auth-plain: >> BOSH XEP-0078 Non-SASL authorization with plain password. <<
+  Test 28@auth-sasl: { } >> BOSH SASL authorization <<
+  Test 29@xmpp-bind: { } >> BOSH XMPP resource bind <<
+  Test 30@xmpp-session: { } >> BOSH Establish XMPP session <<
+  Test 31@msg-send: { -to-jid = $(self) }
+  >> BOSH Send a message to self user and don't wait for response <<
+
+  Test 32@msg-send: BOSH Send a message to $(daemon-user) user
+  { -to-jid = "$(daemon-user)@$(server-host)/xmpp-test" }
+  >> BOSH Send a message to $(daemon-user)@$(server-host)/xmpp-test user
+  and wait for message response <<
+
+  Test 33@iq-version: >> BOSH XEP-0092 - get entity version <<
+  Test 34@iq-stats: BOSH XEP-0039 Statistics Gathering
+  { -user-name=$(stats-user) -user-pass=$(stats-pass) }
+  >> BOSH XEP-0039 Statistics Gathering. <<
+
+  Test 35@common: { -source-file = "tests/data/RosterTest.cot" }
+  >> BOSH Roster management test <<
+
+  Test 36@privacy-lists: >> BOSH Privacy lists management test <<
+
+  Test 37@msg-send: BOSH Privacy lists - send a message to $(blocking-user) user
+  {
+    -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
+#    -socket-wait = 1000
+#    -time-out-ok
+  } >> Privacy lists test - send a message to $(blocking-user) user blocking all messages and wait for error response <<
+
+  Test 38@msg-send: BOSH Send a message to $(long-list-user) user
+  {
+    -to-jid = "$(long-list-user)@$(server-host)/xmpp-test"
+  } >> Send a message to $(long-list-user)@$(server-host)/xmpp-test user
+  with very long privacy list and wait for message response <<
+
+  Test 39@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
+  >> BOSH XEP-0049: Private XML Storage <<
+
+  Test 40@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
+  >> BOSH Test for feature-not-implemented error which should be returned when client sends unsupported stanza <<
+
+  Test 41@common: { -source-file = "tests/data/vcard-temp.cot" }
+  >> BOSH XEP-0054: vcard-temp <<
+
+  Test 42@common: { -source-file = "tests/data/UrnXmppPing.cot" }
+  >> BOSH XEP-0199: XMPP Ping <<
+
+  Test 43@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
+  >> BOSH XEP-0030: XMPP Service Discovery <<
+
+  Test end@user-unregister:
+  >> BOSH XEP-0077 - In-Band Registration - user unregister <<
+
+}
+>> Testing bosh component <<
 
 Multi thread tests:
 {

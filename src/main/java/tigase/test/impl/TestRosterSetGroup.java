@@ -45,7 +45,7 @@ public class TestRosterSetGroup extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"roster-set-group"},
-      new String[] {"socket", "stream-open", "auth"},
+      new String[] {"stream-open", "auth"},
       new String[] {"user-register", "tls-init"}
       );
   }

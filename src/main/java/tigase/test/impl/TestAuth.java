@@ -60,7 +60,7 @@ public class TestAuth extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"auth-plain", "auth-digest"},
-      new String[] {"socket", "stream-open"},
+      new String[] {"stream-open"},
       new String[] {"ssl-init", "tls-init", "user-register"}
       );
   }

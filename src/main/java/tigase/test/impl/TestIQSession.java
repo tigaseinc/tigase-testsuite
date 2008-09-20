@@ -47,9 +47,8 @@ public class TestIQSession extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"xmpp-session"},
-      new String[] {"socket", "stream-open", "tls-init",
-                    "auth-sasl", "xmpp-bind"},
-      new String[] {"user-register"}
+      new String[] {"stream-open", "auth-sasl", "xmpp-bind"},
+      new String[] {"user-register", "tls-init"}
       );
   }
 

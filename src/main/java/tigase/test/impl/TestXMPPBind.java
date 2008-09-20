@@ -49,8 +49,8 @@ public class TestXMPPBind extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"xmpp-bind"},
-      new String[] {"socket", "stream-open", "tls-init", "auth-sasl"},
-      new String[] {"user-register"}
+      new String[] {"stream-open", "auth-sasl"},
+      new String[] {"user-register", "tls-init"}
       );
   }
 

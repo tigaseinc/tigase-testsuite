@@ -57,7 +57,7 @@ public class TestRosterGet extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"roster-get"},
-      new String[] {"socket", "stream-open", "auth"},
+      new String[] {"stream-open", "auth"},
       new String[] {"user-register", "tls-init"}
       );
   }

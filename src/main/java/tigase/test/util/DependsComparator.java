@@ -75,15 +75,24 @@ public class DependsComparator implements Comparator<TestIfc> {
    * @return an <code>int</code> value
    */
   public int compare(final TestIfc test1, final TestIfc test2) {
+// 		System.err.println("NEW RUN");
+// 		System.err.println("Comparing impl: " + Arrays.toString(test1.implemented())
+// 			+ " with deps: " + Arrays.toString(test2.depends()));
     if (testDeps(test1.implemented(), test2.depends())) {
       return -1;
     } // end of if (testDeps(test1.implements(), test2.depends()))
+// 		System.err.println("Comparing impl: " + Arrays.toString(test1.implemented())
+// 			+ " with deps: " + Arrays.toString(test2.optional()));
     if (testDeps(test1.implemented(), test2.optional())) {
       return -1;
     } // end of if (testDeps(test1.implemented(), test2.optional())
+// 		System.err.println("Comparing impl: " + Arrays.toString(test2.implemented())
+// 			+ " with deps: " + Arrays.toString(test1.depends()));
     if (testDeps(test2.implemented(), test1.depends())) {
       return 1;
     } // end of if (testDeps(test1.implements(), test2.depends()))
+// 		System.err.println("Comparing impl: " + Arrays.toString(test2.implemented())
+// 			+ " with deps: " + Arrays.toString(test1.optional()));
     if (testDeps(test2.implemented(), test1.optional())) {
       return 1;
     } // end of if (testDeps(test1.implemented(), test2.optional())

@@ -53,7 +53,7 @@ public class TestRegister extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"user-register"},
-      new String[] {"socket", "stream-open"},
+      new String[] {"stream-open"},
       new String[] {"ssl-init", "tls-init"}
       );
   }

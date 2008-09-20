@@ -55,7 +55,7 @@ public class TestIQVersion extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"iq-version"},
-      new String[] {"socket", "stream-open"},
+      new String[] {"stream-open"},
       new String[] {"stream-open", "auth", "user-register", "tls-init"}
       );
   }

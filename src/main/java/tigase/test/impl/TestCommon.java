@@ -85,7 +85,7 @@ public class TestCommon extends TestEmpty {
     super(
       new String[] {"jabber:client"},
       new String[] {"common"},
-      new String[] {"socket", "stream-open", "auth"},
+      new String[] {"stream-open", "auth"},
       new String[] {"user-register", "tls-init"}
       );
 	}

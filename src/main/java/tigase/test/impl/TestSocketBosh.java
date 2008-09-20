@@ -31,7 +31,7 @@ import tigase.test.ResultCode;
 import javax.management.Attribute;
 import tigase.xml.Element;
 import tigase.test.util.Params;
-import tigase.test.util.SocketXMLIO;
+import tigase.test.util.SocketBosh;
 
 /**
  * Describe class TestScoket here.
@@ -42,7 +42,7 @@ import tigase.test.util.SocketXMLIO;
  * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
-public class TestSocket extends TestAbstract {
+public class TestSocketBosh extends TestAbstract {
 
 	/**
 	 * <code>RECEIVE_BUFFER_SIZE</code> defines a size for TCP/IP packets.
@@ -52,18 +52,18 @@ public class TestSocket extends TestAbstract {
 	private static final int RECEIVE_BUFFER_SIZE = 2*1024;
   private String hostname = null;
 	private String serverip = null;
-  private int port = 5222;
+  private int port = 5280;
   private int socket_wait = 5000;
 
   /**
    * Creates a new <code>TestScoket</code> instance.
    *
    */
-  public TestSocket() {
+  public TestSocketBosh() {
     super(
       new String[]
       {"jabber:client", "jabber:server", "jabber:component:accept"},
-      new String[] {"socket"},
+      new String[] {"socket-bosh"},
       null,
       null
       );
@@ -120,7 +120,9 @@ public class TestSocket extends TestAbstract {
       } // end of if (timeEnd - timeStart > 1000)
       //      debug("socket done.");
       params.put("socket", client);
-      params.put("socketxmlio", new SocketXMLIO(client));
+// 			System.out.println("Creating SocketBosh");
+      params.put("socketxmlio", new SocketBosh(client));
+			params.put("bosh-mode", "true");
       return true;
     } catch (SocketTimeoutException e) {
       resultCode = ResultCode.PROCESSING_EXCEPTION;

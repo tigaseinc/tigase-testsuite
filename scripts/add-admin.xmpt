@@ -49,6 +49,7 @@ $(stats-pass) = stats
 -keys-file            = "certs/keystore"
 -trusts-file          = "certs/client_truststore"
 
+#-debug
 -debug-on-error
 
 Init 0@user-register: {
