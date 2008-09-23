@@ -77,6 +77,7 @@ public class TestSASL extends TestAbstract {
       );
   }
 
+	@SuppressWarnings("unchecked")
   public String nextElementName(final Element reply) throws Exception {
     if (reply == null) {
       response = "challenge";
@@ -236,7 +237,7 @@ public class TestSASL extends TestAbstract {
     super.init(map);
     user_name = params.get("-user-name", user_name);
     user_pass = params.get("-user-pass", user_pass);
-    user_resr = params.get("-user_resr", user_resr);
+    user_resr = params.get("-user-resr", user_resr);
     hostname = params.get("-host", hostname);
 		bosh_mode = params.get("bosh-mode") != null;
   }

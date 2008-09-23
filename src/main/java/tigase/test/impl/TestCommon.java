@@ -224,7 +224,7 @@ public class TestCommon extends TestEmpty {
     this.params = params;
 		if (stanzas_buff == null) {
 			user_name = params.get("-user-name", user_name);
-			user_resr = params.get("-user_resr", user_resr);
+			user_resr = params.get("-user-resr", user_resr);
 			user_emil = params.get("-user-emil", user_emil);
 			hostname = params.get("-host", hostname);
 			String name = JIDUtils.getNodeNick(user_name);

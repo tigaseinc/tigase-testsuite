@@ -69,6 +69,7 @@ public class Test {
   private boolean debug = false;
 	private CountDownLatch latch = null;
 	protected boolean debug_on_error = false;
+	protected boolean last_result = false;
 
 	private static TimerThread[] backroundTasks = new TimerThread[100];
 	private static int timer_idx = 0;
@@ -130,11 +131,10 @@ public class Test {
     } // end of if (main_params.containsKey("-delay"))
     LinkedList<TestIfc> suite = new LinkedList<TestIfc>();
     Params test_params = null;
-    boolean this_result = false;
 		long all_tests_start_time = System.currentTimeMillis();
     for (int cnt = loop_start; cnt < loop+loop_start; cnt++) {
       try {
-        if (on_one_socket && cnt > 0 && this_result) {
+        if (on_one_socket && cnt > 0 && last_result) {
           LinkedList<TestIfc> suite_tmp = getDependsTree(test_ns, test_params);
 					suite.clear();
           suite.addAll(suite_tmp.subList(suite_tmp.size() - 1, suite_tmp.size()));
@@ -153,30 +153,16 @@ public class Test {
         if (loop_user_name) {
           test_params.put("-user-name", user_name+cnt);
         } // end of if (loop_user_name)
-        long test_start_time = System.currentTimeMillis();
-        this_result = runTest(suite, test_params);
-        long this_test = System.currentTimeMillis() - test_start_time;
-        total_time += this_test;
-        if (this_result) {
-          total_successful += this_test;
-          ++tests_ok;
-        } // end of if (this_result)
-        else {
-          ++tests_er;
-          if (cnt > 10 && (tests_ok <= tests_er)) {
-            debug("Too many errors, stopping test...\n", debug);
-            result = false;
-            errorMsg =
+        runTest(suite, test_params);
+				if (cnt > 10 && (tests_ok <= tests_er)) {
+					debug("Too many errors, stopping test...\n", debug);
+					result = false;
+					errorMsg =
               "Too many errors, stopping test: "
               + tests_ok + " OK, "
               + tests_er + " ER";
-            return;
-          } // end of if (cnt > 10 && (cnt / tests_err <= 2))
-          String on_error = (String)test_params.get("-on-error");
-          if (onError != null) {
-            onError.runTest();
-          }
-        } // end of if (this_result) else
+					return;
+				} // end of if (cnt > 10 && (cnt / tests_err <= 2))
       } catch (Exception e) {
         result = false;
         errorMsg = e.getMessage();
@@ -200,24 +186,22 @@ public class Test {
 		total_time = System.currentTimeMillis() - all_tests_start_time;
   }
 
-  private boolean runTest(LinkedList<TestIfc> suite, Params test_params) {
+  private void runTest(LinkedList<TestIfc> suite, Params test_params) {
     boolean daemon = test_params.containsKey("-daemon");
 		boolean background = test_params.containsKey("-background");
 		long socket_wait = test_params.get("-socket-wait", 5000);
-    DaemonTest dt = new DaemonTest(suite, test_params);
+    DaemonTest dt = new DaemonTest(suite, test_params, this);
     if (daemon) {
       runThread(dt, true);
+			++tests_ok;
 			latch.countDown();
-      return true;
     } else {
 			if (background) {
 				runTimerTask(dt);
-				return true;
 			} else {
 				dt.run();
 				//dt.suite.get(0).release();
 				latch.countDown();
-				return dt.getResult();
 			}
     } // end of if (daemon) else
   }
@@ -244,7 +228,19 @@ public class Test {
 		timer.schedule(tt, tt.repeat_wait, tt.repeat_wait);
 	}
 
-  public int getTestsOK() {
+	public void handleResult(DaemonTest dt, boolean result) {
+		if (result) {
+			++tests_ok;
+		} else {
+			++tests_er;
+			String on_error = (String)dt.params.get("-on-error");
+			if (onError != null) {
+				onError.runTest();
+			}
+		} // end of if (this_result) else
+	}
+
+	public int getTestsOK() {
     return tests_ok;
   }
 
@@ -391,12 +387,14 @@ public class Test {
 
     private List<TestIfc> suite = null;
     private Params params = null;
-    private boolean result = false;
     private boolean authorized = false;
+		private Test resultsHandler = null;
 
-    public DaemonTest(LinkedList<TestIfc> suite, Params params) {
+    public DaemonTest(LinkedList<TestIfc> suite, Params params,
+			Test resultsHandler) {
       this.suite = suite;
       this.params = params;
+			this.resultsHandler = resultsHandler;
     }
 
     // Implementation of java.lang.Runnable
@@ -406,6 +404,7 @@ public class Test {
      *
      */
     public void run() {
+			long test_start_time = System.currentTimeMillis();
       try {
         for (TestIfc test : suite) {
           debug("Testing: " + toStringArrayNS(test.implemented(), "..."),
@@ -434,7 +433,7 @@ public class Test {
 //                   + he.getContent() + "\n", debug || debug_on_error);
 //               } // end of for ()
 //             } // end of if (test.getHistory() != null)
-            result = false;
+            last_result = false;
             synchronized(this) { this.notifyAll(); }
             return;
           } // end of if (test.run()) else
@@ -444,7 +443,7 @@ public class Test {
         //e.printStackTrace();
         exception = e;
         errorMsg = e.toString();
-        result = false;
+        last_result = false;
 				params.put("authorized", false);
         synchronized(this) { this.notifyAll(); }
         return;
@@ -453,8 +452,12 @@ public class Test {
         try { ((Socket)params.get("socket")).close();
         } catch (Exception e) { }
       }
-      result = true;
+      last_result = true;
       synchronized(this) { this.notifyAll(); }
+			resultsHandler.handleResult(this, last_result);
+			long this_test = System.currentTimeMillis() - test_start_time;
+			total_time += this_test;
+			total_successful += this_test;
     }
 
     public boolean getResult() {

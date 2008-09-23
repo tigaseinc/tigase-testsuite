@@ -51,6 +51,7 @@ public class TestReceiveMessage extends TestAbstract {
   private String jid = null;
   private String msg_1 = null;
   private String msg_2 = null;
+	private long repeat = 0;
 
   private String data = null;
   private Attribute[] resp_attribs = null;
@@ -145,7 +146,8 @@ public class TestReceiveMessage extends TestAbstract {
     super.init(params);
     user_name = params.get("-user-name", user_name);
     hostname = params.get("-host", hostname);
-    user_resr = params.get("-user_resr", user_resr);
+    user_resr = params.get("-user-resr", user_resr);
+		repeat = params.get("-messages", 0);
     String name = getNodeNick(user_name);
     if (name == null || name.equals("")) {
       jid = user_name + "@" + hostname + "/" + user_resr;
@@ -173,7 +175,7 @@ public class TestReceiveMessage extends TestAbstract {
         return false;
       } // end of if (sock == null)
       elem = nextElementName(reply);
-      while (elem != null) {
+      while ((elem != null) && ((repeat--) != 0)) {
         debug("Processing element: " + elem + "\n");
         Queue<Element> results = io.read();
         Element rep = null;
@@ -189,14 +191,14 @@ public class TestReceiveMessage extends TestAbstract {
         }
       }
 			TestUtil.removeDaemonJID(jid);
-			System.out.println("Message listener FINISHED 2");
+			//System.out.println("Message listener FINISHED 2");
       return true;
     } catch (SocketTimeoutException e) {
 			TestUtil.removeDaemonJID(jid);
       addInput("" + e + "\n" + TestUtil.stack2String(e));
       resultCode = ResultCode.PROCESSING_EXCEPTION;
       exception = e;
-			System.out.println("Message listener FINISHED 3");
+			//System.out.println("Message listener FINISHED 3");
       return false;
     } catch (Exception e) {
 			TestUtil.removeDaemonJID(jid);
@@ -204,7 +206,7 @@ public class TestReceiveMessage extends TestAbstract {
       resultCode = ResultCode.PROCESSING_EXCEPTION;
       exception = e;
       e.printStackTrace();
-			System.out.println("Message listener FINISHED 4");
+			//System.out.println("Message listener FINISHED 4");
       return false;
     } // end of try-catch
 		//		System.out.println("Message listener FINISHED 5");

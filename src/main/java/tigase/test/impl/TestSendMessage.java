@@ -155,7 +155,7 @@ public class TestSendMessage extends TestAbstract {
     super.init(params);
     user_name = params.get("-user-name", user_name);
     hostname = params.get("-host", hostname);
-    user_resr = params.get("-user_resr", user_resr);
+    user_resr = params.get("-user-resr", user_resr);
     String name = getNodeNick(user_name);
     if (name == null || name.equals("")) {
       from = user_name + "@" + hostname + "/" + user_resr;

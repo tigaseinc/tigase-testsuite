@@ -156,6 +156,13 @@ public class TestScriptLoader {
     if (node.getChildren() != null) {
       for (TestNode child: node.getChildren()) {
         runMultiTest(child);
+				if (node.getPars().containsKey("-delay")) {
+					long delay = Long.decode(node.getPars().get("-delay").toString());
+					if (delay > 0) {
+						try { Thread.sleep(delay);
+						} catch (InterruptedException e) { } // end of try-catch
+					} // end of if (delay > 0)
+				} // end of if (main_params.containsKey("-delay"))
       } // end of for (TestNode child: node.getChildren())
     } // end of if (node.getChildren() != null)
     return true;
@@ -197,7 +204,8 @@ public class TestScriptLoader {
         debug("Total: " + test.getTestsTotalTime()
           + "ms, Average: "
           + (test.getSuccessfulTotalTime() / test.getTestsOK())
-          + "ms, Loop: " + loop
+          + (test.getParams().get("-multi-thread") == null ? "ms, Loop: " : "ms, Tests: ")
+					+ loop
           + ", OK: " + test.getTestsOK()
           + "\n", true);
       } else {

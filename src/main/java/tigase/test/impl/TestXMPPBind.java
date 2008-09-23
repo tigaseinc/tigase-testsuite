@@ -142,7 +142,7 @@ public class TestXMPPBind extends TestAbstract {
    */
   public void init(final Params map) {
     super.init(map);
-    user_resr = params.get("-user_resr", user_resr);
+    user_resr = params.get("-user-resr", user_resr);
   }
 
 } // TestXMPPBind

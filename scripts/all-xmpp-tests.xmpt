@@ -252,11 +252,16 @@ Multi thread tests:
     -multi-thread
     -loop = 5
 
-    Version@iq-version: >> Get server version <<
-    Version@iq-version: >> Get server version <<
-    Version@iq-version: >> Get server version <<
-    Version@iq-version: >> Get server version <<
-    Version@iq-version: >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_1_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_2_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_3_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_4_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_5_$(loop)" }
+        >> Get server version <<
   } >> Multi-thread test of server Version info <<
 
   Multi 2: {

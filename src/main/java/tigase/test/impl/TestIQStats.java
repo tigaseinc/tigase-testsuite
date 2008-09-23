@@ -169,7 +169,7 @@ public class TestIQStats extends TestAbstract {
     super.init(map);
     hostname = params.get("-host", hostname);
     String user_name = params.get("-user-name", "test_user@localhost");
-    String user_resr = params.get("-user_resr", "xmpp-test");
+    String user_resr = params.get("-user-resr", "xmpp-test");
     String name = getNodeNick(user_name);
     if (name == null || name.equals("")) {
       from = user_name + "@" + hostname + "/" + user_resr;

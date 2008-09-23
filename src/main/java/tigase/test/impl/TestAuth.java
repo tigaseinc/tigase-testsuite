@@ -149,7 +149,7 @@ public class TestAuth extends TestAbstract {
     super.init(map);
     user_name = params.get("-user-name", user_name);
     user_pass = params.get("-user-pass", user_pass);
-    user_resr = params.get("-user_resr", user_resr);
+    user_resr = params.get("-user-resr", user_resr);
     hostname = params.get("-host", hostname);
     String test_ns = (String)params.get("-test-ns");
     boolean found = false;
