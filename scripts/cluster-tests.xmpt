@@ -1,0 +1,186 @@
+##
+##  Tigase XMPP/Jabber Test Suite
+##  Copyright (C) 2004-2009 "Artur Hefczyc" <artur.hefczyc@tigase.org>
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program. Look for COPYING file in the top folder.
+##  If not, see http://www.gnu.org/licenses/.
+##
+##  $Rev: $
+##  Last modified by $Author: $
+##  $Date: $
+##
+-version = "2.0.0"
+
+-output-format  = html
+-output-file    = "../www/cluster-tests.html"
+-output-history = yes
+-history-format = separate-file
+-output-cols    = 7
+-title          = "XMPP Server cluster tests."
+
+$(server-host) = "xmpp-test.tigase.org"
+$(def-user)    = tester
+$(def-user-pass) = tester12
+$(ssl-tls-wait) = 15000
+$(stats-user) = admin
+$(stats-pass) = stats
+
+$(node-1) = "veloci.tigase.org"
+$(node-2) = "shell2.tigase.org"
+-serverip    = "veloci.tigase.org"
+-host        = $(server-host)
+-user-name   = $(def-user)
+-user-pass   = ala
+-socket-wait = 15000
+-base-ns     = "jabber:client"
+-def-auth    = auth-plain
+-keys-file-password   = keystore
+-trusts-file-password = truststore
+-keys-file            = "certs/keystore"
+-trusts-file          = "certs/client_truststore"
+
+-debug-on-error
+
+Version@auth-sasl;iq-version: { -user-name=$(stats-user) -user-pass=$(stats-pass) }
+ >> Get server version <<
+Configuration@command-get-config:
+{ -user-name=$(stats-user) -user-pass=$(stats-pass) }
+>> Server configuration <<
+Statistics@iq-stats: { -user-name=$(stats-user) -user-pass=$(stats-pass) }
+ >> Server statistics <<
+
+Global settings:
+{
+  -loop = 1
+
+  Test 1: {
+    -multi-thread
+
+    Socket@socket: { -serverip = $(node-1) }
+      >> Plain socket connect to node $(node-1). <<
+    Socket@socket: { -serverip = $(node-2) }
+      >> Plain socket connect to node $(node-2). <<
+  } >> Socket connect to both cluster nodes. <<
+
+  Test 2: {
+    -multi-thread
+
+    Stream@stream-open: { -serverip = $(node-1) }
+      >> Stream open to node $(node-1). <<
+    Stream@stream-open: { -serverip = $(node-2) }
+      >> Stream open to node $(node-2). <<
+  } >> Stream open to both cluster nodes. <<
+
+  Test 3: {
+    -multi-thread
+
+    TLS Open@tls-init: { -serverip = $(node-1) }
+      >> TLS connection open to node $(node-1). <<
+    TLS Open@tls-init: { -serverip = $(node-2) }
+      >> TLS connection open to node $(node-2). <<
+  } >> TLS connection open to both cluster nodes. <<
+
+  Test 4: {
+    -multi-thread
+
+    SASL Auth@tls-init;auth-sasl: {
+      -serverip = $(node-1)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+     } >> SASL authorization to node $(node-1) on $(def-user) user. <<
+    SASL Auth@tls-init;auth-sasl: {
+      -serverip = $(node-2)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+     } >> SASL authorization to node $(node-2) on $(stats-user) user. <<
+  } >> SASL authorization to both cluster nodes to different accounts. <<
+
+  Test 5: {
+    -multi-thread
+    -user-name = $(def-user)
+    -user-pass = $(def-user-pass)
+
+    SASL Auth@tls-init;auth-sasl: {
+      -serverip = $(node-1)
+      -user-resr = $(node-1)
+     } >> SASL authorization to node $(node-1) on $(def-user) user. <<
+    SASL Auth@tls-init;auth-sasl: {
+      -serverip = $(node-2)
+      -user-resr = $(node-2)
+     } >> SASL authorization to node $(node-2) on $(def-user) user. <<
+  } >> SASL authorization to both cluster nodes to the same account $(def-user). <<
+
+  Test 6: {
+    -multi-thread
+
+    Message send@msg-send: {
+      -serverip = $(node-1)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-1)
+      -to-jid = $(self)
+     } >> Send a message to self user and don't wait for response to node $(node-1) on $(def-user) user. <<
+    Message send@msg-send: {
+      -serverip = $(node-2)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-2)
+      -to-jid = $(self)
+     } >> Send a message to self user and don't wait for response to node $(node-2) on $(stats-user) user. <<
+  } >> Message send within one node to self user. <<
+
+  Test 7: {
+    -multi-thread
+    -delay = 250
+    -debug
+
+    Message send@msg-listen: {
+      -serverip = $(node-1)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-1)
+      -to-jid = $(self)
+      -messages = 1
+     } >> Wait for  a message from $(stats-user) user and send a response on node $(node-1). <<
+    Message send@msg-send: {
+      -serverip = $(node-1)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-1)
+      -to-jid = "$(def-user)@$(node-1)/$(node-1)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-1). <<
+  } >> Message send within one node from $(stats-user) to $(def-user) and wait for a response. <<
+
+  Test 8: {
+    -multi-thread
+    -delay = 250
+
+    Message send@msg-send: {
+      -serverip = $(node-1)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-1)
+      -to-jid = $(self)
+     } >> Send a message to self user and don't wait for response to node $(node-1) on $(def-user) user. <<
+    Message send@msg-send: {
+      -serverip = $(node-2)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-2)
+      -to-jid = $(self)
+     } >> Send a message to self user and don't wait for response to node $(node-2) on $(stats-user) user. <<
+  } >> Message send within one node to self user. <<
+
+}
+>> Script with functional tests for all basic XMPP/Jabber features in the cluster mode. <<
+
