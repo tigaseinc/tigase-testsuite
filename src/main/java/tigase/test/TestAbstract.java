@@ -151,7 +151,7 @@ public abstract class TestAbstract extends TestEmpty {
 							processStreamFeatures(reply);
 						}
             replyElement(reply);
-            debug("Response data: " + reply.toString() + "\n");
+            debug("Received: " + reply.toString() + "\n");
             addInput(reply.toString());
             resp_found[index] =
               checkResponse(reply, responses[index], optional_resp);

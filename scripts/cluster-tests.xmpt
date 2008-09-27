@@ -142,14 +142,12 @@ Global settings:
   Test 7: {
     -multi-thread
     -delay = 250
-    -debug
 
     Message send@msg-listen: {
       -serverip = $(node-1)
       -user-name = $(def-user)
       -user-pass = $(def-user-pass)
       -user-resr = $(node-1)
-      -to-jid = $(self)
       -messages = 1
      } >> Wait for  a message from $(stats-user) user and send a response on node $(node-1). <<
     Message send@msg-send: {
@@ -157,7 +155,7 @@ Global settings:
       -user-name = $(stats-user)
       -user-pass = $(stats-pass)
       -user-resr = $(node-1)
-      -to-jid = "$(def-user)@$(node-1)/$(node-1)"
+      -to-jid = "$(def-user)@$(server-host)/$(node-1)"
      } >> Send a message to $(def-user) and wait for response on node $(node-1). <<
   } >> Message send within one node from $(stats-user) to $(def-user) and wait for a response. <<
 
@@ -165,21 +163,22 @@ Global settings:
     -multi-thread
     -delay = 250
 
-    Message send@msg-send: {
+    Message send@msg-listen: {
       -serverip = $(node-1)
       -user-name = $(def-user)
       -user-pass = $(def-user-pass)
       -user-resr = $(node-1)
-      -to-jid = $(self)
-     } >> Send a message to self user and don't wait for response to node $(node-1) on $(def-user) user. <<
+      -messages = 1
+     } >> Wait for  a message from $(stats-user) user and send a response on node $(node-1). <<
     Message send@msg-send: {
       -serverip = $(node-2)
       -user-name = $(stats-user)
       -user-pass = $(stats-pass)
       -user-resr = $(node-2)
-      -to-jid = $(self)
-     } >> Send a message to self user and don't wait for response to node $(node-2) on $(stats-user) user. <<
-  } >> Message send within one node to self user. <<
+      -to-jid = "$(def-user)@$(server-host)/$(node-1)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-2). <<
+  } >> Message send beetwen 2 nodes: from $(node-2), user $(stats-user) to user $(def-user) on $(node-1) and wait for a response. <<
+
 
 }
 >> Script with functional tests for all basic XMPP/Jabber features in the cluster mode. <<

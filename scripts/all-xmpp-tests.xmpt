@@ -30,6 +30,8 @@
 
 $(server-host) = test-d
 $(def-user)    = all-xmpp-test
+$(def-user-pass) = all-xmpp-test-password
+$(def-user-resr) = def-user-resource
 $(daemon-user) = all-xmpp-test_1
 $(blocking-user) = blocking-test-user_1
 $(long-list-user) = long-list-user_1
@@ -40,7 +42,8 @@ $(stats-pass) = stats
 -serverip    = "127.0.0.1"
 -host        = $(server-host)
 -user-name   = $(def-user)
--user-pass   = all-xmpp-test-password
+-user-pass   = $(def-user-pass)
+-user-resr   = $(def-user-resr)
 -socket-wait = 15000
 -base-ns     = "jabber:client"
 -def-auth    = auth-plain
@@ -172,6 +175,111 @@ Global settings:
   Test 23@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
   >> XEP-0030: XMPP Service Discovery <<
 
+  Test 24: {
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence subscription test between '$(stats-user)' and '$(def-user)'. <<
+
+  Test 25: {
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionCancelReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionCancelSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence cancel test between '$(stats-user)' and '$(def-user)'. <<
+
+  Test 26: {
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionUnsubscribeReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionUnsubscribeSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence unsubscribe test between '$(stats-user)' and '$(def-user)'. <<
+
+  Test 27: {
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence subscription between '$(stats-user)' and '$(def-user)' again to prepare for the next test. <<
+
+  Test 28: {
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/RemoveSubscribedReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/RemoveSubscribedSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Remove subscribed contact '$(def-user)' from the roster of the user '$(stats-user)', all subscriptions should be cancelled automatically by the server. <<
+
   Test end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<
 
@@ -180,67 +288,172 @@ Global settings:
 
 Bosh Tests:
 {
-    -port = 5280
-    -def-stream  = stream-bosh
+  -port = 5280
+  -def-stream  = stream-bosh
 
   -loop = 1
 
-  Test 24@socket-bosh: >> BOSH socket connect. <<
-  Test 25@stream-open: { } >> BOSH open to server. <<
-  Test 26@user-register: { } >> BOSH XEP-0077 - In-Band Registration, register <<
+  Bosh 1@socket-bosh: >> Socket connect. <<
+  Bosh 2@stream-open: { } >> Stream open to server. <<
+  Bosh 3@user-register: { } >> XEP-0077 - In-Band Registration, register <<
 
-  Test 27@auth-plain: >> BOSH XEP-0078 Non-SASL authorization with plain password. <<
-  Test 28@auth-sasl: { } >> BOSH SASL authorization <<
-  Test 29@xmpp-bind: { } >> BOSH XMPP resource bind <<
-  Test 30@xmpp-session: { } >> BOSH Establish XMPP session <<
-  Test 31@msg-send: { -to-jid = $(self) }
-  >> BOSH Send a message to self user and don't wait for response <<
+  Bosh 4@auth-plain: >> XEP-0078 Non-SASL authorization with plain password. <<
+  Bosh 5@auth-sasl: { } >> SASL authorization <<
+  Bosh 6@xmpp-bind: { } >> XMPP resource bind <<
+  Bosh 7@xmpp-session: { } >> Establish XMPP session <<
+  Bosh 8@msg-send: { -to-jid = $(self) }
+  >> Send a message to self user and don't wait for response <<
 
-  Test 32@msg-send: BOSH Send a message to $(daemon-user) user
+  Bosh 9@msg-send: Send a message to $(daemon-user) user
   { -to-jid = "$(daemon-user)@$(server-host)/xmpp-test" }
-  >> BOSH Send a message to $(daemon-user)@$(server-host)/xmpp-test user
+  >> Send a message to $(daemon-user)@$(server-host)/xmpp-test user
   and wait for message response <<
 
-  Test 33@iq-version: >> BOSH XEP-0092 - get entity version <<
-  Test 34@iq-stats: BOSH XEP-0039 Statistics Gathering
+  Bosh 10@iq-version: >> XEP-0092 - get entity version <<
+  Bosh 11@iq-stats: XEP-0039 Statistics Gathering
   { -user-name=$(stats-user) -user-pass=$(stats-pass) }
-  >> BOSH XEP-0039 Statistics Gathering. <<
+  >> XEP-0039 Statistics Gathering. <<
 
-  Test 35@common: { -source-file = "tests/data/RosterTest.cot" }
-  >> BOSH Roster management test <<
+  Bosh 12@common: { -source-file = "tests/data/RosterTest.cot" }
+  >> Roster management test <<
 
-  Test 36@privacy-lists: >> BOSH Privacy lists management test <<
+  Bosh 13@privacy-lists: >> Privacy lists management test <<
 
-  Test 37@msg-send: BOSH Privacy lists - send a message to $(blocking-user) user
+  Bosh 14@msg-send: Privacy lists - send a message to $(blocking-user) user
   {
     -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
 #    -socket-wait = 1000
 #    -time-out-ok
   } >> Privacy lists test - send a message to $(blocking-user) user blocking all messages and wait for error response <<
 
-  Test 38@msg-send: BOSH Send a message to $(long-list-user) user
+  Bosh 15@msg-send: Send a message to $(long-list-user) user
   {
     -to-jid = "$(long-list-user)@$(server-host)/xmpp-test"
   } >> Send a message to $(long-list-user)@$(server-host)/xmpp-test user
   with very long privacy list and wait for message response <<
 
-  Test 39@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
-  >> BOSH XEP-0049: Private XML Storage <<
+  Bosh 16@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
+  >> XEP-0049: Private XML Storage <<
 
-  Test 40@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
-  >> BOSH Test for feature-not-implemented error which should be returned when client sends unsupported stanza <<
+  Bosh 17@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
+  >> Test for feature-not-implemented error which should be returned when client sends unsupported stanza <<
 
-  Test 41@common: { -source-file = "tests/data/vcard-temp.cot" }
-  >> BOSH XEP-0054: vcard-temp <<
+  Bosh 18@common: { -source-file = "tests/data/vcard-temp.cot" }
+  >> XEP-0054: vcard-temp <<
 
-  Test 42@common: { -source-file = "tests/data/UrnXmppPing.cot" }
-  >> BOSH XEP-0199: XMPP Ping <<
+  Bosh 19@common: { -source-file = "tests/data/UrnXmppPing.cot" }
+  >> XEP-0199: XMPP Ping <<
 
-  Test 43@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
-  >> BOSH XEP-0030: XMPP Service Discovery <<
+  Bosh 20@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
+  >> XEP-0030: XMPP Service Discovery <<
 
-  Test end@user-unregister:
-  >> BOSH XEP-0077 - In-Band Registration - user unregister <<
+  Bosh 21: {
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence subscription test between '$(stats-user)' and '$(def-user)'. <<
+
+  Bosh 22: {
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionCancelReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionCancelSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence cancel test between '$(stats-user)' and '$(def-user)'. <<
+
+  Bosh 23: {
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionUnsubscribeReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionUnsubscribeSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence unsubscribe test between '$(stats-user)' and '$(def-user)'. <<
+
+  Bosh 24: {
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence subscription between '$(stats-user)' and '$(def-user)' again to prepare for the next test. <<
+
+  Bosh 25: {
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/RemoveSubscribedReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/RemoveSubscribedSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Remove subscribed contact '$(def-user)' from the roster of the user '$(stats-user)', all subscriptions should be cancelled automatically by the server. <<
+
+  Bosh end@user-unregister:
+  >> XEP-0077 - In-Band Registration - user unregister <<
 
 }
 >> Testing bosh component <<

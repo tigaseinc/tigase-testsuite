@@ -305,7 +305,11 @@ public class TestNode {
     Map<String, String> allVars = getVars();
     for (String key : allVars.keySet()) {
       while (result.contains(key)) {
-        result = result.replace(key, allVars.get(key));
+				String newVal = allVars.get(key);
+				if (newVal != null && newVal.startsWith("\"") && newVal.endsWith("\"")) {
+					newVal = newVal.substring(1, newVal.length() - 1);
+				}
+        result = result.replace(key, newVal);
       } // end of while (result.contains(key))
     } // end of for ()
     //    System.out.println("RESULT: " + result);

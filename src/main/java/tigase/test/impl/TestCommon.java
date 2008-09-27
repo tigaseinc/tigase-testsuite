@@ -124,9 +124,9 @@ public class TestCommon extends TestEmpty {
 							results = io.read();
 						} // end of while (!found)
 						if (results != null) {
-							// 						for (Element el: results) {
-							// 							System.out.println("RECEIVED: " + el.toString());
-							// 						}
+							for (Element el: results) {
+								debug("\nReceived: " + el.toString());
+							}
 							all_results.addAll(results);
 							results.clear();
 						}
@@ -310,6 +310,7 @@ public class TestCommon extends TestEmpty {
 		data = data.replace("$(from-jid)", jid);
 		data = data.replace("$(from-id)", id);
 		data = data.replace("$(to-jid)", to);
+		data = data.replace("$(to-id)", JIDUtils.getNodeID(to));
 		data = data.replace("$(hostname)", hostname);
 		data = data.replace("$(number)", "");
 		data = data.replace("$(cdata)", "");
