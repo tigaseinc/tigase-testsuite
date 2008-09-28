@@ -51,6 +51,7 @@ public class SocketBosh extends SocketXMLIO {
 	private String sid = null;
 	private String authId = null;
 	private boolean restart = false;
+	private boolean terminate = false;
 
 	/**
    * Creates a new <code>SocketXMLReader</code> instance.
@@ -108,6 +109,17 @@ public class SocketBosh extends SocketXMLIO {
 		return results;
   }
 
+	public void close() {
+		//System.out.println("Closing Bosh socket.");
+		//super.close();
+		terminate = true;
+		try {
+			initSocket(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	protected void initSocket(String data) throws IOException {
 		Socket client = new Socket();
 		client.setReuseAddress(true);
@@ -126,7 +138,13 @@ public class SocketBosh extends SocketXMLIO {
 				body.setAttribute("xmpp:restart", "true");
 				restart = false;
 			}
+			if (terminate) {
+				body.setAttribute("type", "terminate");
+			}
 			super.write(body.toString());
+			if (terminate) {
+				super.close();
+			}
 		}
 	}
 

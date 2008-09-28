@@ -188,7 +188,7 @@ public class TestCommon extends TestEmpty {
 		try {
 			XMLIO io = (XMLIO)params.get("socketxmlio");
 			io.close();
-		} catch (Exception e) {	}
+		} catch (Exception e) {	e.printStackTrace(); }
 	}
 
   /**

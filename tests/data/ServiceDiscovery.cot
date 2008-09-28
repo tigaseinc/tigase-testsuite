@@ -41,7 +41,6 @@ expect:
 		<feature var="http://jabber.org/protocol/disco#items" />
 		<feature var="http://jabber.org/protocol/commands" />
 		<feature var="http://jabber.org/protocol/stats" />
-		<feature var="jabber:iq:register" />
 		<feature var="jabber:iq:version" />
 		<feature var="msgoffline" />
   </query>

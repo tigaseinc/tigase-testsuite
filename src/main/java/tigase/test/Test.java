@@ -31,6 +31,7 @@ import tigase.test.parser.TestNode;
 import tigase.test.util.Params;
 import tigase.xml.Element;
 import java.util.concurrent.CountDownLatch;
+import tigase.test.util.XMLIO;
 
 import static tigase.test.util.TestUtil.*;
 
@@ -435,7 +436,7 @@ public class Test {
 //             } // end of if (test.getHistory() != null)
             last_result = false;
             synchronized(this) { this.notifyAll(); }
-            return;
+						//            return;
           } // end of if (test.run()) else
         } // end of for ()
       } // end of try
@@ -446,11 +447,12 @@ public class Test {
         last_result = false;
 				params.put("authorized", false);
         synchronized(this) { this.notifyAll(); }
-        return;
+        //return;
       } // end of try-catch
       if (!on_one_socket && !active_connection) {
-        try { ((Socket)params.get("socket")).close();
-        } catch (Exception e) { }
+				//System.out.println("Closing XMLIO socket.");
+        try { ((XMLIO)params.get("socketxmlio")).close();
+        } catch (Exception e) { e.printStackTrace(); }
       }
       last_result = true;
       synchronized(this) { this.notifyAll(); }

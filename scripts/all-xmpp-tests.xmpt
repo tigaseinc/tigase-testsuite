@@ -177,9 +177,10 @@ Global settings:
 
   Test 24: {
     -multi-thread
-    -delay = 250
 
     Subscription receive@common: {
+      -delay = 250
+
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -198,9 +199,10 @@ Global settings:
 
   Test 25: {
     -multi-thread
-    -delay = 250
 
     Subscription receive@common: {
+      -delay = 250
+
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -219,9 +221,10 @@ Global settings:
 
   Test 26: {
     -multi-thread
-    -delay = 250
 
     Subscription receive@common: {
+      -delay = 250
+
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -240,9 +243,10 @@ Global settings:
 
   Test 27: {
     -multi-thread
-    -delay = 250
 
     Subscription receive@common: {
+      -delay = 250
+
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -261,9 +265,10 @@ Global settings:
 
   Test 28: {
     -multi-thread
-    -delay = 250
 
     Subscription receive@common: {
+      -delay = 250
+
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -279,6 +284,27 @@ Global settings:
      } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
 
   } >> Remove subscribed contact '$(def-user)' from the roster of the user '$(stats-user)', all subscriptions should be cancelled automatically by the server. <<
+
+  Test 29: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-resr   = res-1
+      -to-jid = "$(def-user)@$(server-host)/res-2"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
+
+    Subscription send@common: {
+      -user-resr   = res-2
+      -to-jid = "$(def-user)@$(server-host)/res-1"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> 2 user connections, each using a different resource. <<
 
   Test end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<
@@ -349,9 +375,10 @@ Bosh Tests:
 
   Bosh 21: {
     -multi-thread
-    -delay = 250
 
     Subscription receive@common: {
+      -delay = 250
+
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -370,9 +397,10 @@ Bosh Tests:
 
   Bosh 22: {
     -multi-thread
-    -delay = 250
 
     Subscription receive@common: {
+      -delay = 250
+
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -391,9 +419,10 @@ Bosh Tests:
 
   Bosh 23: {
     -multi-thread
-    -delay = 250
 
     Subscription receive@common: {
+      -delay = 250
+
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -412,9 +441,10 @@ Bosh Tests:
 
   Bosh 24: {
     -multi-thread
-    -delay = 250
 
     Subscription receive@common: {
+      -delay = 250
+
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -433,9 +463,10 @@ Bosh Tests:
 
   Bosh 25: {
     -multi-thread
-    -delay = 250
 
     Subscription receive@common: {
+      -delay = 250
+
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -452,6 +483,50 @@ Bosh Tests:
 
   } >> Remove subscribed contact '$(def-user)' from the roster of the user '$(stats-user)', all subscriptions should be cancelled automatically by the server. <<
 
+  Bosh 26: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-resr   = res-1
+      -to-jid = "$(def-user)@$(server-host)/res-2"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
+
+    Subscription send@common: {
+      -user-resr   = res-2
+      -to-jid = "$(def-user)@$(server-host)/res-1"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> 2 user connections, each using a different resource. <<
+
+  Bosh 27: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-resr   = bosh
+      -to-jid = "$(def-user)@$(server-host)/c2s"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
+
+    Subscription send@common: {
+      -port = 5222
+      -def-stream  = stream-client
+      -user-resr   = c2s
+      -to-jid = "$(def-user)@$(server-host)/bosh"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> Mixed, one connectiob via Bosh another standard c2s, each using a different resource. <<
+
   Bosh end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<
 
@@ -462,22 +537,6 @@ Multi thread tests:
 {
 
   Multi 1: {
-    -multi-thread
-    -loop = 5
-
-    Version@iq-version: { -user-name = "multi-reg_1_$(loop)" }
-        >> Get server version <<
-    Version@iq-version: { -user-name = "multi-reg_2_$(loop)" }
-        >> Get server version <<
-    Version@iq-version: { -user-name = "multi-reg_3_$(loop)" }
-        >> Get server version <<
-    Version@iq-version: { -user-name = "multi-reg_4_$(loop)" }
-        >> Get server version <<
-    Version@iq-version: { -user-name = "multi-reg_5_$(loop)" }
-        >> Get server version <<
-  } >> Multi-thread test of server Version info <<
-
-  Multi 2: {
     -multi-thread
     -loop = 5
 
@@ -492,6 +551,22 @@ Multi thread tests:
     Register@user-register: { -user-name = "multi-reg_5_$(loop)" }
     >> XEP-0077 <<
   } >> Multi-thread test of XEP-0077 - In-Band Registration, user register <<
+
+  Multi 2: {
+    -multi-thread
+    -loop = 5
+
+    Version@iq-version: { -user-name = "multi-reg_1_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_2_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_3_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_4_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_5_$(loop)" }
+        >> Get server version <<
+  } >> Multi-thread test of server Version info <<
 
   Multi 3: {
     -multi-thread
