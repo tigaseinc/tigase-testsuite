@@ -306,6 +306,28 @@ Global settings:
 
   } >> 2 user connections, each using a different resource. <<
 
+  Test 30: {
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionDeniedReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionDeniedSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence subscription deny test between '$(stats-user)' and '$(def-user)'. <<
+
   Test end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<
 
@@ -526,6 +548,28 @@ Bosh Tests:
      } >> Login and waut for presence from another resource. <<
 
   } >> Mixed, one connectiob via Bosh another standard c2s, each using a different resource. <<
+
+  Test 28: {
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionDeniedReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionDeniedSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence subscription deny test between '$(stats-user)' and '$(def-user)'. <<
 
   Bosh end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<
