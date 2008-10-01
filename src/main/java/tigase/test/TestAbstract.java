@@ -186,6 +186,8 @@ public abstract class TestAbstract extends TestEmpty {
       addInput(getClass().getName() + ", " + e + "\n" + TestUtil.stack2String(e));
       resultCode = ResultCode.PROCESSING_EXCEPTION;
       exception = e;
+			System.out.println(Arrays.toString(implemented()));
+			System.out.println(params.toString());
       e.printStackTrace();
       return false;
     } // end of try-catch

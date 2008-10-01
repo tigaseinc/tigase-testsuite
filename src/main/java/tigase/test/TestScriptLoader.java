@@ -438,11 +438,13 @@ public class TestScriptLoader {
   }
 
   private void saveHistory(Test test, File file_name) throws IOException {
-    BufferedWriter bw = new BufferedWriter(new FileWriter(file_name, false));
-    for (HistoryEntry entry: test.getHistory()) {
-      bw.write(entry.toString() + "\n");
-    } // end of for ()
-    bw.close();
+		if (test.getHistory() != null) {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file_name, false));
+			for (HistoryEntry entry: test.getHistory()) {
+				bw.write(entry.toString() + "\n");
+			} // end of for ()
+			bw.close();
+		}
   }
 
   private String getDescription(TestNode node) {

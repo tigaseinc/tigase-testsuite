@@ -68,7 +68,7 @@ public class TestPrivacyListBlockMsg extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"privacy-block-msg"},
-      new String[] {"stream-open", "auth"},
+      new String[] {"stream-open", "auth", "xmpp-bind"},
       new String[] {"user-register", "tls-init"}
       );
 	}

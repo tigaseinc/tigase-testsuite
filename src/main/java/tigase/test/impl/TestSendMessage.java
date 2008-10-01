@@ -62,8 +62,8 @@ public class TestSendMessage extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"msg-send"},
-      new String[] {"stream-open", "auth"},
-      new String[] {"user-register", "tls-init"}
+      new String[] {"stream-open", "auth", "xmpp-bind"},
+      new String[] {"tls-init"}
       );
   }
 

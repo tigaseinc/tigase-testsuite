@@ -22,6 +22,7 @@
 package tigase.test;
 
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -406,10 +407,12 @@ public class Test {
      */
     public void run() {
 			long test_start_time = System.currentTimeMillis();
+			TestIfc tmptest = null;
       try {
         for (TestIfc test : suite) {
           debug("Testing: " + toStringArrayNS(test.implemented(), "..."),
             debug);
+					tmptest = test;
           test.init(params);
           boolean res = test.run();
           if (collectHistory) {
@@ -422,6 +425,7 @@ public class Test {
               synchronized(this) { this.notifyAll(); }
             } // end of if (authorized)
             debug("     success!\n", debug);
+						last_result = true;
           } else {
             errorMsg = test.getResultMessage();
             debug("       failure!\n", debug || debug_on_error);
@@ -442,6 +446,8 @@ public class Test {
       } // end of try
       catch (Exception e) {
         //e.printStackTrace();
+				System.out.println(Arrays.toString(tmptest.implemented()));
+				System.out.println(params.toString());
         exception = e;
         errorMsg = e.toString();
         last_result = false;
@@ -454,7 +460,6 @@ public class Test {
         try { ((XMLIO)params.get("socketxmlio")).close();
         } catch (Exception e) { e.printStackTrace(); }
       }
-      last_result = true;
       synchronized(this) { this.notifyAll(); }
 			resultsHandler.handleResult(this, last_result);
 			long this_test = System.currentTimeMillis() - test_start_time;

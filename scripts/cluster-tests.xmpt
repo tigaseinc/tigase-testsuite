@@ -34,16 +34,19 @@ $(def-user-pass) = tester12
 $(ssl-tls-wait) = 15000
 $(stats-user) = admin
 $(stats-pass) = stats
+$(daemon-user) = all-xmpp-test_1
+$(multi-pass) = multi-reg_1_
 
 $(node-1) = "veloci.tigase.org"
 $(node-2) = "shell2.tigase.org"
+$(node-3) = "test-i.tigase.org"
 -serverip    = "veloci.tigase.org"
 -host        = $(server-host)
 -user-name   = $(def-user)
 -user-pass   = ala
 -socket-wait = 15000
 -base-ns     = "jabber:client"
--def-auth    = auth-plain
+-def-auth    = auth-sasl
 -keys-file-password   = keystore
 -trusts-file-password = truststore
 -keys-file            = "certs/keystore"
@@ -70,7 +73,9 @@ Global settings:
       >> Plain socket connect to node $(node-1). <<
     Socket@socket: { -serverip = $(node-2) }
       >> Plain socket connect to node $(node-2). <<
-  } >> Socket connect to both cluster nodes. <<
+    Socket@socket: { -serverip = $(node-3) }
+      >> Plain socket connect to node $(node-3). <<
+  } >> Socket connect to all cluster nodes. <<
 
   Test 2: {
     -multi-thread
@@ -79,7 +84,9 @@ Global settings:
       >> Stream open to node $(node-1). <<
     Stream@stream-open: { -serverip = $(node-2) }
       >> Stream open to node $(node-2). <<
-  } >> Stream open to both cluster nodes. <<
+    Stream@stream-open: { -serverip = $(node-3) }
+      >> Stream open to node $(node-3). <<
+  } >> Stream open to all cluster nodes. <<
 
   Test 3: {
     -multi-thread
@@ -88,7 +95,9 @@ Global settings:
       >> TLS connection open to node $(node-1). <<
     TLS Open@tls-init: { -serverip = $(node-2) }
       >> TLS connection open to node $(node-2). <<
-  } >> TLS connection open to both cluster nodes. <<
+    TLS Open@tls-init: { -serverip = $(node-3) }
+      >> TLS connection open to node $(node-3). <<
+  } >> TLS connection open to all cluster nodes. <<
 
   Test 4: {
     -multi-thread
@@ -103,7 +112,12 @@ Global settings:
       -user-name = $(stats-user)
       -user-pass = $(stats-pass)
      } >> SASL authorization to node $(node-2) on $(stats-user) user. <<
-  } >> SASL authorization to both cluster nodes to different accounts. <<
+    SASL Auth@tls-init;auth-sasl: {
+      -serverip = $(node-3)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+     } >> SASL authorization to node $(node-3) on $(stats-user) user. <<
+  } >> SASL authorization to all cluster nodes to different accounts. <<
 
   Test 5: {
     -multi-thread
@@ -118,7 +132,11 @@ Global settings:
       -serverip = $(node-2)
       -user-resr = $(node-2)
      } >> SASL authorization to node $(node-2) on $(def-user) user. <<
-  } >> SASL authorization to both cluster nodes to the same account '$(def-user)'. <<
+    SASL Auth@tls-init;auth-sasl: {
+      -serverip = $(node-3)
+      -user-resr = $(node-3)
+     } >> SASL authorization to node $(node-3) on $(def-user) user. <<
+  } >> SASL authorization to all cluster nodes to the same account '$(def-user)'. <<
 
   Test 6: {
     -multi-thread
@@ -137,19 +155,25 @@ Global settings:
       -user-resr = $(node-2)
       -to-jid = $(self)
      } >> Send a message to self user and don't wait for response to node $(node-2) on $(stats-user) user. <<
+    Message send@msg-send: {
+      -serverip = $(node-3)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-3)
+      -to-jid = $(self)
+     } >> Send a message to self user and don't wait for response to node $(node-3) on $(stats-user) user. <<
   } >> Message send within one node to self user. <<
 
   Test 7: {
     -multi-thread
+    -delay = 250
 
     Message send@msg-listen: {
-      -delay = 250
-
       -serverip = $(node-1)
       -user-name = $(def-user)
       -user-pass = $(def-user-pass)
       -user-resr = $(node-1)
-      -messages = 1
+      -messages = 2
      } >> Wait for  a message from $(stats-user) user and send a response on node $(node-1). <<
     Message send@msg-send: {
       -serverip = $(node-1)
@@ -158,19 +182,79 @@ Global settings:
       -user-resr = $(node-1)
       -to-jid = "$(def-user)@$(server-host)/$(node-1)"
      } >> Send a message to $(def-user) and wait for response on node $(node-1). <<
-  } >> Message send within one node from '$(stats-user)' to '$(def-user)' and wait for a response. <<
+    Message send@msg-send: {
+      -serverip = $(node-1)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-1)
+      -to-jid = "$(def-user)@$(server-host)/$(node-1)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-1). <<
+  } >> Message send within '$(node-1)' node from '$(stats-user)' and from '$(daemon-user)'to '$(def-user)' and wait for a response. <<
 
   Test 8: {
+    -delay = 250
     -multi-thread
 
     Message send@msg-listen: {
-      -delay = 250
+      -serverip = $(node-2)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-2)
+      -messages = 2
+     } >> Wait for  a message from $(stats-user) user and send a response on node $(node-2). <<
+    Message send@msg-send: {
+      -serverip = $(node-2)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-2)
+      -to-jid = "$(def-user)@$(server-host)/$(node-2)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-2). <<
+    Message send@msg-send: {
+      -serverip = $(node-2)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-2)
+      -to-jid = "$(def-user)@$(server-host)/$(node-2)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-2). <<
+  } >> Message send within '$(node-2)' node from '$(stats-user)' and from '$(daemon-user)'to '$(def-user)' and wait for a response. <<
 
+  Test 9: {
+    -multi-thread
+    -delay = 250
+
+    Message send@msg-listen: {
+      -serverip = $(node-3)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-3)
+      -messages = 2
+     } >> Wait for  a message from $(stats-user) user and send a response on node $(node-3). <<
+    Message send@msg-send: {
+      -serverip = $(node-3)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-3). <<
+    Message send@msg-send: {
+      -serverip = $(node-3)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-3). <<
+  } >> Message send within '$(node-3)' node from '$(stats-user)' and from '$(daemon-user)'to '$(def-user)' and wait for a response. <<
+
+  Test 10: {
+    -delay = 250
+    -multi-thread
+
+    Message send@msg-listen: {
       -serverip = $(node-1)
       -user-name = $(def-user)
       -user-pass = $(def-user-pass)
       -user-resr = $(node-1)
-      -messages = 1
+      -messages = 2
      } >> Wait for  a message from $(stats-user) user and send a response on node $(node-1). <<
     Message send@msg-send: {
       -serverip = $(node-2)
@@ -179,18 +263,77 @@ Global settings:
       -user-resr = $(node-2)
       -to-jid = "$(def-user)@$(server-host)/$(node-1)"
      } >> Send a message to $(def-user) and wait for response on node $(node-2). <<
-  } >> Message send beetwen 2 nodes: from '$(node-2)', user '$(stats-user)' to user '$(def-user)' on '$(node-1)' and wait for a response. <<
+    Message send@msg-send: {
+      -serverip = $(node-3)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-1)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-3). <<
+  } >> Message send beetwen 3 nodes: from '$(node-2)', user '$(stats-user)' and from '$(node-3)', user '$(daemon-user)' to user '$(def-user)' on '$(node-1)' and wait for a response. <<
 
+  Test 11: {
+    -delay = 250
+    -multi-thread
 
-  Test 9: {
+    Message send@msg-listen: {
+      -serverip = $(node-2)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-2)
+      -messages = 2
+     } >> Wait for  a message from $(stats-user) user and send a response on node $(node-2). <<
+    Message send@msg-send: {
+      -serverip = $(node-3)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-2)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-3). <<
+    Message send@msg-send: {
+      -serverip = $(node-1)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-1)
+      -to-jid = "$(def-user)@$(server-host)/$(node-2)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-1). <<
+  } >> Message send beetwen 3 nodes: from '$(node-3)', user '$(stats-user)' and from '$(node-1)', user '$(daemon-user)' to user '$(def-user)' on '$(node-2)' and wait for a response. <<
+
+  Test 12: {
+    -delay = 250
+    -multi-thread
+
+    Message send@msg-listen: {
+      -serverip = $(node-3)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-3)
+      -messages = 2
+     } >> Wait for  a message from $(stats-user) user and send a response on node $(node-3). <<
+    Message send@msg-send: {
+      -serverip = $(node-1)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-1)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-1). <<
+    Message send@msg-send: {
+      -serverip = $(node-2)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-2)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-2). <<
+  } >> Message send beetwen 3 nodes: from '$(node-1)', user '$(stats-user)' and from '$(node-2)', user '$(daemon-user)' to user '$(def-user)' on '$(node-3)' and wait for a response. <<
+
+  Test 13: {
     -serverip = $(node-1)
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-resr   = res-1
       -to-jid = "$(def-user)@$(server-host)/res-2"
       -source-file = "tests/data/PresenceWait.cot"
@@ -204,13 +347,12 @@ Global settings:
 
   } >> 2 user connections, each using a different resource on '$(node-1)' node. <<
 
-
-  Test 10: {
+  Test 14: {
     -serverip = $(node-2)
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
-    -delay = 1000
+    -delay = 250
 
     Subscription receive@common: {
       -user-resr   = res-1
@@ -226,14 +368,35 @@ Global settings:
 
   } >> 2 user connections, each using a different resource on '$(node-2)' node. <<
 
-  Test 11: {
+  Test 15: {
+    -serverip = $(node-3)
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
+      -user-resr   = res-1
+      -to-jid = "$(def-user)@$(server-host)/res-2"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
 
+    Subscription send@common: {
+      -user-resr   = res-2
+      -to-jid = "$(def-user)@$(server-host)/res-1"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> 2 user connections, each using a different resource on '$(node-3)' node. <<
+
+
+  Test 16: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
       -to-jid = "$(def-user)@$(server-host)/$(node-2)"
@@ -247,98 +410,170 @@ Global settings:
       -source-file = "tests/data/PresenceWait.cot"
      } >> Login and waut for presence from another resource. <<
 
-  } >> 2 user connections, each using a different node. <<
+  } >> 2 user connections, on node '$(node-1)' and '$(node-2)'. <<
 
-  Test 12: {
+  Test 17: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -serverip = $(node-2)
+      -user-resr   = $(node-2)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
+
+    Subscription send@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-2)"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> 2 user connections, on node '$(node-2)' and '$(node-3)'. <<
+
+  Test 18: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -serverip = $(node-1)
+      -user-resr   = $(node-1)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
+
+    Subscription send@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-1)"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> 2 user connections, on node '$(node-1)' and '$(node-3)'. <<
+
+  Test 19: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
 
-    Test 12 1@iq-version: {
+    IQ Version 1@iq-version: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
      } >> XEP-0092 - get entity version. <<
 
-    Test 12 2@iq-version: {
+    IQ Version 2@iq-version: {
       -serverip = $(node-2)
       -user-resr   = $(node-2)
      } >> XEP-0092 - get entity version. <<
 
-  } >> XEP-0092 get-version - 2 user connections, each using a different node. <<
+    IQ Version 3@iq-version: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+     } >> XEP-0092 - get entity version. <<
 
-  Test 13: {
+  } >> XEP-0092 get-version - 3 user connections, each using a different node. <<
+
+  Test 20: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
 
-    Test 13 1@iq-stats: {
+    IQ Stats 1@iq-stats: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
      } >> XEP-0039 Statistics Gathering. <<
 
-    Test 13 2@iq-stats: {
+    IQ Stats 2@iq-stats: {
       -serverip = $(node-2)
       -user-resr   = $(node-2)
      } >> XEP-0039 Statistics Gathering. <<
 
-  } >> XEP-0039 Statistics Gathering - 2 user connections, each using a different node. <<
+    IQ Stats 3@iq-stats: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+     } >> XEP-0039 Statistics Gathering. <<
 
-  Test 14: {
+  } >> XEP-0039 Statistics Gathering - 3 user connections, each using a different node. <<
+
+  Test 21: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
 
-    Test 14 1@common: {
+    Not Impl 1@common: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
       -source-file = "tests/data/FeatureNotImplemented.cot"
      } >> Test for feature-not-implemented error. <<
 
-    Test 14 2@common: {
+    Not Impl 2@common: {
       -serverip = $(node-2)
       -user-resr   = $(node-2)
       -source-file = "tests/data/FeatureNotImplemented.cot"
      } >> Test for feature-not-implemented error. <<
 
-  } >> Test for feature-not-implemented error - 2 user connections, each using a different node. <<
+    Not Impl 3@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -source-file = "tests/data/FeatureNotImplemented.cot"
+     } >> Test for feature-not-implemented error. <<
 
-  Test 15: {
+  } >> Test for feature-not-implemented error - 3 user connections, each using a different node. <<
+
+  Test 22: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
 
-    Test 15 1@common: {
+    Ping 1@common: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
       -source-file = "tests/data/UrnXmppPing.cot"
      } >> XEP-0199: XMPP Ping. <<
 
-    Test 15 2@common: {
+    Ping 2@common: {
       -serverip = $(node-2)
       -user-resr   = $(node-2)
       -source-file = "tests/data/UrnXmppPing.cot"
      } >> XEP-0199: XMPP Ping. <<
 
-  } >> XEP-0199: XMPP Ping - 2 user connections, each using a different node. <<
+    Ping 3@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -source-file = "tests/data/UrnXmppPing.cot"
+     } >> XEP-0199: XMPP Ping. <<
 
-  Test 16: {
+  } >> XEP-0199: XMPP Ping - 3 user connections, each using a different node. <<
+
+  Test 23: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
 
-    Test 16 1@common: {
+    Discovery 1@common: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
       -source-file = "tests/data/ServiceDiscovery.cot"
      } >> XEP-0030: XMPP Service Discovery. <<
 
-    Test 16 2@common: {
+    Discovery 2@common: {
       -serverip = $(node-2)
       -user-resr   = $(node-2)
       -source-file = "tests/data/ServiceDiscovery.cot"
      } >> XEP-0030: XMPP Service Discovery. <<
 
-  } >> XEP-0030: XMPP Service Discovery - 2 user connections, each using a different node. <<
+    Discovery 3@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -source-file = "tests/data/ServiceDiscovery.cot"
+     } >> XEP-0030: XMPP Service Discovery. <<
+
+  } >> XEP-0030: XMPP Service Discovery - 3 user connections, each using a different node. <<
 
 }
 >> Script with functional tests for all basic XMPP/Jabber features in the cluster mode. <<
@@ -357,7 +592,9 @@ Bosh Tests:
       >> Plain socket connect to node $(node-1). <<
     Socket@socket: { -serverip = $(node-2) }
       >> Plain socket connect to node $(node-2). <<
-  } >> Socket connect to both cluster nodes. <<
+    Socket@socket: { -serverip = $(node-3) }
+      >> Plain socket connect to node $(node-3). <<
+  } >> Socket connect to all cluster nodes. <<
 
   Bosh 2: {
     -multi-thread
@@ -366,7 +603,9 @@ Bosh Tests:
       >> Stream open to node $(node-1). <<
     Stream@stream-open: { -serverip = $(node-2) }
       >> Stream open to node $(node-2). <<
-  } >> Stream open to both cluster nodes. <<
+    Stream@stream-open: { -serverip = $(node-3) }
+      >> Stream open to node $(node-3). <<
+  } >> Stream open to all cluster nodes. <<
 
   Bosh 3: {
     -multi-thread
@@ -381,7 +620,12 @@ Bosh Tests:
       -user-name = $(stats-user)
       -user-pass = $(stats-pass)
      } >> SASL authorization to node $(node-2) on $(stats-user) user. <<
-  } >> SASL authorization to both cluster nodes to different accounts. <<
+    SASL Auth@auth-sasl: {
+      -serverip = $(node-3)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+     } >> SASL authorization to node $(node-3) on $(stats-user) user. <<
+  } >> SASL authorization to all cluster nodes to different accounts. <<
 
   Bosh 4: {
     -multi-thread
@@ -396,7 +640,11 @@ Bosh Tests:
       -serverip = $(node-2)
       -user-resr = $(node-2)
      } >> SASL authorization to node $(node-2) on $(def-user) user. <<
-  } >> SASL authorization to both cluster nodes to the same account '$(def-user)'. <<
+    SASL Auth@auth-sasl: {
+      -serverip = $(node-3)
+      -user-resr = $(node-3)
+     } >> SASL authorization to node $(node-3) on $(def-user) user. <<
+  } >> SASL authorization to all cluster nodes to the same account '$(def-user)'. <<
 
   Bosh 5: {
     -multi-thread
@@ -415,6 +663,13 @@ Bosh Tests:
       -user-resr = $(node-2)
       -to-jid = $(self)
      } >> Send a message to self user and don't wait for response to node $(node-2) on $(stats-user) user. <<
+    Message send@msg-send: {
+      -serverip = $(node-3)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-3)
+      -to-jid = $(self)
+     } >> Send a message to self user and don't wait for response to node $(node-3) on $(daemon-user) user. <<
   } >> Message send within one node to self user. <<
 
   Bosh 6: {
@@ -426,7 +681,7 @@ Bosh Tests:
       -user-name = $(def-user)
       -user-pass = $(def-user-pass)
       -user-resr = $(node-1)
-      -messages = 1
+      -messages = 2
      } >> Wait for  a message from $(stats-user) user and send a response on node $(node-1). <<
     Message send@msg-send: {
       -serverip = $(node-1)
@@ -435,19 +690,79 @@ Bosh Tests:
       -user-resr = $(node-1)
       -to-jid = "$(def-user)@$(server-host)/$(node-1)"
      } >> Send a message to $(def-user) and wait for response on node $(node-1). <<
+    Message send@msg-send: {
+      -serverip = $(node-1)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-1)
+      -to-jid = "$(def-user)@$(server-host)/$(node-1)"
+     } >> Send a message to '$(def-user)' user and wait for response no node $(node-1). <<
   } >> Message send within one node from '$(stats-user)' to '$(def-user)' and wait for a response. <<
 
   Bosh 7: {
+    -delay = 250
     -multi-thread
 
     Message send@msg-listen: {
-      -delay = 250
+      -serverip = $(node-2)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-2)
+      -messages = 2
+     } >> Wait for  a message from $(stats-user) user and send a response on node $(node-2). <<
+    Message send@msg-send: {
+      -serverip = $(node-2)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-2)
+      -to-jid = "$(def-user)@$(server-host)/$(node-2)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-2). <<
+    Message send@msg-send: {
+      -serverip = $(node-2)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-2)
+      -to-jid = "$(def-user)@$(server-host)/$(node-2)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-2). <<
+  } >> Message send within '$(node-2)' node from '$(stats-user)' and from '$(daemon-user)'to '$(def-user)' and wait for a response. <<
 
+  Bosh 8: {
+    -multi-thread
+    -delay = 250
+
+    Message send@msg-listen: {
+      -serverip = $(node-3)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-3)
+      -messages = 2
+     } >> Wait for  a message from $(stats-user) user and send a response on node $(node-3). <<
+    Message send@msg-send: {
+      -serverip = $(node-3)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-3). <<
+    Message send@msg-send: {
+      -serverip = $(node-3)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-3). <<
+  } >> Message send within '$(node-3)' node from '$(stats-user)' and from '$(daemon-user)'to '$(def-user)' and wait for a response. <<
+
+  Bosh 9: {
+    -delay = 250
+    -multi-thread
+
+    Message send@msg-listen: {
       -serverip = $(node-1)
       -user-name = $(def-user)
       -user-pass = $(def-user-pass)
       -user-resr = $(node-1)
-      -messages = 1
+      -messages = 2
      } >> Wait for  a message from $(stats-user) user and send a response on node $(node-1). <<
     Message send@msg-send: {
       -serverip = $(node-2)
@@ -456,18 +771,77 @@ Bosh Tests:
       -user-resr = $(node-2)
       -to-jid = "$(def-user)@$(server-host)/$(node-1)"
      } >> Send a message to $(def-user) and wait for response on node $(node-2). <<
-  } >> Message send beetwen 2 nodes: from '$(node-2)', user '$(stats-user)' to user '$(def-user)' on '$(node-1)' and wait for a response. <<
+    Message send@msg-send: {
+      -serverip = $(node-3)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-1)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-3). <<
+  } >> Message send beetwen 3 nodes: from '$(node-2)', user '$(stats-user)' and from '$(node-3)', user '$(daemon-user)' to user '$(def-user)' on '$(node-1)' and wait for a response. <<
 
+  Bosh 10: {
+    -delay = 250
+    -multi-thread
 
-  Bosh 8: {
+    Message send@msg-listen: {
+      -serverip = $(node-2)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-2)
+      -messages = 2
+     } >> Wait for  a message from $(stats-user) user and send a response on node $(node-2). <<
+    Message send@msg-send: {
+      -serverip = $(node-3)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-2)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-3). <<
+    Message send@msg-send: {
+      -serverip = $(node-1)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-1)
+      -to-jid = "$(def-user)@$(server-host)/$(node-2)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-1). <<
+  } >> Message send beetwen 3 nodes: from '$(node-3)', user '$(stats-user)' and from '$(node-1)', user '$(daemon-user)' to user '$(def-user)' on '$(node-2)' and wait for a response. <<
+
+  Bosh 11: {
+    -delay = 250
+    -multi-thread
+
+    Message send@msg-listen: {
+      -serverip = $(node-3)
+      -user-name = $(def-user)
+      -user-pass = $(def-user-pass)
+      -user-resr = $(node-3)
+      -messages = 2
+     } >> Wait for  a message from $(stats-user) user and send a response on node $(node-3). <<
+    Message send@msg-send: {
+      -serverip = $(node-1)
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -user-resr = $(node-1)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-1). <<
+    Message send@msg-send: {
+      -serverip = $(node-2)
+      -user-name = $(daemon-user)
+      -user-pass = $(multi-pass)
+      -user-resr = $(node-2)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+     } >> Send a message to $(def-user) and wait for response on node $(node-2). <<
+  } >> Message send beetwen 3 nodes: from '$(node-1)', user '$(stats-user)' and from '$(node-2)', user '$(daemon-user)' to user '$(def-user)' on '$(node-3)' and wait for a response. <<
+
+  Bosh 12: {
     -serverip = $(node-1)
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-resr   = res-1
       -to-jid = "$(def-user)@$(server-host)/res-2"
       -source-file = "tests/data/PresenceWait.cot"
@@ -481,13 +855,12 @@ Bosh Tests:
 
   } >> 2 user connections, each using a different resource on '$(node-1)' node. <<
 
-
-  Bosh 9: {
+  Bosh 13: {
     -serverip = $(node-2)
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
-    -delay = 1000
+    -delay = 250
 
     Subscription receive@common: {
       -user-resr   = res-1
@@ -503,14 +876,36 @@ Bosh Tests:
 
   } >> 2 user connections, each using a different resource on '$(node-2)' node. <<
 
-  Bosh 10: {
+  Bosh 14: {
+    -serverip = $(node-3)
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
+      -user-resr   = res-1
+      -to-jid = "$(def-user)@$(server-host)/res-2"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
 
+    Subscription send@common: {
+      -delay = 1000
+      -user-resr   = res-2
+      -to-jid = "$(def-user)@$(server-host)/res-1"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> 2 user connections, each using a different resource on '$(node-3)' node. <<
+
+
+  Bosh 15: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
       -to-jid = "$(def-user)@$(server-host)/$(node-2)"
@@ -524,98 +919,170 @@ Bosh Tests:
       -source-file = "tests/data/PresenceWait.cot"
      } >> Login and waut for presence from another resource. <<
 
-  } >> 2 user connections, each using a different node. <<
+  } >> 2 user connections, on node '$(node-1)' and '$(node-2)'. <<
 
-  Bosh 11: {
+  Bosh 16: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -serverip = $(node-2)
+      -user-resr   = $(node-2)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
+
+    Subscription send@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-2)"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> 2 user connections, on node '$(node-2)' and '$(node-3)'. <<
+
+  Bosh 17: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+    -delay = 250
+
+    Subscription receive@common: {
+      -serverip = $(node-1)
+      -user-resr   = $(node-1)
+      -to-jid = "$(def-user)@$(server-host)/$(node-3)"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
+
+    Subscription send@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -to-jid = "$(def-user)@$(server-host)/$(node-1)"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> 2 user connections, on node '$(node-1)' and '$(node-3)'. <<
+
+  Bosh 18: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
 
-    Bosh 12 1@iq-version: {
+    IQ Version 1@iq-version: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
      } >> XEP-0092 - get entity version. <<
 
-    Bosh 12 2@iq-version: {
+    IQ Version 2@iq-version: {
       -serverip = $(node-2)
       -user-resr   = $(node-2)
      } >> XEP-0092 - get entity version. <<
 
-  } >> XEP-0092 get-version - 2 user connections, each using a different node. <<
+    IQ Version 3@iq-version: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+     } >> XEP-0092 - get entity version. <<
 
-  Bosh 12: {
+  } >> XEP-0092 get-version - 3 user connections, each using a different node. <<
+
+  Bosh 19: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
 
-    Bosh 12 1@iq-stats: {
+    IQ Stats 1@iq-stats: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
      } >> XEP-0039 Statistics Gathering. <<
 
-    Bosh 12 2@iq-stats: {
+    IQ Stats 2@iq-stats: {
       -serverip = $(node-2)
       -user-resr   = $(node-2)
      } >> XEP-0039 Statistics Gathering. <<
 
-  } >> XEP-0039 Statistics Gathering - 2 user connections, each using a different node. <<
+    IQ Stats 3@iq-stats: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+     } >> XEP-0039 Statistics Gathering. <<
 
-  Bosh 13: {
+  } >> XEP-0039 Statistics Gathering - 3 user connections, each using a different node. <<
+
+  Bosh 20: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
 
-    Bosh 13 1@common: {
+    Not Impl 1@common: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
       -source-file = "tests/data/FeatureNotImplemented.cot"
      } >> Test for feature-not-implemented error. <<
 
-    Bosh 13 2@common: {
+    Not Impl 2@common: {
       -serverip = $(node-2)
       -user-resr   = $(node-2)
       -source-file = "tests/data/FeatureNotImplemented.cot"
      } >> Test for feature-not-implemented error. <<
 
-  } >> Test for feature-not-implemented error - 2 user connections, each using a different node. <<
+    Not Impl 3@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -source-file = "tests/data/FeatureNotImplemented.cot"
+     } >> Test for feature-not-implemented error. <<
 
-  Bosh 14: {
+  } >> Test for feature-not-implemented error - 3 user connections, each using a different node. <<
+
+  Bosh 21: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
 
-    Bosh 14 1@common: {
+    Ping 1@common: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
       -source-file = "tests/data/UrnXmppPing.cot"
      } >> XEP-0199: XMPP Ping. <<
 
-    Bosh 14 2@common: {
+    Ping 2@common: {
       -serverip = $(node-2)
       -user-resr   = $(node-2)
       -source-file = "tests/data/UrnXmppPing.cot"
      } >> XEP-0199: XMPP Ping. <<
 
-  } >> XEP-0199: XMPP Ping - 2 user connections, each using a different node. <<
+    Ping 3@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -source-file = "tests/data/UrnXmppPing.cot"
+     } >> XEP-0199: XMPP Ping. <<
 
-  Bosh 15: {
+  } >> XEP-0199: XMPP Ping - 3 user connections, each using a different node. <<
+
+  Bosh 22: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
 
-    Bosh 15 1@common: {
+    Discovery 1@common: {
       -serverip = $(node-1)
       -user-resr   = $(node-1)
       -source-file = "tests/data/ServiceDiscovery.cot"
      } >> XEP-0030: XMPP Service Discovery. <<
 
-    Bosh 15 2@common: {
+    Discovery 2@common: {
       -serverip = $(node-2)
       -user-resr   = $(node-2)
       -source-file = "tests/data/ServiceDiscovery.cot"
      } >> XEP-0030: XMPP Service Discovery. <<
 
-  } >> XEP-0030: XMPP Service Discovery - 2 user connections, each using a different node. <<
+    Discovery 3@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -source-file = "tests/data/ServiceDiscovery.cot"
+     } >> XEP-0030: XMPP Service Discovery. <<
+
+  } >> XEP-0030: XMPP Service Discovery - 3 user connections, each using a different node. <<
 
 }
 >> Script with functional tests for all basic XMPP/Jabber features in the cluster mode for the Bosh component. <<
@@ -623,11 +1090,10 @@ Bosh Tests:
 Multi thread tests:
 {
   -loop-start = 1
-  -user-pass = multi-reg_1_
-  $(daemon-user) = all-xmpp-test_1
+  -user-pass = $(multi-pass)
 
   Prep 1@msg-listen: {
-    -no-record
+    #-no-record
     -daemon
 
     -socket-wait = 0
@@ -674,6 +1140,25 @@ Multi thread tests:
   } >> Multi-thread test of server Version info on node '$(node-2)' <<
 
   Multi 3: {
+    -serverip = $(node-3)
+    -multi-thread
+    -loop = 5
+
+    Version@iq-version: { -user-name = "multi-reg_1_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_2_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_3_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_4_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_5_$(loop)" }
+        >> Get server version <<
+    Version@iq-version: { -user-name = "multi-reg_6_$(loop)" }
+        >> Get server version <<
+  } >> Multi-thread test of server Version info on node '$(node-3)' <<
+
+  Multi 4: {
     -multi-thread
     -loop = 5
 
@@ -686,24 +1171,24 @@ Multi thread tests:
       -user-name = "multi-reg_2_$(loop)"
     } >> Get server version <<
     Version@iq-version: {
-      -serverip = $(node-1)
+      -serverip = $(node-3)
       -user-name = "multi-reg_3_$(loop)"
     } >> Get server version <<
     Version@iq-version: {
-      -serverip = $(node-2)
+      -serverip = $(node-1)
       -user-name = "multi-reg_4_$(loop)"
     } >> Get server version <<
     Version@iq-version: {
-      -serverip = $(node-1)
+      -serverip = $(node-2)
       -user-name = "multi-reg_5_$(loop)"
     } >> Get server version <<
     Version@iq-version: {
-      -serverip = $(node-2)
+      -serverip = $(node-3)
       -user-name = "multi-reg_6_$(loop)"
     } >> Get server version <<
-  } >> Multi-thread test of server Version info on both nodes: '$(node-1)' and '$(node-2)' <<
+  } >> Multi-thread test of server Version info on all nodes: '$(node-1)', '$(node-2)' and '$(node-3)' <<
 
-  Multi 4: {
+  Multi 5: {
     -serverip = $(node-1)
     -multi-thread
     -loop = 5
@@ -722,7 +1207,7 @@ Multi thread tests:
     >> Server statistics <<
   } >> Multi-thread test of server Statistics info on node '$(node-1)' <<
 
-  Multi 5: {
+  Multi 6: {
     -serverip = $(node-2)
     -multi-thread
     -loop = 5
@@ -741,7 +1226,26 @@ Multi thread tests:
     >> Server statistics <<
   } >> Multi-thread test of server Statistics info on node '$(node-2)' <<
 
-  Multi 6: {
+  Multi 7: {
+    -serverip = $(node-3)
+    -multi-thread
+    -loop = 5
+
+    Statistics@iq-stats: { -user-name = "multi-reg_1_$(loop)" }
+    >> Server statistics <<
+    Statistics@iq-stats: { -user-name = "multi-reg_2_$(loop)" }
+    >> Server statistics <<
+    Statistics@iq-stats: { -user-name = "multi-reg_3_$(loop)" }
+    >> Server statistics <<
+    Statistics@iq-stats: { -user-name = "multi-reg_4_$(loop)" }
+    >> Server statistics <<
+    Statistics@iq-stats: { -user-name = "multi-reg_5_$(loop)" }
+    >> Server statistics <<
+    Statistics@iq-stats: { -user-name = "multi-reg_6_$(loop)" }
+    >> Server statistics <<
+  } >> Multi-thread test of server Statistics info on node '$(node-3)' <<
+
+  Multi 8: {
     -multi-thread
     -loop = 5
 
@@ -754,24 +1258,125 @@ Multi thread tests:
       -user-name = "multi-reg_2_$(loop)"
     } >> Server statistics <<
     Statistics@iq-stats: {
-      -serverip = $(node-1)
+      -serverip = $(node-3)
       -user-name = "multi-reg_3_$(loop)"
     } >> Server statistics <<
     Statistics@iq-stats: {
-      -serverip = $(node-2)
+      -serverip = $(node-1)
       -user-name = "multi-reg_4_$(loop)"
     } >> Server statistics <<
     Statistics@iq-stats: {
-      -serverip = $(node-1)
+      -serverip = $(node-2)
       -user-name = "multi-reg_5_$(loop)"
     } >> Server statistics <<
     Statistics@iq-stats: {
-      -serverip = $(node-2)
+      -serverip = $(node-3)
       -user-name = "multi-reg_6_$(loop)"
     } >> Server statistics <<
-  } >> Multi-thread test of server Statistics info on both nodes: '$(node-1)' and '$(node-2)' <<
+  } >> Multi-thread test of server Statistics info on all nodes: '$(node-1)', '$(node-2)' and '$(node-3)' <<
 
-  Multi 7: {
+  Multi 9: {
+    -multi-thread
+    -loop = 5
+
+    Statistics node1@iq-stats: {
+      -user-name = "multi-reg_1_$(loop)"
+      -serverip = $(node-1)
+      -user-resr = $(node-1)
+    }  >> Server statistics on node '$(node-1)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_1_$(loop)"
+      -serverip = $(node-2)
+      -user-resr = $(node-2)
+    }  >> Server statistics on node '$(node-2)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_1_$(loop)"
+      -serverip = $(node-3)
+      -user-resr = $(node-3)
+    }  >> Server statistics on node '$(node-3)' <<
+
+    Statistics node1@iq-stats: {
+      -user-name = "multi-reg_2_$(loop)"
+      -serverip = $(node-1)
+      -user-resr = $(node-1)
+    }  >> Server statistics on node '$(node-1)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_2_$(loop)"
+      -serverip = $(node-2)
+      -user-resr = $(node-2)
+    }  >> Server statistics on node '$(node-2)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_2_$(loop)"
+      -serverip = $(node-3)
+      -user-resr = $(node-3)
+    }  >> Server statistics on node '$(node-3)' <<
+
+    Statistics node1@iq-stats: {
+      -user-name = "multi-reg_3_$(loop)"
+      -serverip = $(node-1)
+      -user-resr = $(node-1)
+    }  >> Server statistics on node '$(node-1)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_3_$(loop)"
+      -serverip = $(node-2)
+      -user-resr = $(node-2)
+    }  >> Server statistics on node '$(node-2)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_3_$(loop)"
+      -serverip = $(node-3)
+      -user-resr = $(node-3)
+    }  >> Server statistics on node '$(node-3)' <<
+
+    Statistics node1@iq-stats: {
+      -user-name = "multi-reg_4_$(loop)"
+      -serverip = $(node-1)
+      -user-resr = $(node-1)
+    }  >> Server statistics on node '$(node-1)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_4_$(loop)"
+      -serverip = $(node-2)
+      -user-resr = $(node-2)
+    }  >> Server statistics on node '$(node-2)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_4_$(loop)"
+      -serverip = $(node-3)
+      -user-resr = $(node-3)
+    }  >> Server statistics on node '$(node-3)' <<
+
+    Statistics node1@iq-stats: {
+      -user-name = "multi-reg_5_$(loop)"
+      -serverip = $(node-1)
+      -user-resr = $(node-1)
+    }  >> Server statistics on node '$(node-1)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_5_$(loop)"
+      -serverip = $(node-2)
+      -user-resr = $(node-2)
+    }  >> Server statistics on node '$(node-2)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_5_$(loop)"
+      -serverip = $(node-3)
+      -user-resr = $(node-3)
+    }  >> Server statistics on node '$(node-3)' <<
+
+    Statistics node1@iq-stats: {
+      -user-name = "multi-reg_6_$(loop)"
+      -serverip = $(node-1)
+      -user-resr = $(node-1)
+    }  >> Server statistics on node '$(node-1)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_6_$(loop)"
+      -serverip = $(node-2)
+      -user-resr = $(node-2)
+    }  >> Server statistics on node '$(node-2)' <<
+    Statistics node2@iq-stats: {
+      -user-name = "multi-reg_6_$(loop)"
+      -serverip = $(node-3)
+      -user-resr = $(node-3)
+    }  >> Server statistics on node '$(node-3)' <<
+  } >> Multi-thread test of server Statistics info. Each user makes 3 connection, each on a different node and different resource: '$(node-1)', '$(node-2)' and '$(node-3)' <<
+
+  Multi 10: {
     -serverip = $(node-1)
     -multi-thread
     -loop = 5
@@ -791,7 +1396,7 @@ Multi thread tests:
     >> Roster management test <<
   } >> Multi-thread test Roster management functions on node '$(node-1)' <<
 
-  Multi 8: {
+  Multi 11: {
     -serverip = $(node-2)
     -multi-thread
     -loop = 5
@@ -811,7 +1416,27 @@ Multi thread tests:
     >> Roster management test <<
   } >> Multi-thread test Roster management functions on node '$(node-2)' <<
 
-  Multi 9: {
+  Multi 12: {
+    -serverip = $(node-3)
+    -multi-thread
+    -loop = 5
+    -source-file = "tests/data/RosterTest.cot"
+
+    Roster@common: { -user-name = "multi-reg_1_$(loop)" }
+    >> Roster management test <<
+    Roster@common: { -user-name = "multi-reg_2_$(loop)" }
+    >> Roster management test <<
+    Roster@common: { -user-name = "multi-reg_3_$(loop)" }
+    >> Roster management test <<
+    Roster@common: { -user-name = "multi-reg_4_$(loop)" }
+    >> Roster management test <<
+    Roster@common: { -user-name = "multi-reg_5_$(loop)" }
+    >> Roster management test <<
+    Roster@common: { -user-name = "multi-reg_6_$(loop)" }
+    >> Roster management test <<
+  } >> Multi-thread test Roster management functions on node '$(node-3)' <<
+
+  Multi 13: {
     -multi-thread
     -loop = 5
     -source-file = "tests/data/RosterTest.cot"
@@ -825,24 +1450,24 @@ Multi thread tests:
       -user-name = "multi-reg_2_$(loop)"
     } >> Roster management test <<
     Roster@common: {
-      -serverip = $(node-1)
+      -serverip = $(node-3)
       -user-name = "multi-reg_3_$(loop)"
     } >> Roster management test <<
     Roster@common: {
-      -serverip = $(node-2)
+      -serverip = $(node-1)
       -user-name = "multi-reg_4_$(loop)"
     } >> Roster management test <<
     Roster@common: {
-      -serverip = $(node-1)
+      -serverip = $(node-2)
       -user-name = "multi-reg_5_$(loop)"
     } >> Roster management test <<
     Roster@common: {
-      -serverip = $(node-2)
+      -serverip = $(node-3)
       -user-name = "multi-reg_6_$(loop)"
     } >> Roster management test <<
-  } >> Multi-thread test Roster management functions on both nodes: '$(node-1)' and '$(node-2)' <<
+  } >> Multi-thread test Roster management functions on all nodes: '$(node-1)', '$(node-2)' and '$(node-3)' <<
 
-  Multi 10: {
+  Multi 14: {
     -serverip = $(node-1)
     -multi-thread
     -loop = 5
@@ -861,7 +1486,7 @@ Multi thread tests:
     >> Privacy lists management test <<
   } >> Multi-thread test privacy lists management on node '$(node-1)' <<
 
-  Multi 11: {
+  Multi 15: {
     -serverip = $(node-2)
     -multi-thread
     -loop = 5
@@ -880,7 +1505,26 @@ Multi thread tests:
     >> Privacy lists management test <<
   } >> Multi-thread test privacy lists management on node '$(node-2)' <<
 
-  Multi 12: {
+  Multi 16: {
+    -serverip = $(node-3)
+    -multi-thread
+    -loop = 5
+
+    Roster@privacy-lists: { -user-name = "multi-reg_1_$(loop)" }
+    >> Privacy lists management test <<
+    Roster@privacy-lists: { -user-name = "multi-reg_2_$(loop)" }
+    >> Privacy lists management test <<
+    Roster@privacy-lists: { -user-name = "multi-reg_3_$(loop)" }
+    >> Privacy lists management test <<
+    Roster@privacy-lists: { -user-name = "multi-reg_4_$(loop)" }
+    >> Privacy lists management test <<
+    Roster@privacy-lists: { -user-name = "multi-reg_5_$(loop)" }
+    >> Privacy lists management test <<
+    Roster@privacy-lists: { -user-name = "multi-reg_6_$(loop)" }
+    >> Privacy lists management test <<
+  } >> Multi-thread test privacy lists management on node '$(node-3)' <<
+
+  Multi 17: {
     -multi-thread
     -loop = 5
 
@@ -893,24 +1537,24 @@ Multi thread tests:
       -user-name = "multi-reg_2_$(loop)"
     } >> Privacy lists management test <<
     Roster@privacy-lists: {
-      -serverip = $(node-1)
+      -serverip = $(node-3)
       -user-name = "multi-reg_3_$(loop)"
     } >> Privacy lists management test <<
     Roster@privacy-lists: {
-      -serverip = $(node-2)
+      -serverip = $(node-1)
       -user-name = "multi-reg_4_$(loop)"
     } >> Privacy lists management test <<
     Roster@privacy-lists: {
-      -serverip = $(node-1)
+      -serverip = $(node-2)
       -user-name = "multi-reg_5_$(loop)"
     } >> Privacy lists management test <<
     Roster@privacy-lists: {
-      -serverip = $(node-2)
+      -serverip = $(node-3)
       -user-name = "multi-reg_6_$(loop)"
     } >> Privacy lists management test <<
-  } >> Multi-thread test privacy lists management on both nodes: '$(node-1)' and '$(node-2)' <<
+  } >> Multi-thread test privacy lists management on all nodes: '$(node-1)', '$(node-2)' and '$(node-3)' <<
 
-  Multi 13: {
+  Multi 18: {
     -serverip = $(node-1)
     -multi-thread
     -loop   = 5
@@ -931,7 +1575,7 @@ Multi thread tests:
     >> Send a message to daemon user <<
   } >> Multi-thread test of message send to daemon user on node '$(node-1)' <<
 
-  Multi 14: {
+  Multi 19: {
     -serverip = $(node-2)
     -multi-thread
     -loop   = 5
@@ -952,7 +1596,28 @@ Multi thread tests:
     >> Send a message to daemon user <<
   } >> Multi-thread test of message send to daemon user on node '$(node-2)' <<
 
-  Multi 15: {
+  Multi 20: {
+    -serverip = $(node-3)
+    -multi-thread
+    -loop   = 5
+    -to-jid = "$(daemon-user)@$(server-host)/xmpp-test"
+    -messages = 10
+
+    Message send@msg-send: { -user-name = "multi-reg_1_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_2_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_3_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_4_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_5_$(loop)" }
+    >> Send a message to daemon user <<
+    Message send@msg-send: { -user-name = "multi-reg_6_$(loop)" }
+    >> Send a message to daemon user <<
+  } >> Multi-thread test of message send to daemon user on node '$(node-3)' <<
+
+  Multi 21: {
     -multi-thread
     -loop   = 5
     -to-jid = "$(daemon-user)@$(server-host)/xmpp-test"
@@ -967,21 +1632,125 @@ Multi thread tests:
       -user-name = "multi-reg_2_$(loop)"
     } >> Send a message to daemon user <<
     Message send@msg-send: {
-      -serverip = $(node-1)
+      -serverip = $(node-3)
       -user-name = "multi-reg_3_$(loop)"
     } >> Send a message to daemon user <<
     Message send@msg-send: {
-      -serverip = $(node-2)
+      -serverip = $(node-1)
       -user-name = "multi-reg_4_$(loop)"
     } >> Send a message to daemon user <<
     Message send@msg-send: {
-      -serverip = $(node-1)
+      -serverip = $(node-2)
       -user-name = "multi-reg_5_$(loop)"
     } >> Send a message to daemon user <<
     Message send@msg-send: {
-      -serverip = $(node-2)
+      -serverip = $(node-3)
       -user-name = "multi-reg_6_$(loop)"
     } >> Send a message to daemon user <<
-  } >> Multi-thread test of message send to daemon user on both nodes: '$(node-1)' and '$(node-2)' <<
+  } >> Multi-thread test of message send to daemon user on all nodes: '$(node-1)', '$(node-2)' and '$(node-3)' <<
+
+  Multi 22: {
+    -multi-thread
+    -loop   = 5
+    -to-jid = "$(daemon-user)@$(server-host)/xmpp-test"
+    -messages = 10
+
+    Message send@msg-send: {
+      -user-name = "multi-reg_1_$(loop)"
+      -serverip = $(node-1)
+      -user-rest = $(node-1)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_1_$(loop)"
+      -serverip = $(node-2)
+      -user-rest = $(node-2)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_1_$(loop)"
+      -serverip = $(node-3)
+      -user-rest = $(node-3)
+    } >> Send a message to daemon user <<
+
+    Message send@msg-send: {
+      -user-name = "multi-reg_2_$(loop)"
+      -serverip = $(node-1)
+      -user-rest = $(node-1)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_2_$(loop)"
+      -serverip = $(node-2)
+      -user-rest = $(node-2)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_2_$(loop)"
+      -serverip = $(node-3)
+      -user-rest = $(node-3)
+    } >> Send a message to daemon user <<
+
+    Message send@msg-send: {
+      -user-name = "multi-reg_3_$(loop)"
+      -serverip = $(node-1)
+      -user-rest = $(node-1)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_3_$(loop)"
+      -serverip = $(node-2)
+      -user-rest = $(node-2)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_3_$(loop)"
+      -serverip = $(node-3)
+      -user-rest = $(node-3)
+    } >> Send a message to daemon user <<
+
+    Message send@msg-send: {
+      -user-name = "multi-reg_4_$(loop)"
+      -serverip = $(node-1)
+      -user-rest = $(node-1)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_4_$(loop)"
+      -serverip = $(node-2)
+      -user-rest = $(node-2)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_4_$(loop)"
+      -serverip = $(node-3)
+      -user-rest = $(node-3)
+    } >> Send a message to daemon user <<
+
+    Message send@msg-send: {
+      -user-name = "multi-reg_5_$(loop)"
+      -serverip = $(node-1)
+      -user-rest = $(node-1)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_5_$(loop)"
+      -serverip = $(node-2)
+      -user-rest = $(node-2)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_5_$(loop)"
+      -serverip = $(node-3)
+      -user-rest = $(node-3)
+    } >> Send a message to daemon user <<
+
+    Message send@msg-send: {
+      -user-name = "multi-reg_6_$(loop)"
+      -serverip = $(node-1)
+      -user-rest = $(node-1)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_6_$(loop)"
+      -serverip = $(node-2)
+      -user-rest = $(node-2)
+    } >> Send a message to daemon user <<
+    Message send@msg-send: {
+      -user-name = "multi-reg_6_$(loop)"
+      -serverip = $(node-3)
+      -user-rest = $(node-3)
+    } >> Send a message to daemon user <<
+
+  } >> Multi-thread test of message send to daemon user. Each user makes to connections to all cluster nodes using different resources: '$(node-1)', '$(node-2)' and '$(node-3)' <<
 
 } >> Multi-user tests for various XMPP functions <<

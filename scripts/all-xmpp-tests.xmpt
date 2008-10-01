@@ -46,7 +46,7 @@ $(stats-pass) = stats
 -user-resr   = $(def-user-resr)
 -socket-wait = 15000
 -base-ns     = "jabber:client"
--def-auth    = auth-plain
+-def-auth    = auth-sasl
 -def-stream  = stream-client
 -keys-file-password   = keystore
 -trusts-file-password = truststore
@@ -77,8 +77,8 @@ Global settings:
   >> SSL socket connect. <<
   Test 4@user-register: >> XEP-0077 - In-Band Registration, register <<
 
-  Test 5@auth-plain: >> XEP-0078 Non-SASL authorization with plain password. <<
-  Test 6@auth-digest: >> XEP-0078 Non-SASL authorization with digest password. <<
+  Test 5@auth-plain: { -def-auth = auth-plain } >> XEP-0078 Non-SASL authorization with plain password. <<
+  Test 6@auth-digest: { -def-auth = auth-plain } >> XEP-0078 Non-SASL authorization with digest password. <<
 
   Test 7@tls-init: { -socket-wait = $(ssl-tls-wait) } >> TLS connection open <<
   Test 8@tls-init;auth-sasl: { -socket-wait = $(ssl-tls-wait) }
@@ -317,16 +317,45 @@ Global settings:
       -user-resr   = $(def-user-resr)
       -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
       -source-file = "tests/data/SubscriptionDeniedReceive.cot"
-     } >> Login and wait for subscription request from '$(stats-user)'. <<
+    } >> Login and wait for subscription request from '$(stats-user)'. <<
 
     Subscription send@common: {
       -user-name = $(stats-user)
       -user-pass = $(stats-pass)
       -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
       -source-file = "tests/data/SubscriptionDeniedSend.cot"
-     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+    } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
 
   } >> Presence subscription deny test between '$(stats-user)' and '$(def-user)'. <<
+
+  Test 31@auth-sasl;common-no-bind: {
+    -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+    -source-file = "tests/data/MessageNoBind.cot"
+  } >> Send a message without resource binding and expect an error response. <<
+
+  Test 32@common-no-bind: {
+     -port = 5678
+     -def-stream  = stream-ext-comp
+     -secret = very-secret
+
+    -host      = "test.$(server-host)"
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+    -source-file = "tests/data/UserStatus.cot"
+  } >> USER_STATUS command test to ensure interoperability with Yate <<
+
+  Test 33@common-no-bind: {
+     -port = 5678
+     -def-stream  = stream-ext-comp
+     -secret = very-secret
+
+    -host      = "test.$(server-host)"
+    -user-name = $(def-user)
+    -user-pass = $(def-user-pass)
+    -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+    -source-file = "tests/data/UserStatusForbidden.cot"
+  } >> USER_STATUS command test to ensure security, should receive forbidden error. <<
 
   Test end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<
@@ -345,7 +374,7 @@ Bosh Tests:
   Bosh 2@stream-open: { } >> Stream open to server. <<
   Bosh 3@user-register: { } >> XEP-0077 - In-Band Registration, register <<
 
-  Bosh 4@auth-plain: >> XEP-0078 Non-SASL authorization with plain password. <<
+  Bosh 4@auth-plain: { -def-auth = auth-plain } >> XEP-0078 Non-SASL authorization with plain password. <<
   Bosh 5@auth-sasl: { } >> SASL authorization <<
   Bosh 6@xmpp-bind: { } >> XMPP resource bind <<
   Bosh 7@xmpp-session: { } >> Establish XMPP session <<
@@ -549,7 +578,7 @@ Bosh Tests:
 
   } >> Mixed, one connectiob via Bosh another standard c2s, each using a different resource. <<
 
-  Test 28: {
+  Bosh 28: {
     -multi-thread
 
     Subscription receive@common: {
@@ -570,6 +599,11 @@ Bosh Tests:
      } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
 
   } >> Presence subscription deny test between '$(stats-user)' and '$(def-user)'. <<
+
+  Bosh 29@auth-sasl;common-no-bind: {
+    -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+    -source-file = "tests/data/MessageNoBind.cot"
+  } >> Send a message without resource binding and expect an error response. <<
 
   Bosh end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<

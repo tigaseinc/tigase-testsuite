@@ -75,7 +75,7 @@ public class DependsComparator implements Comparator<TestIfc> {
    * @return an <code>int</code> value
    */
   public int compare(final TestIfc test1, final TestIfc test2) {
-// 		System.err.println("NEW RUN");
+//  		System.err.println("NEW RUN");
 // 		System.err.println("Comparing impl: " + Arrays.toString(test1.implemented())
 // 			+ " with deps: " + Arrays.toString(test2.depends()));
     if (testDeps(test1.implemented(), test2.depends())) {

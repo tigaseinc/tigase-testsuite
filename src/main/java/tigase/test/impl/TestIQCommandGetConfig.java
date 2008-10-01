@@ -68,8 +68,8 @@ public class TestIQCommandGetConfig extends TestAbstract {
     super(
       new String[] {"jabber:client"},
       new String[] {"command-get-config"},
-      new String[] {"stream-open", "auth"},
-      new String[] {"user-register", "tls-init"}
+      new String[] {"stream-open", "auth", "xmpp-bind"},
+      new String[] {"tls-init"}
       );
 	}
 
@@ -83,43 +83,40 @@ public class TestIQCommandGetConfig extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public String nextElementName(final Element element) throws Exception {
+		boolean error = true;
+		String message = null;
     if (element != null) {
-      boolean error = true;
-			String message = null;
-      if (element != null) {
-				EqualError res1 = ElementUtil.equalElemsDeep(expected_result, element);
-				if (res1.equals) {
-					error = false;
-					List<StatItem> stats = new LinkedList<StatItem>();
-					List<Element> items = element.getChildren("/iq/command/x");
-					for (Element item: items) {
-						String name = item.getAttribute("var");
-						int idx = name.indexOf("/");
-						String comp = "unknown";
-						String stat = name;
-						if (idx >= 0) {
-							comp = name.substring(0, idx);
-							stat = name.substring(idx+1);
-						}
-						stats.add(new StatItem(comp,
-								XMLUtils.unescape(item.getChildCData("/field/value")),
-								"&nbsp;",	stat));
-					} // end of for (Element item: items)
-					params.put("Configuration", stats);
-				} else {
-					message = res1.message;
-				}
-      } else {
-				if (expected_result == null) {
-					error = false;
-				} // end of if (expected_result == null)
-			} // end of else
-      if (error) {
-        throw new ResultsDontMatchException(
-          "Expected: " + expected_result + ", Received: " + element + "'"
-					+ ", equals error: " + message);
-      } // end of if (error)
-    } // end of if (element != null)
+			List<Element> items = element.getChildren("/iq/command/x");
+      if (items != null) {
+				error = false;
+				List<StatItem> stats = new LinkedList<StatItem>();
+				for (Element item: items) {
+					String name = item.getAttribute("var");
+					int idx = name.indexOf("/");
+					String comp = "unknown";
+					String stat = name;
+					if (idx >= 0) {
+						comp = name.substring(0, idx);
+						stat = name.substring(idx+1);
+					}
+					stats.add(new StatItem(comp,
+							XMLUtils.unescape(item.getChildCData("/field/value")),
+							"&nbsp;",	stat));
+				} // end of for (Element item: items)
+				params.put("Configuration", stats);
+			} else {
+				message = "Not a configuration packet";
+			}
+		} else {
+			if (expected_result == null) {
+				error = false;
+			} // end of if (expected_result == null)
+		} // end of else
+		if (error) {
+			throw new ResultsDontMatchException(
+				"Expected: " + expected_result + ", Received: " + element + "'"
+				+ ", equals error: " + message);
+		} // end of if (error)
     if (counter < elems.length) {
       return elems[counter++];
     } // end of if (counter < elems.length)

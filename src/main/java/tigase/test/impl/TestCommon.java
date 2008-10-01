@@ -85,9 +85,13 @@ public class TestCommon extends TestEmpty {
     super(
       new String[] {"jabber:client"},
       new String[] {"common"},
-      new String[] {"stream-open", "auth"},
-      new String[] {"user-register", "tls-init"}
+      new String[] {"stream-open", "auth", "xmpp-bind"},
+      new String[] {"tls-init"}
       );
+	}
+
+	public TestCommon(String[] ns, String[] imp, String[] depend, String[] opt) {
+    super(ns, imp, depend, opt);
 	}
 
 	/**
@@ -311,6 +315,7 @@ public class TestCommon extends TestEmpty {
 		data = data.replace("$(from-id)", id);
 		data = data.replace("$(to-jid)", to);
 		data = data.replace("$(to-id)", JIDUtils.getNodeID(to));
+		data = data.replace("$(to-hostname)", JIDUtils.getNodeHost(to));
 		data = data.replace("$(hostname)", hostname);
 		data = data.replace("$(number)", "");
 		data = data.replace("$(cdata)", "");
