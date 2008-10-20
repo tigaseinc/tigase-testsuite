@@ -116,7 +116,7 @@ public class TestScriptLoader {
       runMultiTest(node);
       jobContr.allDone(0);
       calculateResult(multiResCont);
-      return true;
+      return multiResCont.getResult();
     } // end of if (test.getParams().containsKey("-multithread"))
     boolean result = true;
     if (node.getId() != null) {

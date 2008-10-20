@@ -72,6 +72,7 @@ public class Test {
 	private CountDownLatch latch = null;
 	protected boolean debug_on_error = false;
 	protected boolean last_result = false;
+  private boolean stop_on_fail = false;
 
 	private static TimerThread[] backroundTasks = new TimerThread[100];
 	private static int timer_idx = 0;
@@ -118,6 +119,7 @@ public class Test {
     debug = main_params.containsKey("-debug");
     debug_on_error = (main_params.containsKey("-debug-on-error")
         && !main_params.containsKey("-no-record"));
+    stop_on_fail = main_params.get("-stop-on-fail", false);
     int loop = main_params.get("-loop", 1);
 		latch = new CountDownLatch(loop);
 		int loop_start = main_params.get("-loop-start", 0);
@@ -156,7 +158,7 @@ public class Test {
           test_params.put("-user-name", user_name+cnt);
         } // end of if (loop_user_name)
         runTest(suite, test_params);
-				if (cnt > 10 && (tests_ok <= tests_er)) {
+				if ((stop_on_fail || cnt > 10) && (tests_ok <= tests_er)) {
 					debug("Too many errors, stopping test...\n", debug);
 					result = false;
 					errorMsg =
@@ -176,6 +178,8 @@ public class Test {
         } catch (InterruptedException e) { } // end of try-catch
       } // end of if (loop_delay > 0)
     } // end of for (int cnt = 0; cnt < loop; cnt++)
+		try { latch.await();
+		} catch (InterruptedException e) { } // end of try-catch
     main_params = test_params;
     result = tests_ok > tests_er;
     if (main_params.containsKey("-delay")) {
@@ -183,8 +187,6 @@ public class Test {
       try { Thread.sleep(delay);
       } catch (InterruptedException e) { } // end of try-catch
     } // end of if (main_params.containsKey("-delay"))
-		try { latch.await();
-		} catch (InterruptedException e) { } // end of try-catch
 		total_time = System.currentTimeMillis() - all_tests_start_time;
   }
 

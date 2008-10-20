@@ -136,12 +136,11 @@ public class TestSendMessage extends TestAbstract {
    * @exception Exception if an error occurs
    */
   public Attribute[] getRespElementAttributes(final String string) throws Exception {
-		return null;
-//     return new Attribute[]
-//     {
-//       new Attribute("from", remote_address),
-//       new Attribute("to", from)
-//     };
+		//		return null;
+    return new Attribute[]
+    {
+      new Attribute("type", "chat")
+    };
   }
 
   // Implementation of tigase.test.TestIfc
@@ -168,7 +167,7 @@ public class TestSendMessage extends TestAbstract {
     } // end of if (to.equalsIgnoreCase("self"))
     loop = params.get("-messages", loop);
     daemon_to = to.equals("$(daemons)");
-    msg_1 = "<message from='" + from + "' to='";
+    msg_1 = "<message type='chat' from='" + from + "' to='";
     msg_2 = ", from: " + from + ".</message>";
   }
 

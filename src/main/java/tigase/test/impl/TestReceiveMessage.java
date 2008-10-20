@@ -146,7 +146,7 @@ public class TestReceiveMessage extends TestAbstract {
     user_name = params.get("-user-name", user_name);
     hostname = params.get("-host", hostname);
     user_resr = params.get("-user-resr", user_resr);
-		repeat = params.get("-messages", 0);
+		repeat = params.get("-messages", -1);
     String name = getNodeNick(user_name);
     if (name == null || name.equals("")) {
       jid = user_name + "@" + hostname + "/" + user_resr;
@@ -154,7 +154,7 @@ public class TestReceiveMessage extends TestAbstract {
       jid = user_name + "/" + user_resr;
     } // end of else
     //    resp_attribs = new Attribute[] {new Attribute("to", jid)};
-    msg_1 = "<message from='" + jid + "' to='";
+    msg_1 = "<message type='chat' from='" + jid + "' to='";
     msg_2 = "'>Message OK</message>";
   }
 
