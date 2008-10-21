@@ -157,14 +157,14 @@ function run_test() {
 
 	if [ -z "${SKIP_DB_RELOAD}" ] ; then
 		case ${_database} in
-			mysql|mysql-auth|sm-mysql)
+			mysql|mysql-auth|sm-mysql|mysql-custom)
 				db_reload_mysql
 				;;
-			pgsql|pgsql-auth)
+			pgsql|pgsql-auth|pgsql-custom)
 				db_reload_pgsql
 				;;
-			xmldb)
-				rm -f user-repository.xml
+			derby)
+				rm -fr tigasetest/
 				;;
 			*)
 				echo "Not supported database: '${database}'"

@@ -28,7 +28,7 @@ SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
   || {
 	echo "Can't find settings file: ${SETTINGS_FILE} using defaults"
 	server_dir="../server"
-	database="xmldb"
+	database="derby"
 	server_ip="127.0.0.1"
 }
 
@@ -44,13 +44,13 @@ function usage() {
 	echo "Version: ${VERSION}"
 	echo "----"
 	echo "  --help|-h	This help message"
-	echo "  --func [mysql|pgsql|xmldb|sm-mysql]"
+	echo "  --func [mysql|pgsql|derby]"
 	echo "              Run all functional tests for a single database"
 	echo "		    configuration"
-	echo "  --perf [mysql|pgsql|xmldb|sm-mysql]"
+	echo "  --perf [mysql|pgsql|derby]"
 	echo "              Run all performance tests for a single database"
 	echo "              configuration"
-	echo "  --stab [mysql|pgsql|xmldb|sm-mysql]"
+	echo "  --stab [mysql|pgsql|derby]"
 	echo "              Run all stability tests for a single database"
 	echo "              configuration"
 	echo "  --func-all  Run all functional tests for all database"
@@ -132,10 +132,13 @@ case "${1}" in
 	--func-all)
 		cp -f func-rep.html_tmp func-rep.html
 		echo "<tr><th>${ver}</th>" >> func-rep.html
-		run_functional_test xmldb ${server_dir} ${IPS[0]}
+		run_functional_test derby ${server_dir} ${IPS[0]}
 		run_functional_test mysql ${server_dir} ${IPS[1]}
+		run_functional_test mysql-auth ${server_dir} ${IPS[1]}
+		run_functional_test mysql-custom ${server_dir} ${IPS[1]}
 		run_functional_test pgsql ${server_dir} ${IPS[2]}
-		#run_functional_test sm-mysql ${server_dir} ${IPS[3]}
+		run_functional_test pgsql-auth ${server_dir} ${IPS[2]}
+		run_functional_test pgsql-custom ${server_dir} ${IPS[2]}
 		echo "</tr>" >> func-rep.html
 		;;
 	--perf)
@@ -147,19 +150,17 @@ case "${1}" in
 	--perf-all)
 		cp -f perf-rep.html_tmp perf-rep.html
 		echo "<tr><th>${ver}</th>" >> perf-rep.html
-		run_performance_test xmldb ${server_dir} ${IPS[0]}
+		run_performance_test derby ${server_dir} ${IPS[0]}
 		run_performance_test mysql ${server_dir} ${IPS[1]}
 		run_performance_test pgsql ${server_dir} ${IPS[2]}
-		#run_performance_test sm-mysql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> perf-rep.html
 		;;
 	--stab-all)
 		cp -f stab-rep.html_tmp stab-rep.html
 		echo "<tr><th>${ver}</th>" >> stab-rep.html
-		run_stability_test xmldb ${server_dir} ${IPS[0]}
+		run_stability_test derby ${server_dir} ${IPS[0]}
 		run_stability_test mysql ${server_dir} ${IPS[1]}
 		run_stability_test pgsql ${server_dir} ${IPS[2]}
-		#run_stability_test sm-mysql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> stab-rep.html
 		;;
 	--all-tests)

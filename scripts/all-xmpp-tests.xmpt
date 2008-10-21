@@ -136,6 +136,7 @@ Global settings:
   Test 17@msg-send: Privacy lists - send a message to $(blocking-user) user
   {
     -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
+    -expect-type = error
 #    -socket-wait = 1000
 #    -time-out-ok
   } >> Privacy lists test - send a message to $(blocking-user) user blocking all messages and wait for error response <<
@@ -399,6 +400,7 @@ Bosh Tests:
   Bosh 14@msg-send: Privacy lists - send a message to $(blocking-user) user
   {
     -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
+    -expect-type = error
 #    -socket-wait = 1000
 #    -time-out-ok
   } >> Privacy lists test - send a message to $(blocking-user) user blocking all messages and wait for error response <<
@@ -717,6 +719,7 @@ Multi thread tests:
     -loop   = 5
     -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
     -socket-wait = 1000
+    -expect-type = error
 #    -time-out-ok
 
     Message send@msg-send: { -user-name = "multi-reg_1_$(loop)" }
