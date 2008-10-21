@@ -48,6 +48,7 @@ public class TestSendMessage extends TestAbstract {
   private String remote_address = null;
   private int loop = 1;
   private boolean daemon_to = false;
+	private String expect_type = "chat";
   private String msg_1 = null;
   private String msg_2 = null;
 
@@ -139,7 +140,7 @@ public class TestSendMessage extends TestAbstract {
 		//		return null;
     return new Attribute[]
     {
-      new Attribute("type", "chat")
+      new Attribute("type", expect_type)
     };
   }
 
@@ -167,6 +168,7 @@ public class TestSendMessage extends TestAbstract {
     } // end of if (to.equalsIgnoreCase("self"))
     loop = params.get("-messages", loop);
     daemon_to = to.equals("$(daemons)");
+		expect_type = params.get("-expect-type", expect_type);
     msg_1 = "<message type='chat' from='" + from + "' to='";
     msg_2 = ", from: " + from + ".</message>";
   }
