@@ -152,12 +152,13 @@ Global settings:
 
     -socket-wait = 0
     -user-name   = $(long-list-user)
-    -delay       = 5000
+    -delay       = 10000
   } >> Setup a user daemon with very long privacy list <<
 
   Test 18@msg-send: Send a message to $(long-list-user) user
   {
     -to-jid = "$(long-list-user)@$(server-host)/xmpp-test"
+    -socket-wait = 10000
   } >> Send a message to $(long-list-user)@$(server-host)/xmpp-test user
   with very long privacy list and wait for message response <<
 

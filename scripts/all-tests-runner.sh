@@ -133,11 +133,21 @@ case "${1}" in
 		cp -f func-rep.html_tmp func-rep.html
 		echo "<tr><th>${ver}</th>" >> func-rep.html
 		run_functional_test derby ${server_dir} ${IPS[0]}
+		sleep 30
+		run_functional_test derby-auth ${server_dir} ${IPS[0]}
+		sleep 30
+		run_functional_test derby-custom ${server_dir} ${IPS[0]}
+		sleep 30
 		run_functional_test mysql ${server_dir} ${IPS[1]}
+		sleep 30
 		run_functional_test mysql-auth ${server_dir} ${IPS[1]}
+		sleep 30
 		run_functional_test mysql-custom ${server_dir} ${IPS[1]}
+		sleep 30
 		run_functional_test pgsql ${server_dir} ${IPS[2]}
+		sleep 30
 		run_functional_test pgsql-auth ${server_dir} ${IPS[2]}
+		sleep 30
 		run_functional_test pgsql-custom ${server_dir} ${IPS[2]}
 		echo "</tr>" >> func-rep.html
 		;;

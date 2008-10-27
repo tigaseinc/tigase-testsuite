@@ -163,8 +163,12 @@ function run_test() {
 			pgsql|pgsql-auth|pgsql-custom)
 				db_reload_pgsql
 				;;
-			derby)
+			derby|derby-auth|derby-custom)
 				rm -fr tigasetest/
+				java -Dij.protocol=jdbc:derby: -Dij.database="tigasetest;create=true" \
+					-Dderby.system.home=`pwd` \
+					-cp libs/derby.jar:libs/derbytools.jar:../server/jars/tigase-server.jar \
+					org.apache.derby.tools.ij database/derby-schema-4.sql
 				;;
 			*)
 				echo "Not supported database: '${database}'"
