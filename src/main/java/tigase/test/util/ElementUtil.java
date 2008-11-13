@@ -81,13 +81,13 @@ public class ElementUtil {
 			} // end of for (String key: attrs.keySet())
 		} // end of if (attrs != null)
 		String cdata1 = el1.getCData();
-		if (cdata1 != null) {
+		if (cdata1 != null && !cdata1.trim().isEmpty()) {
 			String cdata2 = el2.getCData();
 			if (cdata2 == null) {
 				return new EqualError(false, "Missing CData for element: " + el2.getName()
 					+ ", expected: " + cdata1);
 			} // end of if (cdata2 == null)
-			if (!cdata1.equals(cdata2)) {
+			if (!cdata1.trim().equals(cdata2.trim())) {
 				return new EqualError(false, "Different CData for element: " + el2.getName()
 					+ ", expected: " + cdata1 + ", found: " + cdata2);
 			} // end of if (!cdata1.equals(cdata2))
