@@ -22,22 +22,24 @@
 
 package tigase.test.impl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+
 import tigase.test.ResultCode;
 import tigase.test.TestEmpty;
 import tigase.test.util.ElementUtil;
 import tigase.test.util.EqualError;
 import tigase.test.util.Params;
+import tigase.test.util.ScriptFileLoader;
 import tigase.test.util.TestUtil;
 import tigase.test.util.XMLIO;
+import tigase.test.util.ScriptFileLoader.StanzaEntry;
 import tigase.util.JIDUtils;
 import tigase.xml.DomBuilderHandler;
 import tigase.xml.Element;
@@ -75,6 +77,7 @@ public class TestCommon extends TestEmpty {
 	private Queue<StanzaEntry> stanzas_buff = null;
 	private List<Element> all_results = new ArrayList<Element>();
 	private long repeat = 0;
+	private ScriptFileLoader scriptFileLoader;
 // 	private long repeat_wait = 1;
 
 	/**
@@ -111,9 +114,9 @@ public class TestCommon extends TestEmpty {
 						resultCode = ResultCode.SOCKET_NOT_INITALIZED;
 						return false;
 					} // end of if (sock == null)
-					switch (entry.action) {
+					switch (entry.getAction()) {
 					case send:
-						for (Element elem: entry.stanza) {
+						for (Element elem: entry.getStanza()) {
 							debug("\nSending: " + elem.toString());
 							addOutput(elem.toString());
 							io.write(elem);
@@ -122,7 +125,7 @@ public class TestCommon extends TestEmpty {
 					case expect:
 						boolean found = false;
 						Queue<Element> results = null;
-						error_message = "\n Expected: " + Arrays.toString(entry.stanza);
+						error_message = "\n Expected: " + Arrays.toString(entry.getStanza());
 						while (all_results.size() == 0
 							&& (results == null || results.size() == 0)) {
 							results = io.read();
@@ -135,12 +138,12 @@ public class TestCommon extends TestEmpty {
 							results.clear();
 						}
 						String eq_msg = "";
-						for (int exp = 0; exp < entry.stanza.length && !found; ++exp) {
+						for (int exp = 0; exp < entry.getStanza().length && !found; ++exp) {
 							for (int idx = 0; idx < all_results.size(); idx++) {
 								Element received = all_results.get(idx);
 								addInput(received.toString());
 								EqualError res =
-									ElementUtil.equalElemsDeep(entry.stanza[exp], received);
+									ElementUtil.equalElemsDeep(entry.getStanza()[exp], received);
 								found = res.equals;
 								eq_msg += (found ? "" : res.message + "\n");
 								if (found) {
@@ -153,7 +156,7 @@ public class TestCommon extends TestEmpty {
 						if (!found) {
 							//System.out.println("\nFound: " + found + ", message: " + eq_msg);
 							resultCode = ResultCode.RESULT_DOESNT_MATCH;
-							error_message = "Expected one of: " + Arrays.toString(entry.stanza)
+							error_message = "Expected one of: " + Arrays.toString(entry.getStanza())
 								+ ", received: "
 								+ Arrays.toString(all_results.toArray(new Element[0]))
 								+ "\n equals error message: " + eq_msg;
@@ -244,81 +247,31 @@ public class TestCommon extends TestEmpty {
 			fullExceptionStack = params.containsKey("-full-stack-trace");
 			source_file = params.get("-source-file", source_file);
 			stanzas_buff = new LinkedList<StanzaEntry>();
-			loadSourceFile(source_file);
+			
+			Map<String, String> replaces = new HashMap<String, String>();
+			replaces.put("$(from-jid)", jid);
+			replaces.put("$(from-id)", id);
+			replaces.put("$(to-jid)", to);
+			replaces.put("$(to-id)", JIDUtils.getNodeID(to));
+			replaces.put("$(to-hostname)", JIDUtils.getNodeHost(to));
+			replaces.put("$(hostname)", hostname);
+			replaces.put("$(number)", "");
+			replaces.put("$(cdata)", "");
+
+			
+			this.scriptFileLoader = new ScriptFileLoader(source_file, stanzas_buff, replaces);
+			this.scriptFileLoader.loadSourceFile();
+			
+		//	loadSourceFile(source_file);
 			// 		repeat_max = params.get("-repeat-script", repeat_max);
 			// 		repeat_wait = params.get("-repeat-wait", repeat_wait);
 		}
   }
 
-	private enum ParserState {
-		start, send_stanza, expect_stanza;
-	}
 
-	private void loadSourceFile(String file) {
-		try {
-			ParserState state = ParserState.start;
-			StringBuilder buff = null;
-			BufferedReader buffr = new BufferedReader(new FileReader(file));
-			String line = buffr.readLine();
-			while (line != null) {
-				line = line.trim();
-				switch (state) {
-				case start:
-					if (line.toLowerCase().startsWith("send:")) {
-						state = ParserState.send_stanza;
-						buff = new StringBuilder();
-					}
-					if (line.toLowerCase().startsWith("expect:")) {
-						state = ParserState.expect_stanza;
-						buff = new StringBuilder();
-					}
-					break;
-				case send_stanza:
-				case expect_stanza:
-					if (!line.equals("{")
-						&& !line.equals("}")
-						&& !line.startsWith("#")) {
-						buff.append(line+'\n');
-					}
-					if (line.equals("}")) {
-						Element[] elems = parseXMLData(buff.toString());
-						if (elems != null) {
-							switch (state) {
-							case send_stanza:
-								stanzas_buff.offer(new StanzaEntry(Action.send, elems));
-								break;
-							case expect_stanza:
-								stanzas_buff.offer(new StanzaEntry(Action.expect, elems));
-								break;
-							default:
-								break;
-							}
-						}
-						state = ParserState.start;
-					}
-					break;
-				default:
-					break;
-				}
-				line = buffr.readLine();
-			}
-			buffr.close();
-		} catch (IOException e) {
-			throw new RuntimeException("Can't read source file: " + file, e);
-		}
-	}
-
-	private Element[] parseXMLData(String data) {
+	private static Element[] parseXMLData(String data) {
 
 		// Replace a few "variables"
-		data = data.replace("$(from-jid)", jid);
-		data = data.replace("$(from-id)", id);
-		data = data.replace("$(to-jid)", to);
-		data = data.replace("$(to-id)", JIDUtils.getNodeID(to));
-		data = data.replace("$(to-hostname)", JIDUtils.getNodeHost(to));
-		data = data.replace("$(hostname)", hostname);
-		data = data.replace("$(number)", "");
-		data = data.replace("$(cdata)", "");
 
 		DomBuilderHandler domHandler = new DomBuilderHandler();
 		parser.parse(domHandler, data.toCharArray(), 0, data.length());
@@ -329,20 +282,5 @@ public class TestCommon extends TestEmpty {
 		return null;
 	}
 
-	private class StanzaEntry {
-
-		private Action action = null;
-		private Element[] stanza = null;
-
-		public StanzaEntry(Action action, Element[] stanza) {
-			this.action = action;
-			this.stanza = stanza;
-		}
-
-	}
-
-	private enum Action {
-		send, expect;
-	}
 
 }// TestCommon

@@ -22,38 +22,40 @@
 package tigase.test.junit;
 
 import static org.junit.Assert.fail;
-import static tigase.test.junit.ScriptEntryKind.send;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Queue;
 
 import tigase.test.util.ElementUtil;
 import tigase.test.util.EqualError;
+import tigase.test.util.ScriptFileLoader;
+import tigase.test.util.ScriptFileLoader.Action;
+import tigase.test.util.ScriptFileLoader.StanzaEntry;
 import tigase.xml.Element;
 
 public abstract class XMPPTestCase {
 
-	public static boolean isScriptValid(Collection<ScriptEntry> entries) {
-		ScriptEntryKind wantKind = ScriptEntryKind.send;
-		for (ScriptEntry scriptEntry : entries) {
-			if (wantKind != null && scriptEntry.getKind() != wantKind) {
+	public static boolean isScriptValid(Collection<StanzaEntry> entries) {
+		ScriptFileLoader.Action wantKind = ScriptFileLoader.Action.send;
+		for (StanzaEntry scriptEntry : entries) {
+			if (wantKind != null && scriptEntry.getAction() != wantKind) {
 				throw new RuntimeException("Invalid script for JUnit test! Expected " + wantKind);
-			} else if (wantKind == null && scriptEntry.getKind() == send) {
+			} else if (wantKind == null && scriptEntry.getAction() == Action.send) {
 				throw new RuntimeException("Invalid script for JUnit test! Expected not send element!");
 			}
-			if (scriptEntry.getKind() == ScriptEntryKind.send
-					&& (scriptEntry.getStanza() == null || scriptEntry.getStanza().length != 1)) {
+			if (scriptEntry.getAction() == Action.send && (scriptEntry.getStanza() == null || scriptEntry.getStanza().length != 1)) {
 				throw new RuntimeException("Invalid script for JUnit test! send may have only one element!");
 			}
-			switch (scriptEntry.getKind()) {
-				case send:
-					wantKind = null;
-					break;
-				default:
-					wantKind = send;
-					break;
+			switch (scriptEntry.getAction()) {
+			case send:
+				wantKind = null;
+				break;
+			default:
+				wantKind = Action.send;
+				break;
 			}
 		}
 		return true;
@@ -70,6 +72,9 @@ public abstract class XMPPTestCase {
 				for (Element e : expect) {
 					EqualError error = ElementUtil.equalElemsDeep(e, d);
 					result |= error.equals;
+					if (!error.equals) {
+						System.out.println(error.message);
+					}
 				}
 			}
 			return result;
@@ -127,49 +132,46 @@ public abstract class XMPPTestCase {
 				throw new RuntimeException("Script file must be specified.");
 			}
 
-			Queue<ScriptEntry> script = TestHelper.loadSourceFile(configFile);
-			isScriptValid(script);
+			Queue<StanzaEntry> script = new LinkedList<StanzaEntry>();
+			ScriptFileLoader scriptFileLoader = new ScriptFileLoader(configFile, script, null);
+			scriptFileLoader.loadSourceFile();
 
-			for (ScriptEntry scriptEntry : script) {
+			for (StanzaEntry scriptEntry : script) {
 				Boolean ok = null;
-				switch (scriptEntry.getKind()) {
-					case send:
-						xmlio.read().clear();
-						xmlio.write(scriptEntry.getStanza()[0]);
-						break;
-					case expect:
-						ok = equalsOneOf(scriptEntry.getStanza(), xmlio.read());
-						if (!ok) {
-							String error_message = "Expected one of: " + Arrays.toString(scriptEntry.getStanza())
-									+ ", received: " + Arrays.toString(xmlio.read().toArray(new Element[0]));
-							fail(error_message);
-						}
-						break;
-					case expect_all:
-						ok = equalsAll(scriptEntry.getStanza(), xmlio.read());
-						if (!ok) {
-							String error_message = "Expected all of: " + Arrays.toString(scriptEntry.getStanza())
-									+ ", received: " + Arrays.toString(xmlio.read().toArray(new Element[0]));
-							fail(error_message);
-						}
-						break;
-					case expect_strict:
-						ok = equalsStrict(scriptEntry.getStanza(), xmlio.read());
-						if (!ok) {
-							String error_message = "Expected sequence: " + Arrays.toString(scriptEntry.getStanza())
-									+ ", received: " + Arrays.toString(xmlio.read().toArray(new Element[0]));
-							fail(error_message);
-						}
-						break;
-					default:
-						break;
+				switch (scriptEntry.getAction()) {
+				case send:
+					xmlio.read().clear();
+					xmlio.write(scriptEntry.getStanza()[0]);
+					break;
+				case expect:
+					ok = equalsOneOf(scriptEntry.getStanza(), xmlio.read());
+					if (!ok) {
+						String error_message = "Expected one of: " + Arrays.toString(scriptEntry.getStanza()) + ", received: "
+								+ Arrays.toString(xmlio.read().toArray(new Element[0]));
+						fail(error_message);
+					}
+					break;
+				/*
+				 * case expect_all: ok = equalsAll(scriptEntry.getStanza(),
+				 * xmlio.read()); if (!ok) { String error_message =
+				 * "Expected all of: " +
+				 * Arrays.toString(scriptEntry.getStanza()) + ", received: " +
+				 * Arrays.toString(xmlio.read().toArray(new Element[0]));
+				 * fail(error_message); } break; case expect_strict: ok =
+				 * equalsStrict(scriptEntry.getStanza(), xmlio.read()); if (!ok)
+				 * { String error_message = "Expected sequence: " +
+				 * Arrays.toString(scriptEntry.getStanza()) + ", received: " +
+				 * Arrays.toString(xmlio.read().toArray(new Element[0]));
+				 * fail(error_message); } break;
+				 */
 				}
 				if (ok != null && !ok) {
 					break;
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			fail(e.getMessage());
 		}
 	}
 

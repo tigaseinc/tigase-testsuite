@@ -15,16 +15,16 @@
  * along with this program. Look for COPYING file in the top folder.
  * If not, see http://www.gnu.org/licenses/.
  *
- * $Rev: $
- * Last modified by $Author: $
- * $Date: $
+ * $Rev$
+ * Last modified by $Author$
+ * $Date$
  */
-package tigase.test.junit;
+package tigase.test.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 import tigase.xml.DomBuilderHandler;
@@ -32,16 +32,51 @@ import tigase.xml.Element;
 import tigase.xml.SimpleParser;
 import tigase.xml.SingletonFactory;
 
-public class TestHelper {
+public class ScriptFileLoader {
+
+	public static enum Action {
+		expect, send;
+	}
 
 	private enum ParserState {
-		expect_strict, expect_all_stanza, expect_stanza, send_stanza, start;
+		expect_stanza, send_stanza, start;
+	}
+
+	public static class StanzaEntry {
+
+		private Action action = null;
+		private Element[] stanza = null;
+
+		public StanzaEntry(Action action, Element[] stanza) {
+			this.action = action;
+			this.stanza = stanza;
+		}
+
+		public Action getAction() {
+			return action;
+		}
+
+		public Element[] getStanza() {
+			return stanza;
+		}
+
 	}
 
 	private static final SimpleParser parser = SingletonFactory.getParserInstance();
 
-	public static Queue<ScriptEntry> loadSourceFile(String file) {
-		Queue<ScriptEntry> stanzas = new LinkedList<ScriptEntry>();
+	private final String file;
+
+	private final Map<String, String> replace;
+
+	private final Queue<StanzaEntry> stanzas_buff;
+
+	public ScriptFileLoader(String source_file, Queue<StanzaEntry> stanzas_buff2, Map<String, String> replaces) {
+		this.file = source_file;
+		this.stanzas_buff = stanzas_buff2;
+		this.replace = replaces;
+	}
+
+	public void loadSourceFile() {
 		try {
 			ParserState state = ParserState.start;
 			StringBuilder buff = null;
@@ -59,19 +94,9 @@ public class TestHelper {
 						state = ParserState.expect_stanza;
 						buff = new StringBuilder();
 					}
-					if (line.toLowerCase().startsWith("expect all:")) {
-						state = ParserState.expect_all_stanza;
-						buff = new StringBuilder();
-					}
-					if (line.toLowerCase().startsWith("expect strict:")) {
-						state = ParserState.expect_strict;
-						buff = new StringBuilder();
-					}
 					break;
 				case send_stanza:
 				case expect_stanza:
-				case expect_strict:
-				case expect_all_stanza:
 					if (!line.equals("{") && !line.equals("}") && !line.startsWith("#")) {
 						buff.append(line + '\n');
 					}
@@ -80,16 +105,10 @@ public class TestHelper {
 						if (elems != null) {
 							switch (state) {
 							case send_stanza:
-								stanzas.offer(new ScriptEntry(ScriptEntryKind.send, elems));
+								stanzas_buff.offer(new StanzaEntry(Action.send, elems));
 								break;
 							case expect_stanza:
-								stanzas.offer(new ScriptEntry(ScriptEntryKind.expect, elems));
-								break;
-							case expect_strict:
-								stanzas.offer(new ScriptEntry(ScriptEntryKind.expect_strict, elems));
-								break;
-							case expect_all_stanza:
-								stanzas.offer(new ScriptEntry(ScriptEntryKind.expect_all, elems));
+								stanzas_buff.offer(new StanzaEntry(Action.expect, elems));
 								break;
 							default:
 								break;
@@ -103,13 +122,21 @@ public class TestHelper {
 				}
 				line = buffr.readLine();
 			}
+			buffr.close();
 		} catch (IOException e) {
 			throw new RuntimeException("Can't read source file: " + file, e);
 		}
-		return stanzas;
 	}
 
-	private static Element[] parseXMLData(String data) {
+	private Element[] parseXMLData(String data) {
+
+		// Replace a few "variables"
+		if (replace != null) {
+			for (java.util.Map.Entry<String, String> entry : replace.entrySet()) {
+				data = data.replace(entry.getKey(), entry.getValue());
+
+			}
+		}
 
 		DomBuilderHandler domHandler = new DomBuilderHandler();
 		parser.parse(domHandler, data.toCharArray(), 0, data.length());
