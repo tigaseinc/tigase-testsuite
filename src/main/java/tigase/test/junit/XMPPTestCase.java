@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import tigase.test.util.ElementUtil;
 import tigase.test.util.EqualError;
@@ -61,11 +63,12 @@ public abstract class XMPPTestCase {
 		return true;
 	}
 
-	private static boolean equalsOneOf(Element[] expect, Collection<Element> data) {
+	private static EqualError equalsOneOf(Element[] expect, Collection<Element> data) {
+		EqualError rs = null;
 		if (expect == null && data == null) {
-			return true;
+			return new EqualError(false, "Null expected");
 		} else if (expect == null || data == null) {
-			return false;
+			return new EqualError(false, "Result or expect data is null");
 		} else {
 			boolean result = false;
 			for (Element d : data) {
@@ -73,11 +76,11 @@ public abstract class XMPPTestCase {
 					EqualError error = ElementUtil.equalElemsDeep(e, d);
 					result |= error.equals;
 					if (!error.equals) {
-						System.out.println(error.message);
+						rs = error;
 					}
 				}
 			}
-			return result;
+			return result ? null : rs;
 		}
 	}
 
@@ -144,10 +147,11 @@ public abstract class XMPPTestCase {
 					xmlio.write(scriptEntry.getStanza()[0]);
 					break;
 				case expect:
-					ok = equalsOneOf(scriptEntry.getStanza(), xmlio.read());
-					if (!ok) {
-						String error_message = "Expected one of: " + Arrays.toString(scriptEntry.getStanza()) + ", received: "
-								+ Arrays.toString(xmlio.read().toArray(new Element[0]));
+					EqualError ee = equalsOneOf(scriptEntry.getStanza(), xmlio.read());
+					if (ee != null) {
+						String error_message = (scriptEntry.getDescription() != null ? (scriptEntry.getDescription() + " :: ") : "")
+								+ "expected:\n" + Arrays.toString(scriptEntry.getStanza()) + "\nreceived: "
+								+ Arrays.toString(xmlio.read().toArray(new Element[0])) + "\nDescription: " + ee.message;
 						fail(error_message);
 					}
 					break;
@@ -176,7 +180,21 @@ public abstract class XMPPTestCase {
 	}
 
 	public static void main(String[] args) {
-		test("processPresence-empty.cor", null);
+		Pattern pattern = Pattern.compile("(^(.+)\\((.*)\\):.*)|(^(.+):.*)");
+		Matcher m = pattern.matcher("send:{");
+		boolean b = m.matches();
+
+		if (b) {
+			for (int i = 0; i <= m.groupCount(); i++) {
+				System.out.println(i + ": " + m.group(i));
+			}
+		}
+
+		String keyword = m.group(2) == null ? m.group(5) : m.group(2);
+		String param = m.group(3) == null ? null : m.group(3);
+
+		System.out.println(keyword + "(" + param + ")");
+
 	}
 
 	private String configFile;

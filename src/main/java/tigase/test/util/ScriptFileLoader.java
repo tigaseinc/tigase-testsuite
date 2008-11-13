@@ -26,6 +26,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import tigase.xml.DomBuilderHandler;
 import tigase.xml.Element;
@@ -46,10 +48,12 @@ public class ScriptFileLoader {
 
 		private Action action = null;
 		private Element[] stanza = null;
+		private String description;
 
-		public StanzaEntry(Action action, Element[] stanza) {
+		public StanzaEntry(Action action, Element[] stanza, String description) {
 			this.action = action;
 			this.stanza = stanza;
+			this.description = description;
 		}
 
 		public Action getAction() {
@@ -58,6 +62,10 @@ public class ScriptFileLoader {
 
 		public Element[] getStanza() {
 			return stanza;
+		}
+
+		public String getDescription() {
+			return description;
 		}
 
 	}
@@ -79,6 +87,7 @@ public class ScriptFileLoader {
 	public void loadSourceFile() {
 		try {
 			ParserState state = ParserState.start;
+			String description = null;
 			StringBuilder buff = null;
 			BufferedReader buffr = new BufferedReader(new FileReader(file));
 			String line = buffr.readLine();
@@ -86,12 +95,23 @@ public class ScriptFileLoader {
 				line = line.trim();
 				switch (state) {
 				case start:
-					if (line.toLowerCase().startsWith("send:")) {
+					String keyword = "";
+					String param = null;
+					Matcher m = pattern.matcher(line);
+					boolean b = m.matches();
+					if (b) {
+						System.out.println(line);
+						keyword = m.group(2) == null ? m.group(5) : m.group(2);
+						param = m.group(3) == null ? null : m.group(3);
+					}
+					if ("send".equals(keyword)) {
 						state = ParserState.send_stanza;
+						description = param;
 						buff = new StringBuilder();
 					}
-					if (line.toLowerCase().startsWith("expect:")) {
+					if ("expect".equals(keyword)) {
 						state = ParserState.expect_stanza;
+						description = param;
 						buff = new StringBuilder();
 					}
 					break;
@@ -105,10 +125,10 @@ public class ScriptFileLoader {
 						if (elems != null) {
 							switch (state) {
 							case send_stanza:
-								stanzas_buff.offer(new StanzaEntry(Action.send, elems));
+								stanzas_buff.offer(new StanzaEntry(Action.send, elems, description));
 								break;
 							case expect_stanza:
-								stanzas_buff.offer(new StanzaEntry(Action.expect, elems));
+								stanzas_buff.offer(new StanzaEntry(Action.expect, elems, description));
 								break;
 							default:
 								break;
@@ -146,4 +166,6 @@ public class ScriptFileLoader {
 		}
 		return null;
 	}
+
+	private final static Pattern pattern =Pattern.compile("(^(.+)\\((.*)\\):.*)|(^(.+):.*)");
 }
