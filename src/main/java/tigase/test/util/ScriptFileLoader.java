@@ -100,7 +100,6 @@ public class ScriptFileLoader {
 					Matcher m = pattern.matcher(line);
 					boolean b = m.matches();
 					if (b) {
-						System.out.println(line);
 						keyword = m.group(2) == null ? m.group(5) : m.group(2);
 						param = m.group(3) == null ? null : m.group(3);
 					}
