@@ -359,6 +359,21 @@ Global settings:
     -source-file = "tests/data/UserStatusForbidden.cot"
   } >> USER_STATUS command test to ensure security, should receive forbidden error. <<
 
+  MUC Room create@common: {
+    -user-resr   = res-2
+    -source-file = "tests/data/MUCCreateRoom.cot"
+   } >> Send room create presence request to MUC component. <<
+
+  Pubsub get version@common: {
+    -user-resr   = res-2
+    -source-file = "tests/data/PubsubGetVersion.cot"
+   } >> Get version from the pubsub component. <<
+
+  Pubsub create channel@common: {
+    -user-resr   = res-2
+    -source-file = "tests/data/PubsubBasicTest.cot"
+   } >> Create a new channel in the pubsub component. <<
+
   Test end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<
 
