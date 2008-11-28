@@ -247,7 +247,8 @@ public class TestCommon extends TestEmpty {
 			fullExceptionStack = params.containsKey("-full-stack-trace");
 			source_file = params.get("-source-file", source_file);
 			stanzas_buff = new LinkedList<StanzaEntry>();
-			
+			String number = params.get("-number", "");
+
 			Map<String, String> replaces = new HashMap<String, String>();
 			replaces.put("$(from-jid)", jid);
 			replaces.put("$(from-id)", id);
@@ -255,13 +256,12 @@ public class TestCommon extends TestEmpty {
 			replaces.put("$(to-id)", JIDUtils.getNodeID(to));
 			replaces.put("$(to-hostname)", JIDUtils.getNodeHost(to));
 			replaces.put("$(hostname)", hostname);
-			replaces.put("$(number)", "");
+			replaces.put("$(number)", number);
 			replaces.put("$(cdata)", "");
 
-			
-			this.scriptFileLoader = new ScriptFileLoader(source_file, stanzas_buff, replaces);
+			this.scriptFileLoader =
+        new ScriptFileLoader(source_file, stanzas_buff, replaces);
 			this.scriptFileLoader.loadSourceFile();
-			
 		//	loadSourceFile(source_file);
 			// 		repeat_max = params.get("-repeat-script", repeat_max);
 			// 		repeat_wait = params.get("-repeat-wait", repeat_wait);
