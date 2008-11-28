@@ -38,12 +38,16 @@ $(long-list-user) = long-list-user_1
 $(ssl-tls-wait) = 15000
 $(stats-user) = admin
 $(stats-pass) = stats
+$(tester-user) = tester_1
+$(number) = 1
+
 
 -serverip    = "127.0.0.1"
 -host        = $(server-host)
 -user-name   = $(def-user)
 -user-pass   = $(def-user-pass)
 -user-resr   = $(def-user-resr)
+-number      = $(number)
 -socket-wait = 15000
 -base-ns     = "jabber:client"
 -def-auth    = auth-sasl
@@ -359,20 +363,66 @@ Global settings:
     -source-file = "tests/data/UserStatusForbidden.cot"
   } >> USER_STATUS command test to ensure security, should receive forbidden error. <<
 
-  MUC Room create@common: {
-    -user-resr   = res-2
+  Test 34@common: {
+#    -user-resr   = res-2
     -source-file = "tests/data/MUCCreateRoom.cot"
    } >> Send room create presence request to MUC component. <<
 
-  Pubsub get version@common: {
-    -user-resr   = res-2
+  Test 35@common: {
+#    -user-resr   = res-2
     -source-file = "tests/data/PubsubGetVersion.cot"
    } >> Get version from the pubsub component. <<
 
-  Pubsub create channel@common: {
-    -user-resr   = res-2
+  Test 36@common: {
+#    -user-resr   = res-2
     -source-file = "tests/data/PubsubBasicTest.cot"
    } >> Create a new channel in the pubsub component. <<
+
+  Test 37@common: Check whether the tester user account responds {
+#      -debug
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterMessage.cot"
+  } >> Send a message to $(tester-user) user to check whether it responds. <<
+
+  Test 38@common: {
+#      -debug
+    $(number) = 10
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterGenTraffic.cot"
+  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+
+  Test 39@common: {
+#      -debug
+    $(number) = 100
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterGenTraffic.cot"
+  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+
+  Test 40@common: {
+#      -debug
+    $(number) = 1000
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterGenTraffic.cot"
+  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+
+  Test 41@common: {
+#      -debug
+    $(number) = 10000
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterGenTraffic.cot"
+  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+
+  Test 42@common: {
+#      -debug
+    -socket-wait = 30000
+    $(number) = 100000
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterGenTraffic.cot"
+  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+
+  Test 43@common: Dynamic roster storage test {
+    -source-file = "tests/data/DynamicRosterStorageTest.cot"
+  } >> Storing and retrieving data from the dynamic roster storage <<
 
   Test end@user-unregister:
   >> XEP-0077 - In-Band Registration - user unregister <<

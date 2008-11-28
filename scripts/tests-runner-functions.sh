@@ -70,7 +70,7 @@ function tig_start_server() {
 		|| local _config_file=${2}
 
 	rm -f ${_src_dir}/logs/tigase.pid
-	killall java
+	#killall java
 	sleep 2
 	${_src_dir}/scripts/tigase.sh start ${_config_file}
 
@@ -84,7 +84,7 @@ function tig_stop_server() {
 
 	${_src_dir}/scripts/tigase.sh stop ${_config_file}
 	sleep 2
-	killall java
+	#killall java
 
 }
 

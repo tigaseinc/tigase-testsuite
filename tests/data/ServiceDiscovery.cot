@@ -42,7 +42,6 @@ expect:
 		<feature var="http://jabber.org/protocol/commands" />
 		<feature var="http://jabber.org/protocol/stats" />
 		<feature var="jabber:iq:version" />
-		<feature var="msgoffline" />
   </query>
 </iq>
 }
