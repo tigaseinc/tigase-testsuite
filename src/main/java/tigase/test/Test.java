@@ -123,12 +123,15 @@ public class Test {
     int loop = main_params.get("-loop", 1);
 		latch = new CountDownLatch(loop);
 		int loop_start = main_params.get("-loop-start", 0);
-    String user_name = (String)main_params.get("-user-name");
-    boolean loop_user_name = false;
-    if (user_name != null && user_name.contains("$(loop)")) {
-      loop_user_name = true;
-      user_name = user_name.replace("$(loop)", "");
-    } // end of if (user_name != null && user_name.contains("$(loop)"))
+    //String user_name = (String)main_params.get("-user-name");
+    boolean loop_user_name = true;
+// 		if (loop > 1) {
+// 			loop_user_name = true;
+// 		}
+//     if (user_name != null && user_name.contains("$(loop)")) {
+//       loop_user_name = true;
+//       user_name = user_name.replace("$(loop)", "");
+//     } // end of if (user_name != null && user_name.contains("$(loop)"))
     long loop_delay = 0;
     if (main_params.containsKey("-loop-delay")) {
       loop_delay = main_params.get("-loop-delay", 10);
@@ -136,6 +139,8 @@ public class Test {
     LinkedList<TestIfc> suite = new LinkedList<TestIfc>();
     Params test_params = null;
 		long all_tests_start_time = System.currentTimeMillis();
+// 		System.out.println("Test name: " + testName + ", loop: " + loop
+// 			+ ", lopp_start: " + loop_start);
     for (int cnt = loop_start; cnt < loop+loop_start; cnt++) {
       try {
         if (on_one_socket && cnt > 0 && last_result) {
@@ -155,7 +160,13 @@ public class Test {
           return;
         } // end of if (suite.size() == 0)
         if (loop_user_name) {
-          test_params.put("-user-name", user_name+cnt);
+					for (Map.Entry entry: test_params.entrySet()) {
+						if (entry.getValue() != null
+							&& entry.getValue().toString().contains("$(loop)")) {
+							entry.setValue(entry.getValue().toString().replace("$(loop)", ""+cnt));
+						}
+					}
+					//test_params.put("-user-name", user_name+cnt);
         } // end of if (loop_user_name)
         runTest(suite, test_params);
 				if ((stop_on_fail || cnt > 10) && (tests_ok <= tests_er)) {
@@ -171,6 +182,7 @@ public class Test {
         result = false;
         errorMsg = e.getMessage();
         exception = e;
+				//e.printStackTrace();
         return;
       } // end of try-catch
       if (loop_delay > 0) {

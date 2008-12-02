@@ -30,7 +30,14 @@ SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
 	server_dir="../server"
 	database="derby"
 	server_ip="127.0.0.1"
+
+	MS_MEM=100
+	MX_MEM=1000
+	SMALL_MS_MEM=5
+	SMALL_MS_MEM=10
 }
+export MIN_MEM=$MS_MEM
+export MAX_MEM=$MX_MEM
 
 FUNCTIONS_FILE=`dirname ${0}`/tests-runner-functions.sh
 [[ -f ${FUNCTIONS_FILE} ]] && source ${FUNCTIONS_FILE} \
@@ -46,7 +53,10 @@ function usage() {
 	echo "  --help|-h	This help message"
 	echo "  --func [mysql|pgsql|derby]"
 	echo "              Run all functional tests for a single database"
-	echo "		    configuration"
+	echo "		          configuration"
+	echo "  --lmem [mysql|pgsql|derby]"
+	echo "              Run low memory tests for a single database"
+	echo "		          configuration"
 	echo "  --perf [mysql|pgsql|derby]"
 	echo "              Run all performance tests for a single database"
 	echo "              configuration"
@@ -54,6 +64,8 @@ function usage() {
 	echo "              Run all stability tests for a single database"
 	echo "              configuration"
 	echo "  --func-all  Run all functional tests for all database"
+	echo "              configurations"
+	echo "  --lmem-all  Run low memory tests for all database"
 	echo "              configurations"
 	echo "  --perf-all  Run all performance tests for all database"
 	echo "              configurations"
@@ -68,6 +80,7 @@ function usage() {
 	echo "  --debug|-d                 Turns on debug mode"
 	echo "  --skip-db-relad|-no-db     Turns off reloading database"
 	echo "  --skip-server|-no-serv     Turns off Tigase server start"
+	echo "  --small-mem|-sm            Run in small memory mode"
 	echo "-----------"
 	echo "  Other possible parameters are in following order:"
 	echo "  [server-dir] [server-ip]"
@@ -88,20 +101,24 @@ while [ "${found}" == "1" ] ; do
 			export SKIP_SERVER_START=1
 			shift
 			;;
+		--small-mem|-sm)
+			export MIN_MEM=$SMALL_MS_MEM
+			export MAX_MEM=$SMALL_MX_MEM
+			shift
+			;;
 		*)
 			found=0
 			;;
 	esac
 done
 
-
 case "${1}" in
-	--func|--perf|--stab)
+	--func|--lmem|--perf|--stab)
 		[[ -z ${2} ]] || database=${2}
 		[[ -z ${3} ]] || server_dir=${3}
 		[[ -z ${4} ]] || server_ip=${4}
 		;;
-	--func-all|--perf-all|--stab-all|--all-tests)
+	--func-all|--lmem-all|--perf-all|--stab-all|--all-tests)
 		[[ -z ${2} ]] || server_dir=${2}
 		[[ -z ${3} ]] || server_ip=${3}
 		;;
@@ -129,6 +146,11 @@ case "${1}" in
 	--func)
 		run_functional_test ${database} ${server_dir} ${server_ip}
 		;;
+	--lmem)
+		export MIN_MEM=$SMALL_MS_MEM
+		export MAX_MEM=$SMALL_MX_MEM
+		run_low_memory_test ${database} ${server_dir} ${server_ip}
+		;;
 	--func-all)
 		cp -f func-rep.html_tmp func-rep.html
 		echo "<tr><th>${ver}</th>" >> func-rep.html
@@ -150,6 +172,30 @@ case "${1}" in
 		sleep 30
 		run_functional_test pgsql-custom ${server_dir} ${IPS[2]}
 		echo "</tr>" >> func-rep.html
+		;;
+	--lmem-all)
+		export MIN_MEM=$SMALL_MS_MEM
+		export MAX_MEM=$SMALL_MX_MEM
+		cp -f lmem-rep.html_tmp lmem-rep.html
+		echo "<tr><th>${ver}</th>" >> func-rep.html
+		run_low_memory_test derby ${server_dir} ${IPS[0]}
+		sleep 30
+		run_low_memory_test derby-auth ${server_dir} ${IPS[0]}
+		sleep 30
+		run_low_memory_test derby-custom ${server_dir} ${IPS[0]}
+		sleep 30
+		run_low_memory_test mysql ${server_dir} ${IPS[1]}
+		sleep 30
+		run_low_memory_test mysql-auth ${server_dir} ${IPS[1]}
+		sleep 30
+		run_low_memory_test mysql-custom ${server_dir} ${IPS[1]}
+		sleep 30
+		run_low_memory_test pgsql ${server_dir} ${IPS[2]}
+		sleep 30
+		run_low_memory_test pgsql-auth ${server_dir} ${IPS[2]}
+		sleep 30
+		run_low_memory_test pgsql-custom ${server_dir} ${IPS[2]}
+		echo "</tr>" >> lmem-rep.html
 		;;
 	--perf)
 		run_performance_test ${database} ${server_dir} ${server_ip}

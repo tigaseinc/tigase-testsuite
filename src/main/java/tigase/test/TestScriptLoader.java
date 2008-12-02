@@ -149,7 +149,7 @@ public class TestScriptLoader {
 
   private boolean runMultiTest(TestNode node) throws IOException {
     if (node.getId() != null) {
-      Test test = new Test(node);
+			Test test = new Test(node);
       ThreadTest tt = new ThreadTest(test);
       new Thread(tt).start();
     }

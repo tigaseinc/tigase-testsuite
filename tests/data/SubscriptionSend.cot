@@ -20,6 +20,7 @@
 ##  $Date$
 ##
 send: {
+<presence type="available"/>
 <iq type="get" id="roster_1" >
   <query xmlns="jabber:iq:roster"/>
 </iq>
@@ -94,5 +95,6 @@ expect: {
     <item jid="$(to-id)" subscription="both"/>
   </query>
 </iq>
+<presence type="unavailable"/>
 }
 

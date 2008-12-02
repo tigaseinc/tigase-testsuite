@@ -122,6 +122,10 @@ function run_test() {
 			local _output_file="${_output_dir}/functional-tests.html"
 			local _script_file="scripts/all-xmpp-tests.xmpt"
 			;;
+		lmem)
+			local _output_file="${_output_dir}/low-memory-tests.html"
+			local _script_file="scripts/all-xmpp-small-mem.xmpt"
+			;;
 		perf)
 			local _output_file="${_output_dir}/performance-tests.html"
 			local _script_file="scripts/perform-xmpp-tests.xmpt"
@@ -224,6 +228,16 @@ function run_functional_test() {
 	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
 
 	run_test "func" ${_database} ${_server_dir} ${_server_ip}
+
+}
+
+function run_low_memory_test() {
+
+	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
+	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
+	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
+
+	run_test "lmem" ${_database} ${_server_dir} ${_server_ip}
 
 }
 

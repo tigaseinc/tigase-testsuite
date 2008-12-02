@@ -56,7 +56,7 @@ $(node-3) = "test-i.tigase.org"
 -trusts-file          = "certs/client_truststore"
 
 -debug-on-error
--stop-on-fail = true
+#-stop-on-fail = true
 
 Version@auth-sasl;iq-version: { -user-name=$(stats-user) -user-pass=$(stats-pass) }
  >> Get server version <<

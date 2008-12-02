@@ -69,6 +69,7 @@ public class TestCommon extends TestEmpty {
   private String jid = null;
   private String id = null;
   private String to = "test_user@localhost";
+	private String cdata = "";
 	protected boolean timeoutOk = false;
 	private boolean fullExceptionStack = false;
   protected ResultCode resultCode = ResultCode.TEST_OK;
@@ -234,6 +235,7 @@ public class TestCommon extends TestEmpty {
 			user_resr = params.get("-user-resr", user_resr);
 			user_emil = params.get("-user-emil", user_emil);
 			hostname = params.get("-host", hostname);
+			cdata = params.get("-cdata", cdata);
 			String name = JIDUtils.getNodeNick(user_name);
 			if (name == null || name.equals("")) {
 				jid = user_name + "@" + hostname + "/" + user_resr;
@@ -257,7 +259,7 @@ public class TestCommon extends TestEmpty {
 			replaces.put("$(to-hostname)", JIDUtils.getNodeHost(to));
 			replaces.put("$(hostname)", hostname);
 			replaces.put("$(number)", number);
-			replaces.put("$(cdata)", "");
+			replaces.put("$(cdata)", cdata);
 
 			this.scriptFileLoader =
         new ScriptFileLoader(source_file, stanzas_buff, replaces);

@@ -87,7 +87,7 @@ public class SocketBosh extends SocketXMLIO {
 					if (body.getName() == "body") {
 						String temp = body.getAttribute("sid");
 						if (temp != null) {
-						sid = temp;
+							sid = temp;
 						}
 						temp = body.getAttribute("authid");
 						if (temp != null) {
@@ -130,18 +130,20 @@ public class SocketBosh extends SocketXMLIO {
 		if (data != null && data.startsWith("<body")) {
 			super.write(data);
 		} else {
-			Element body = new Element("body", data,
-				new String[] {"xmlns", "sid", "rid"},
-				new String[] {"http://jabber.org/protocol/httpbind", sid, ""+(++rid)});
-			// 		System.out.println("SocketBosh writing data: " + body_str);
-			if (restart) {
-				body.setAttribute("xmpp:restart", "true");
-				restart = false;
+			if (sid != null) {
+				Element body = new Element("body", data,
+					new String[] {"xmlns", "sid", "rid"},
+					new String[] {"http://jabber.org/protocol/httpbind", sid, ""+(++rid)});
+				// 		System.out.println("SocketBosh writing data: " + body_str);
+				if (restart) {
+					body.setAttribute("xmpp:restart", "true");
+					restart = false;
+				}
+				if (terminate) {
+					body.setAttribute("type", "terminate");
+				}
+				super.write(body.toString());
 			}
-			if (terminate) {
-				body.setAttribute("type", "terminate");
-			}
-			super.write(body.toString());
 			if (terminate) {
 				super.close();
 			}

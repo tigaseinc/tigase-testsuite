@@ -29,6 +29,7 @@
 -title          = "XMPP Server functional tests."
 
 $(server-host) = test-d
+$(virtual-host) = test-domain
 $(def-user)    = all-xmpp-test
 $(def-user-pass) = all-xmpp-test-password
 $(def-user-resr) = def-user-resource
@@ -156,7 +157,7 @@ Global settings:
 
     -socket-wait = 0
     -user-name   = $(long-list-user)
-    -delay       = 10000
+    -delay       = 1000
   } >> Setup a user daemon with very long privacy list <<
 
   Test 18@msg-send: Send a message to $(long-list-user) user
@@ -175,13 +176,20 @@ Global settings:
   Test 21@common: { -source-file = "tests/data/vcard-temp.cot" }
   >> XEP-0054: vcard-temp <<
 
-  Test 22@common: { -source-file = "tests/data/UrnXmppPing.cot" }
-  >> XEP-0199: XMPP Ping <<
+  Test 22@common: {
+    -to-jid = $(server-host)
+    -source-file = "tests/data/UrnXmppPing.cot"
+  } >> XEP-0199: XMPP Ping to domain '$(server-host)' the user is logged in <<
 
-  Test 23@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
+  Test 23@common: {
+    -to-jid = $(virtual-host)
+    -source-file = "tests/data/UrnXmppPing.cot"
+  } >> XEP-0199: XMPP Ping to another, vrtual domain '$(virtual-host)' on the server <<
+
+  Test 24@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
   >> XEP-0030: XMPP Service Discovery <<
 
-  Test 24: {
+  Test 25: {
     -multi-thread
 
     Subscription receive@common: {
@@ -203,7 +211,7 @@ Global settings:
 
   } >> Presence subscription test between '$(stats-user)' and '$(def-user)'. <<
 
-  Test 25: {
+  Test 26: {
     -multi-thread
 
     Subscription receive@common: {
@@ -225,7 +233,7 @@ Global settings:
 
   } >> Presence cancel test between '$(stats-user)' and '$(def-user)'. <<
 
-  Test 26: {
+  Test 27: {
     -multi-thread
 
     Subscription receive@common: {
@@ -247,7 +255,7 @@ Global settings:
 
   } >> Presence unsubscribe test between '$(stats-user)' and '$(def-user)'. <<
 
-  Test 27: {
+  Test 28: {
     -multi-thread
 
     Subscription receive@common: {
@@ -269,7 +277,7 @@ Global settings:
 
   } >> Presence subscription between '$(stats-user)' and '$(def-user)' again to prepare for the next test. <<
 
-  Test 28: {
+  Test 29: {
     -multi-thread
 
     Subscription receive@common: {
@@ -291,7 +299,7 @@ Global settings:
 
   } >> Remove subscribed contact '$(def-user)' from the roster of the user '$(stats-user)', all subscriptions should be cancelled automatically by the server. <<
 
-  Test 29: {
+  Test 30: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
@@ -312,7 +320,7 @@ Global settings:
 
   } >> 2 user connections, each using a different resource. <<
 
-  Test 30: {
+  Test 31: {
     -multi-thread
 
     Subscription receive@common: {
@@ -334,12 +342,12 @@ Global settings:
 
   } >> Presence subscription deny test between '$(stats-user)' and '$(def-user)'. <<
 
-  Test 31@auth-sasl;common-no-bind: {
+  Test 32@auth-sasl;common-no-bind: {
     -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
     -source-file = "tests/data/MessageNoBind.cot"
   } >> Send a message without resource binding and expect an error response. <<
 
-  Test 32@common-no-bind: {
+  Test 33@common-no-bind: {
      -port = 5678
      -def-stream  = stream-ext-comp
      -secret = very-secret
@@ -351,7 +359,7 @@ Global settings:
     -source-file = "tests/data/UserStatus.cot"
   } >> USER_STATUS command test to ensure interoperability with Yate <<
 
-  Test 33@common-no-bind: {
+  Test 34@common-no-bind: {
      -port = 5678
      -def-stream  = stream-ext-comp
      -secret = very-secret
@@ -363,56 +371,56 @@ Global settings:
     -source-file = "tests/data/UserStatusForbidden.cot"
   } >> USER_STATUS command test to ensure security, should receive forbidden error. <<
 
-  Test 34@common: {
+  Test 35@common: {
 #    -user-resr   = res-2
     -source-file = "tests/data/MUCCreateRoom.cot"
    } >> Send room create presence request to MUC component. <<
 
-  Test 35@common: {
+  Test 36@common: {
 #    -user-resr   = res-2
     -source-file = "tests/data/PubsubGetVersion.cot"
    } >> Get version from the pubsub component. <<
 
-  Test 36@common: {
+  Test 37@common: {
 #    -user-resr   = res-2
     -source-file = "tests/data/PubsubBasicTest.cot"
    } >> Create a new channel in the pubsub component. <<
 
-  Test 37@common: Check whether the tester user account responds {
+  Test 38@common: Check whether the tester user account responds {
 #      -debug
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterMessage.cot"
   } >> Send a message to $(tester-user) user to check whether it responds. <<
 
-  Test 38@common: {
+  Test 39@common: {
 #      -debug
     $(number) = 10
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterGenTraffic.cot"
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 39@common: {
+  Test 40@common: {
 #      -debug
     $(number) = 100
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterGenTraffic.cot"
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 40@common: {
+  Test 41@common: {
 #      -debug
     $(number) = 1000
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterGenTraffic.cot"
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 41@common: {
+  Test 42@common: {
 #      -debug
     $(number) = 10000
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterGenTraffic.cot"
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 42@common: {
+  Test 43@common: {
 #      -debug
     -socket-wait = 30000
     $(number) = 100000
@@ -420,15 +428,125 @@ Global settings:
     -source-file = "tests/data/TesterGenTraffic.cot"
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 43@common: Dynamic roster storage test {
+  Test 44@common: Dynamic roster storage test {
     -source-file = "tests/data/DynamicRosterStorageTest.cot"
   } >> Storing and retrieving data from the dynamic roster storage <<
 
-  Test end@user-unregister:
-  >> XEP-0077 - In-Band Registration - user unregister <<
-
 }
 >> Script with functional tests for all basic XMPP/Jabber features <<
+
+VHosts Tests:
+{
+  $(vhost-1) = vhost-1
+  $(vhosts-number) = 200
+
+  VHost 1@common: {
+    -to-jid = $(virtual-host)
+    -source-file = "tests/data/UrnXmppPing.cot"
+  } >> XEP-0199: XMPP Ping to virtual domain '$(virtual-host)' on the server <<
+
+  VHost 2@common: {
+    -source-file = "tests/data/NotAdminVHostReload.cot"
+  } >> Reloading VHosts from non-admin account, expecting error message <<
+
+  VHost 3@common: {
+    -source-file = "tests/data/NotAdminVHostUpdate.cot"
+  } >> Updating VHost from non-admin account, expecting error message <<
+
+  VHost 4@common: {
+    -source-file = "tests/data/NotAdminVHostRemove.cot"
+  } >> Removing VHost from non-admin account, expecting error message <<
+
+  VHost 5@common: {
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -number = 2
+    -source-file = "tests/data/VHostReload.cot"
+  } >> Reloading VHosts from admin account... <<
+
+  VHost 6@common: {
+    -to-jid = $(vhost-1)
+    -source-file = "tests/data/PingNonExistenDomain.cot"
+  } >> XEP-0199: XMPP Ping to virtual domain '$(vhost-1)' which is not on the server, expecting error response <<
+
+  VHost 7@common: {
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -cdata = $(vhost-1)
+    -number = 3
+    -source-file = "tests/data/VHostUpdate.cot"
+  } >> Adding VHost '$(vhost-1)' from admin account <<
+
+  VHost 8@common: {
+    -to-jid = $(vhost-1)
+    -source-file = "tests/data/UrnXmppPing.cot"
+  } >> XEP-0199: XMPP Ping to virtual domain '$(vhost-1)' on the server <<
+
+  VHost 9@common: {
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -cdata = $(vhost-1)
+    -number = 2
+    -source-file = "tests/data/VHostRemove.cot"
+  } >> Removing VHost '$(vhost-1)' from admin account <<
+
+  VHost 10@common: {
+    -to-jid = $(vhost-1)
+    -source-file = "tests/data/PingNonExistenDomain.cot"
+  } >> XEP-0199: XMPP Ping to virtual domain '$(vhost-1)' which is not on the server, expecting error response <<
+
+  VHost 11@common: {
+    -loop = $(vhosts-number)
+    -to-jid = "vhost-$(loop)"
+    -source-file = "tests/data/PingNonExistenDomain.cot"
+  } >> XEP-0199: XMPP Ping $(vhosts-number) non-existen vhosts on the server, expecting error responses <<
+
+  VHost 12@common: {
+    -loop = $(vhosts-number)
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -cdata = "vhost-$(loop)"
+    -source-file = "tests/data/VHostAddSimple.cot"
+  } >> Adding $(vhosts-number) virtual hosts from admin account <<
+
+  VHost 13@common: {
+    -loop = $(vhosts-number)
+    -to-jid = "vhost-$(loop)"
+    -source-file = "tests/data/UrnXmppPing.cot"
+  } >> XEP-0199: XMPP Ping all $(vhosts-number) virtual hosts on the server <<
+
+  VHost 14@common: {
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -number = 202
+    -source-file = "tests/data/VHostReload.cot"
+  } >> Reloading all VHosts from admin account... <<
+
+  VHost 15@common: {
+    -loop = $(vhosts-number)
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -cdata = "vhost-$(loop)"
+    -source-file = "tests/data/VHostRemoveSimple.cot"
+  } >> Removing $(vhosts-number) VHosts from admin account <<
+
+  VHost 16@common: {
+    -loop = $(vhosts-number)
+    -to-jid = "vhost-$(loop)"
+    -source-file = "tests/data/PingNonExistenDomain.cot"
+  } >> XEP-0199: XMPP Ping $(vhosts-number) non-existen vhosts on the server, expecting error responses <<
+
+  VHost 17@common: {
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -number = 2
+    -source-file = "tests/data/VHostReload.cot"
+  } >> Reloading all VHosts from admin account... <<
+
+  Vhost end@user-unregister:
+  >> XEP-0077 - In-Band Registration - user unregister <<
+
+} >> Tests for Virtual Hosts implementation in the server <<
 
 Bosh Tests:
 {
@@ -486,13 +604,20 @@ Bosh Tests:
   Bosh 18@common: { -source-file = "tests/data/vcard-temp.cot" }
   >> XEP-0054: vcard-temp <<
 
-  Bosh 19@common: { -source-file = "tests/data/UrnXmppPing.cot" }
-  >> XEP-0199: XMPP Ping <<
+  Bosh 19@common: {
+    -to-jid = $(server-host)
+    -source-file = "tests/data/UrnXmppPing.cot"
+  } >> XEP-0199: XMPP Ping to domain '$(server-host)' the user is logged in <<
 
-  Bosh 20@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
+  Bosh 20@common: {
+    -to-jid = $(virtual-host)
+    -source-file = "tests/data/UrnXmppPing.cot"
+  } >> XEP-0199: XMPP Ping to another, vrtual domain '$(virtual-host)' on the server <<
+
+  Bosh 21@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
   >> XEP-0030: XMPP Service Discovery <<
 
-  Bosh 21: {
+  Bosh 22: {
     -multi-thread
 
     Subscription receive@common: {
@@ -514,7 +639,7 @@ Bosh Tests:
 
   } >> Presence subscription test between '$(stats-user)' and '$(def-user)'. <<
 
-  Bosh 22: {
+  Bosh 23: {
     -multi-thread
 
     Subscription receive@common: {
@@ -536,7 +661,7 @@ Bosh Tests:
 
   } >> Presence cancel test between '$(stats-user)' and '$(def-user)'. <<
 
-  Bosh 23: {
+  Bosh 24: {
     -multi-thread
 
     Subscription receive@common: {
@@ -558,7 +683,7 @@ Bosh Tests:
 
   } >> Presence unsubscribe test between '$(stats-user)' and '$(def-user)'. <<
 
-  Bosh 24: {
+  Bosh 25: {
     -multi-thread
 
     Subscription receive@common: {
@@ -580,7 +705,7 @@ Bosh Tests:
 
   } >> Presence subscription between '$(stats-user)' and '$(def-user)' again to prepare for the next test. <<
 
-  Bosh 25: {
+  Bosh 26: {
     -multi-thread
 
     Subscription receive@common: {
@@ -602,7 +727,7 @@ Bosh Tests:
 
   } >> Remove subscribed contact '$(def-user)' from the roster of the user '$(stats-user)', all subscriptions should be cancelled automatically by the server. <<
 
-  Bosh 26: {
+  Bosh 27: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
@@ -623,7 +748,7 @@ Bosh Tests:
 
   } >> 2 user connections, each using a different resource. <<
 
-  Bosh 27: {
+  Bosh 28: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
@@ -646,7 +771,7 @@ Bosh Tests:
 
   } >> Mixed, one connectiob via Bosh another standard c2s, each using a different resource. <<
 
-  Bosh 28: {
+  Bosh 29: {
     -multi-thread
 
     Subscription receive@common: {
@@ -668,7 +793,7 @@ Bosh Tests:
 
   } >> Presence subscription deny test between '$(stats-user)' and '$(def-user)'. <<
 
-  Bosh 29@auth-sasl;common-no-bind: {
+  Bosh 30@auth-sasl;common-no-bind: {
     -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
     -source-file = "tests/data/MessageNoBind.cot"
   } >> Send a message without resource binding and expect an error response. <<
