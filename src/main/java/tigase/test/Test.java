@@ -160,10 +160,11 @@ public class Test {
           return;
         } // end of if (suite.size() == 0)
         if (loop_user_name) {
-					for (Map.Entry entry: test_params.entrySet()) {
+					for (Map.Entry<String, Object> entry: main_params.entrySet()) {
 						if (entry.getValue() != null
 							&& entry.getValue().toString().contains("$(loop)")) {
-							entry.setValue(entry.getValue().toString().replace("$(loop)", ""+cnt));
+							test_params.put(entry.getKey(),
+								entry.getValue().toString().replace("$(loop)", ""+cnt));
 						}
 					}
 					//test_params.put("-user-name", user_name+cnt);

@@ -99,35 +99,35 @@ Global settings:
 # For example remove user accounts which will be created during
 # later tests. Otherwise we will get errors
 
-  Server warm up 1@msg-send:
-  Send $(repeats) messages to self user over TLS
-  {
-    $(repeats) = 100
+#   Server warm up 1@msg-send:
+#   Send $(repeats) messages to self user over TLS
+#   {
+#     $(repeats) = 100
 
-#    -no-record
+# #    -no-record
 
-    -messages  = 1
-    -loop      = $(repeats)
-    -to-jid    = $(self)
-  }
-  >> Send $(repeats) messages to self user over TLS and don\'t wait for
-  response <<
+#     -messages  = 1
+#     -loop      = $(repeats)
+#     -to-jid    = $(self)
+#   }
+#   >> Send $(repeats) messages to self user over TLS and don\'t wait for
+#   response <<
 
 
-  Server warm up 2@msg-send:
-  Send $(repeats) messages to self user over TLS on one connection
-  {
-    $(repeats) = 100
+#   Server warm up 2@msg-send:
+#   Send $(repeats) messages to self user over TLS on one connection
+#   {
+#     $(repeats) = 100
 
-#    -no-record
-    -on-one-socket
+# #    -no-record
+#     -on-one-socket
 
-    -messages  = 1
-    -loop      = $(repeats)
-    -to-jid    = $(self)
-  }
-  >> Send $(repeats) messages to self user over TLS and don\'t wait for
-  response on one connection <<
+#     -messages  = 1
+#     -loop      = $(repeats)
+#     -to-jid    = $(self)
+#   }
+#   >> Send $(repeats) messages to self user over TLS and don\'t wait for
+#   response on one connection <<
 
   Prep 1@user-register: Register $(daemon-users) test user accounts {
     $(daemon-users) = 5000
@@ -155,7 +155,7 @@ Global settings:
 
   Test 2@user-register: Register $(repeats) user accounts
   {
-    -on-one-socket
+#    -on-one-socket
 
     -user-name = "all-xmpp-test$(loop)"
   }
@@ -198,7 +198,7 @@ Global settings:
     -loop = 1
     -socket-wait = 0
     -user-name   = $(long-list-user)
-    -delay       = 10000
+    -delay       = 1000
   } >> Setup a user daemon with very long privacy list <<
 
   Test 5@msg-send: Send $(repeats) * $(messages) * 2 messages to $(long-list-user) user with very long privacy list
