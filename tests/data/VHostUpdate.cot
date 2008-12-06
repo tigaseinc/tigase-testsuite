@@ -29,7 +29,7 @@ expect: {
 	<command xmlns="http://jabber.org/protocol/commands" status="executing" node="VHOSTS_UPDATE">
 		<x xmlns="jabber:x:data" type="result">
 			 <field var="VHost"><value/></field>
-			 <field type="list-single" label="true" var="Enabled">
+			 <field type="list-single" label="Enabled" var="Enabled">
 				<value>true</value>
 				<option label="true"><value>true</value></option>
 				<option label="false"><value>false</value></option>
