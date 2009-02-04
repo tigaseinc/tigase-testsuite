@@ -43,7 +43,8 @@ $(stats-pass) = stats
 -user-pass   = $(stats-pass)
 -socket-wait = 5000
 -base-ns     = "jabber:client"
--def-auth    = auth-plain
+-def-auth    = auth-sasl
+-def-stream  = stream-client
 -keys-file-password   = keystore
 -trusts-file-password = truststore
 -keys-file            = "certs/keystore"
@@ -54,4 +55,4 @@ $(stats-pass) = stats
 Version@auth-sasl;iq-version: >> Get server version <<
 Configuration@command-get-config: >> Server configuration <<
 Statistics@iq-stats: >> Server statistics <<
-Common test@auth-digest;common: >> Common test <<
+Common test@common: >> Common test <<
