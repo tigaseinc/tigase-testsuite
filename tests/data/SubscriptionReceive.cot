@@ -30,6 +30,15 @@ expect: {
   <query xmlns="jabber:iq:roster"/>
 </iq>
 }
+expect: {
+<iq id="dr-1" type="set">
+  <query xmlns="jabber:iq:roster">
+    <item name="dynrost" subscription="both" jid="dynrost@test-d">
+      <group>test group</group>
+    </item>
+  </query>
+</iq>
+}
 
 expect: {
 <presence type="subscribe" from="$(to-id)"/>
@@ -95,4 +104,13 @@ expect: {
 </iq>
 <presence type="unavailable"/>
 }
-
+expect: {
+<iq id="dr-1" type="set">
+  <query xmlns="jabber:iq:roster">
+    <item name="dynrost" subscription="both" jid="dynrost@test-d">
+      <group>test group</group>
+    </item>
+  </query>
+</iq>
+<presence type="unavailable"/>
+}

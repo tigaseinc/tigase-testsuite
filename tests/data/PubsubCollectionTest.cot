@@ -69,4 +69,19 @@ expect: {
 <iq type='result' from='pubsub.$(hostname)'
     to='$(from-jid)'
     id='coll2'/>
+<message id="1" to="$(from-id)" from="pubsub.$(hostname)">
+  <event xmlns="http://jabber.org/protocol/pubsub#event">
+    <collection node="A"><associate node="B"/></collection>
+  </event>
+</message>
+}
+expect: {
+<iq type='result' from='pubsub.$(hostname)'
+    to='$(from-jid)'
+    id='coll2'/>
+<message id="1" to="$(from-id)" from="pubsub.$(hostname)">
+  <event xmlns="http://jabber.org/protocol/pubsub#event">
+    <collection node="A"><associate node="B"/></collection>
+  </event>
+</message>
 }

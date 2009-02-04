@@ -29,6 +29,15 @@ expect: {
   <query xmlns="jabber:iq:roster"/>
 </iq>
 }
+expect: {
+<iq id="dr-1" type="set">
+  <query xmlns="jabber:iq:roster">
+    <item name="dynrost" subscription="both" jid="dynrost@test-d">
+      <group>test group</group>
+    </item>
+  </query>
+</iq>
+}
 
 send: {
 <presence to="$(to-id)" type="subscribe"/>
