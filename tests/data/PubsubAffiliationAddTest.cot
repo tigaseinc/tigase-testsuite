@@ -27,9 +27,11 @@
 
 send: {
 <iq type='set' from='$(from-jid)' to='pubsub.$(hostname)'
-    id='create1'>
-  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
-    <create node='princely_musings'/>
+    id='affil1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub#owner'>
+    <affiliations node='princely_musings'>
+      <affiliation jid='bard@shakespeare.lit' affiliation='publisher'/>
+    </affiliations>
   </pubsub>
 </iq>
 }
@@ -37,5 +39,26 @@ send: {
 expect: {
 <iq type='result' from='pubsub.$(hostname)'
     to='$(from-jid)'
-    id='create1'/>
+    id='affil1'/>
+}
+
+send: {
+<iq type='get' from='$(from-jid)' to='pubsub.$(hostname)'
+    id='affil2'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub#owner'>
+    <affiliations node='princely_musings'/>
+  </pubsub>
+</iq>
+}
+
+expect: {
+<iq type='result' from='pubsub.$(hostname)'
+    to='$(from-jid)'
+    id='affil2'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub#owner'>
+    <affiliations node='princely_musings'>
+      <affiliation jid='bard@shakespeare.lit' affiliation='publisher'/>
+    </affiliations>
+  </pubsub>
+</iq>
 }

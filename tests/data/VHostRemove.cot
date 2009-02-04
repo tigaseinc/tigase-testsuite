@@ -27,7 +27,7 @@ send: {
 expect: {
 <iq from="vhost-man@$(hostname)" type="result" to="$(from-jid)" id="aacaa">
 	<command xmlns="http://jabber.org/protocol/commands" status="executing" node="VHOSTS_REMOVE">
-		<x xmlns="jabber:x:data" type="result">
+		<x xmlns="jabber:x:data" type="form">
 			 <field var="VHost"><value/></field>
 		</x>
 		<actions execute="complete"><complete/></actions>

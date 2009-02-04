@@ -383,44 +383,59 @@ Global settings:
 
   Test 37@common: {
 #    -user-resr   = res-2
-    -source-file = "tests/data/PubsubBasicTest.cot"
-   } >> Create a new channel in the pubsub component. <<
+    -source-file = "tests/data/PubsubCreateNodeTest.cot"
+   } >> Create a new node in the pubsub component. <<
 
-  Test 38@common: Check whether the tester user account responds {
+  Test 38@common: {
+#    -user-resr   = res-2
+    -source-file = "tests/data/PubsubSubscriptionAddTest.cot"
+   } >> Add subscriptions to the node in the pubsub component. <<
+
+  Test 39@common: {
+#    -user-resr   = res-2
+    -source-file = "tests/data/PubsubAffiliationAddTest.cot"
+   } >> Add affiliations to the node in the pubsub component. <<
+
+  Test 40@common: {
+#    -user-resr   = res-2
+    -source-file = "tests/data/PubsubCollectionTest.cot"
+   } >> Create a collection node in the pubsub component. <<
+
+  Test 41@common: Check whether the tester user account responds {
 #      -debug
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterMessage.cot"
   } >> Send a message to $(tester-user) user to check whether it responds. <<
 
-  Test 39@common: {
+  Test 42@common: {
 #      -debug
     $(number) = 10
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterGenTraffic.cot"
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 40@common: {
+  Test 43@common: {
 #      -debug
     $(number) = 100
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterGenTraffic.cot"
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 41@common: {
+  Test 44@common: {
 #      -debug
     $(number) = 1000
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterGenTraffic.cot"
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 42@common: {
+  Test 45@common: {
 #      -debug
     $(number) = 10000
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterGenTraffic.cot"
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 43@common: {
+  Test 46@common: {
 #      -debug
     -socket-wait = 30000
     $(number) = 100000
@@ -428,7 +443,7 @@ Global settings:
     -source-file = "tests/data/TesterGenTraffic.cot"
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 44@common: Dynamic roster storage test {
+  Test 47@common: Dynamic roster storage test {
     -source-file = "tests/data/DynamicRosterStorageTest.cot"
   } >> Storing and retrieving data from the dynamic roster storage <<
 

@@ -29,6 +29,7 @@
 -title          = "XMPP Server cluster tests."
 
 $(server-host) = "xmpp-test.tigase.org"
+$(virtual-host) = test-domain
 $(def-user)    = tester
 $(def-user-1)  = tester-1
 $(def-user-2)  = tester-2
@@ -534,6 +535,7 @@ Global settings:
   Test 22: {
     -user-name   = $(def-user-1)
     -user-pass   = $(def-user-pass)
+    -to-jid = $(server-host)
     -multi-thread
 
     Ping 1@common: {
@@ -554,9 +556,35 @@ Global settings:
       -source-file = "tests/data/UrnXmppPing.cot"
      } >> XEP-0199: XMPP Ping. <<
 
-  } >> XEP-0199: XMPP Ping - 3 user connections, each using a different node. <<
+  } >> XEP-0199: XMPP Ping - 3 user connections, each using a different node to a virtual domain $(server-host). <<
 
-  Test 23: {
+   Test 23: {
+    -user-name   = $(def-user-1)
+    -user-pass   = $(def-user-pass)
+    -to-jid = $(virtual-host)
+    -multi-thread
+
+    Ping 1@common: {
+      -serverip = $(node-1)
+      -user-resr   = $(node-1)
+      -source-file = "tests/data/UrnXmppPing.cot"
+     } >> XEP-0199: XMPP Ping. <<
+
+    Ping 2@common: {
+      -serverip = $(node-2)
+      -user-resr   = $(node-2)
+      -source-file = "tests/data/UrnXmppPing.cot"
+     } >> XEP-0199: XMPP Ping. <<
+
+    Ping 3@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -source-file = "tests/data/UrnXmppPing.cot"
+     } >> XEP-0199: XMPP Ping. <<
+
+  } >> XEP-0199: XMPP Ping - 3 user connections, each using a different node to a virtual domain $(virtual-host). <<
+
+ Test 24: {
     -user-name   = $(def-user-2)
     -user-pass   = $(def-user-pass)
     -multi-thread
@@ -1042,6 +1070,7 @@ Bosh Tests:
   Bosh 21: {
     -user-name   = $(def-user-1)
     -user-pass   = $(def-user-pass)
+    -to-jid = $(server-host)
     -multi-thread
 
     Ping 1@common: {
@@ -1062,9 +1091,35 @@ Bosh Tests:
       -source-file = "tests/data/UrnXmppPing.cot"
      } >> XEP-0199: XMPP Ping. <<
 
-  } >> XEP-0199: XMPP Ping - 3 user connections, each using a different node. <<
+  } >> XEP-0199: XMPP Ping - 3 user connections, each using a different node to a virtual domain $(server-host). <<
 
   Bosh 22: {
+    -user-name   = $(def-user-1)
+    -user-pass   = $(def-user-pass)
+    -to-jid = $(virtual-host)
+    -multi-thread
+
+    Ping 1@common: {
+      -serverip = $(node-1)
+      -user-resr   = $(node-1)
+      -source-file = "tests/data/UrnXmppPing.cot"
+     } >> XEP-0199: XMPP Ping. <<
+
+    Ping 2@common: {
+      -serverip = $(node-2)
+      -user-resr   = $(node-2)
+      -source-file = "tests/data/UrnXmppPing.cot"
+     } >> XEP-0199: XMPP Ping. <<
+
+    Ping 3@common: {
+      -serverip = $(node-3)
+      -user-resr   = $(node-3)
+      -source-file = "tests/data/UrnXmppPing.cot"
+     } >> XEP-0199: XMPP Ping. <<
+
+  } >> XEP-0199: XMPP Ping - 3 user connections, each using a different node to a virutal domain $(virtual-host). <<
+
+  Bosh 23: {
     -user-name   = $(def-user-2)
     -user-pass   = $(def-user-pass)
     -multi-thread
