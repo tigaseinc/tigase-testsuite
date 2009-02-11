@@ -447,6 +447,10 @@ Global settings:
     -source-file = "tests/data/DynamicRosterStorageTest.cot"
   } >> Storing and retrieving data from the dynamic roster storage <<
 
+  Test 48@common: Dynamic roster merge test {
+    -source-file = "tests/data/DynamicRosterMergingTest.cot"
+  } >> Mering dynamic roster elements with static roster <<
+
 }
 >> Script with functional tests for all basic XMPP/Jabber features <<
 
