@@ -22,28 +22,6 @@
 
 package tigase.test.impl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import tigase.test.ResultCode;
-import tigase.test.TestEmpty;
-import tigase.test.util.ElementUtil;
-import tigase.test.util.EqualError;
-import tigase.test.util.Params;
-import tigase.test.util.TestUtil;
-import tigase.test.util.XMLIO;
-import tigase.util.JIDUtils;
-import tigase.xml.DomBuilderHandler;
-import tigase.xml.Element;
-import tigase.xml.SimpleParser;
-import tigase.xml.SingletonFactory;
-
 /**
  * Class TestCommonNoBind.java is responsible for 
  *

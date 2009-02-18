@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import tigase.test.ResultCode;
 import tigase.test.TestEmpty;
 import tigase.test.util.ElementUtil;
@@ -79,6 +81,7 @@ public class TestCommon extends TestEmpty {
 	private List<Element> all_results = new ArrayList<Element>();
 	private long repeat = 0;
 	private ScriptFileLoader scriptFileLoader;
+	private Element lastReceived = null;
 // 	private long repeat_wait = 1;
 
 	/**
@@ -103,6 +106,7 @@ public class TestCommon extends TestEmpty {
 	 *
 	 * @return a <code>boolean</code> value
 	 */
+	@Override
 	public boolean run() {
 // 		for (int repeat = 0; repeat < repeat_max; repeat++) {
 		++repeat;
@@ -118,9 +122,10 @@ public class TestCommon extends TestEmpty {
 					switch (entry.getAction()) {
 					case send:
 						for (Element elem: entry.getStanza()) {
-							debug("\nSending: " + elem.toString());
-							addOutput(elem.toString());
-							io.write(elem);
+							String toWrite = applyParams(elem.toString());
+							debug("\nSending: " + toWrite);
+							addOutput(toWrite);
+							io.write(toWrite);
 						} // end of for (Element elem: stanza)
 						break;
 					case expect:
@@ -141,10 +146,10 @@ public class TestCommon extends TestEmpty {
 						String eq_msg = "";
 						for (int exp = 0; exp < entry.getStanza().length && !found; ++exp) {
 							for (int idx = 0; idx < all_results.size(); idx++) {
-								Element received = all_results.get(idx);
-								addInput(received.toString());
+								lastReceived = all_results.get(idx);
+								addInput(lastReceived.toString());
 								EqualError res =
-									ElementUtil.equalElemsDeep(entry.getStanza()[exp], received);
+									ElementUtil.equalElemsDeep(entry.getStanza()[exp], lastReceived);
 								found = res.equals;
 								eq_msg += (found ? "" : res.message + "\n");
 								if (found) {
@@ -192,6 +197,29 @@ public class TestCommon extends TestEmpty {
 		return true;
 	}
 
+	private Pattern p = Pattern.compile(".*@\\{([^}]+)\\}.*");
+
+	private String applyParams(String input) {
+		String result = input;
+		if (lastReceived == null) {
+			return result;
+		}
+		//System.out.println("lastReceived: " + lastReceived.toString());
+		Map<String, String> attrs = lastReceived.getAttributes();
+		//System.out.println("Attributes: " + attrs.toString());
+		Matcher m = p.matcher(result);
+		while (m.matches()) {
+			String att = m.group(1);
+			String val = attrs.get(att);
+			//System.out.println("Found attribute to replace: " + att + ", value: " + val);
+			result = result.replaceAll("@\\{"+att+"\\}", val);
+			//System.out.println("Replaced string: " + result);
+			m = p.matcher(result);
+		}
+		return result;
+	}
+
+	@Override
 	public void release() {
 		try {
 			XMLIO io = (XMLIO)params.get("socketxmlio");
@@ -204,10 +232,12 @@ public class TestCommon extends TestEmpty {
    *
    * @return an <code>int</code> value
    */
+	@Override
   public ResultCode getResultCode() {
     return resultCode;
   }
 
+	@Override
   public String getResultMessage() {
     switch (resultCode) {
     case PROCESSING_EXCEPTION:
@@ -227,6 +257,7 @@ public class TestCommon extends TestEmpty {
     } // end of switch (resultCode)
   }
 
+	@Override
   public void init(final Params params) {
 		super.init(params);
     this.params = params;
