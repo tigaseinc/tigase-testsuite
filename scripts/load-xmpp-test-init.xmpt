@@ -28,7 +28,7 @@
 -output-cols    = 7
 -title          = "XMPP Server high load server test. Attempt to make 25k connections"
 
-$(server-host) = test-d
+$(server-host) = "nktalk.pl"
 $(def-user)    = load-tester
 $(daemon-user) = tester_1
 $(ssl-tls-wait) = 5000
@@ -41,7 +41,8 @@ $(stats-pass) = stats
 -user-pass   = $(stats-pass)
 -socket-wait = 10000
 -base-ns     = "jabber:client"
--def-auth    = auth-plain
+-def-auth    = auth-sasl
+-def-stream  = stream-client
 -keys-file-password   = keystore
 -trusts-file-password = truststore
 -keys-file            = "certs/keystore"
@@ -49,14 +50,14 @@ $(stats-pass) = stats
 
 -debug-on-error
 
-Version@auth-plain;iq-version: >> Get server version <<
-Configuration@command-get-config: >> Server configuration <<
-Statistics@iq-stats: >> Server statistics <<
-Common test@auth-plain;common: { -source-file = "tests/data/CreateTesterTask.cot" }
->> Create tester task <<
+Version@auth-sasl;iq-version: { -user-name=$(stats-user) -user-pass=$(stats-pass) } >> Get server version <<
+Configuration@command-get-config: { -user-name=$(stats-user) -user-pass=$(stats-pass) } >> Server configuration <<
+Statistics@iq-stats: { -user-name=$(stats-user) -user-pass=$(stats-pass) } >> Server statistics <<
+#Common test@auth-plain;common: { -source-file = "tests/data/CreateTesterTask.cot" }
+#>> Create tester task <<
 
 Prep 1@user-register: {
-  -loop = 200000
+  -loop = 2000000
   -no-record
   -user-name = "load-tester_$(loop)"
 } >> Create tester user accounts <<

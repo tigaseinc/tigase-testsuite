@@ -433,6 +433,9 @@ Global settings:
     $(number) = 10000
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterGenTraffic.cot"
+    # We expect timeout here as a result of queue overfill, the point is to check whether
+    # the server continues to run after that correctly
+    -time-out-ok
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
   Test 46@common: {
@@ -441,6 +444,9 @@ Global settings:
     $(number) = 100000
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterGenTraffic.cot"
+    # We expect timeout here to happen as a result of queues overfill, the point is to check whether
+    # the server continues to run after that
+    -time-out-ok
   } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
   Test 47@common: Dynamic roster storage test {
@@ -451,6 +457,67 @@ Global settings:
     -source-file = "tests/data/DynamicRosterMergingTest.cot"
   } >> Mering dynamic roster elements with static roster <<
 
+   Test 49@common: Register user mgmt Ad-Hoc script {
+     -user-name = $(stats-user)
+     -user-pass = $(stats-pass)
+     -source-file = "tests/data/AdHocUsrMgmtRegister.cot"
+   } >> Registration of user script managing local users through Ad-Hoc <<
+ 
+   Test 50@common: Ad-Hoc user mgmt - Adding user {
+     -user-name = $(stats-user)
+     -user-pass = $(stats-pass)
+     -to-jid = "$(def-user)@$(server-host)"
+     -source-file = "tests/data/AdHocUsrMgmtAddUser.cot"
+   } >> Adding a user through Ad-Hoc user management <<
+ 
+   Test 51@common: Ad-Hoc user mgmt - Check added user {
+     -user-name = $(def-user)
+     -user-pass = $(def-user-pass)
+     -to-jid = "$(stats-user)@$(server-host)"
+     -source-file = "tests/data/AdHocUsrMgmtAddUserCheck.cot"
+   } >> Checking if user was added properly using Ad-Hoc <<
+ 
+   Test 52@common: Ad-Hoc user mgmt - Removing user {
+     -user-name = $(stats-user)
+     -user-pass = $(stats-pass)
+     -to-jid = "$(def-user)@$(server-host)"
+     -source-file = "tests/data/AdHocUsrMgmtRemoveUser.cot"
+   } >> Removing a user through Ad-Hoc user management <<
+ 
+   Test 53@common: Ad-Hoc user mgmt - Check removed user {
+     -user-name = $(def-user)
+     -user-pass = $(def-user-pass)
+     -source-file = "tests/data/AdHocUsrMgmtRemoveUserCheck.cot"
+   } >> Checking if user was removed properly using Ad-Hoc <<
+ 
+   Test 54@common: Ad-Hoc user mgmt - Non existing user check {
+     -user-name = $(stats-user)
+     -user-pass = $(stats-pass)
+     -source-file = "tests/data/AdHocUsrMgmtNonExistingUser.cot"
+   } >> Managing non-existing user through Ad-Hoc user management <<
+ 
+ Test 55: {
+     -multi-thread
+ 
+     Receive added user@common: {
+       -delay = 1000
+       -user-name   = $(def-user)
+       -user-pass   = $(def-user-pass)
+       -user-resr   = $(def-user-resr)
+       -to-jid = "$(stats-user)@$(server-host)"
+       -source-file = "tests/data/AdHocUsrMgmtLiveReceiveAddUser.cot"
+      } >> Login and receive roster updates <<
+ 
+      Add user to live roster@common: {
+#       -delay = 250
+       -user-name = $(stats-user)
+       -user-pass = $(stats-pass)
+       -to-jid = "$(def-user)@$(server-host)"
+       -source-file = "tests/data/AdHocUsrMgmtAddUser.cot"
+      } >> Add / remove user to the test user roster <<
+ 
+   } >> Adding and removing user to logged in user using Ad-Hoc and live roster update <<
+ 
 }
 >> Script with functional tests for all basic XMPP/Jabber features <<
 
@@ -765,7 +832,7 @@ Bosh Tests:
       -source-file = "tests/data/PresenceWait.cot"
      } >> Login and waut for presence from another resource. <<
 
-  } >> 2 user connections, each using a different resource. <<
+  } >> 2 user connections, each using a different resource waiting for a presence from each other. <<
 
   Bosh 28: {
     -user-name   = $(def-user)

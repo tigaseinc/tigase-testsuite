@@ -28,7 +28,7 @@
 -output-cols    = 7
 -title          = "XMPP Server functional tests."
 
-$(server-host) = test-d
+$(server-host) = "test-d"
 $(def-user)    = all-xmpp-test
 $(daemon-user) = all-xmpp-test_1
 $(blocking-user) = blocking-test-user_1
@@ -37,7 +37,7 @@ $(ssl-tls-wait) = 5000
 $(stats-user) = admin
 $(stats-pass) = stats
 
--serverip    = "192.168.0.3"
+-serverip    = "127.0.0.1"
 -host        = $(server-host)
 -user-name   = $(def-user)
 -user-pass   = all-xmpp-test-password
