@@ -23,6 +23,7 @@ package tigase.test.impl;
 
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Map;
 import java.util.Queue;
 import javax.management.Attribute;
 import tigase.test.ResultCode;
@@ -141,8 +142,8 @@ public class TestReceiveMessage extends TestAbstract {
    *
    * @param params a <code>Params</code> value
    */
-  public void init(final Params params) {
-    super.init(params);
+  public void init(final Params params, Map<String, String> vars) {
+    super.init(params, vars);
     user_name = params.get("-user-name", user_name);
     hostname = params.get("-host", hostname);
     user_resr = params.get("-user-resr", user_resr);

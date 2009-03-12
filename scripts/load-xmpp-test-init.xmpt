@@ -26,7 +26,7 @@
 -output-history = no
 -history-format = separate-file
 -output-cols    = 7
--title          = "XMPP Server high load server test. Attempt to make 25k connections"
+-title          = "Repository init..."
 
 $(server-host) = "nktalk.pl"
 $(def-user)    = load-tester
@@ -53,11 +53,29 @@ $(stats-pass) = stats
 Version@auth-sasl;iq-version: { -user-name=$(stats-user) -user-pass=$(stats-pass) } >> Get server version <<
 Configuration@command-get-config: { -user-name=$(stats-user) -user-pass=$(stats-pass) } >> Server configuration <<
 Statistics@iq-stats: { -user-name=$(stats-user) -user-pass=$(stats-pass) } >> Server statistics <<
-#Common test@auth-plain;common: { -source-file = "tests/data/CreateTesterTask.cot" }
-#>> Create tester task <<
 
-Prep 1@user-register: {
-  -loop = 2000000
+#Prep 1@user-register: {
+#  -loop = 10000000
+#  -no-record
+#  -user-name = "load-tester_$(loop)"
+#} >> Create tester user accounts <<
+
+Prep 2: {
+  -loop = 200000
   -no-record
-  -user-name = "load-tester_$(loop)"
-} >> Create tester user accounts <<
+  -loop-only
+
+  Intern loop@common: {
+    -loop=50
+    -loop-start=$(outer-loop)
+    -on-one-socket
+    #-debug
+
+    $(jid-1)="load-tester_$(outer-loop)@$(server-host)"
+    $(nick-1)="load-tester"
+    $(jid-2)="load-tester_$(loop)@$(server-host)"
+    $(nick-2)="load-tester"
+    -source-file = "tests/data/AdHocRosterAddBoth.cot"
+  } >> Load 100 elements to user roster <<
+
+} >> Load 100 elements to user rosters <<

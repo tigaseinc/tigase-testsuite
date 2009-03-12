@@ -118,6 +118,7 @@ public class TestScriptLoader {
       calculateResult(multiResCont);
       return multiResCont.getResult();
     } // end of if (test.getParams().containsKey("-multithread"))
+		boolean loop_only = node.getPars().containsKey("-loop-only");
     boolean result = true;
     if (node.getId() != null) {
       debug(node.getName() + ": " + getDescription(node) + " ... ", true);
@@ -129,21 +130,35 @@ public class TestScriptLoader {
     if (stop_on_fail && !result) {
       return result;
     } // end of if (stop_on_fail)
-    if (node.getChildren() != null) {
-      for (TestNode child: node.getChildren()) {
-        result = runTest(child);
-        if (stop_on_fail && !result) {
-          return result;
-        } // end of if (stop_on_fail)
-				if (node.getPars().containsKey("-delay")) {
-					long delay = Long.decode(node.getPars().get("-delay").toString());
-					if (delay > 0) {
-						try { Thread.sleep(delay);
-						} catch (InterruptedException e) { } // end of try-catch
-					} // end of if (delay > 0)
-				} // end of if (main_params.containsKey("-delay"))
-      } // end of for (TestNode child: node.getChildren())
-    } // end of if (node.getChildren() != null)
+		int loop_end = 1;
+		if (loop_only) {
+			try {
+				loop_end = Integer.parseInt(node.getPars().get("-loop"));
+			} catch (Exception e) {
+				loop_end = 1;
+			}
+		}
+		//System.out.println(node.getId() + ", loop_end: " + loop_end);
+		for (int i = 0; i < loop_end; i++) {
+			node.addPar("$(outer-loop)", "" + (i+1));
+			if (node.getChildren() != null) {
+				for (TestNode child : node.getChildren()) {
+					result = runTest(child);
+					if (stop_on_fail && !result) {
+						return result;
+					} // end of if (stop_on_fail)
+					if (node.getPars().containsKey("-delay")) {
+						long delay = Long.decode(node.getPars().get("-delay").toString());
+						if (delay > 0) {
+							try {
+								Thread.sleep(delay);
+							} catch (InterruptedException e) {
+							} // end of try-catch
+						} // end of if (delay > 0)
+					} // end of if (main_params.containsKey("-delay"))
+				} // end of for (TestNode child: node.getChildren())
+			} // end of if (node.getChildren() != null)
+		}
     return result;
   }
 

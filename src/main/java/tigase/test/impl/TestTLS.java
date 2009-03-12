@@ -27,6 +27,7 @@ import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Map;
 import javax.management.Attribute;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -118,8 +119,8 @@ public class TestTLS extends TestAbstract {
    *
    * @param params a <code>Params</code> value
    */
-  public void init(final Params params) {
-    super.init(params);
+  public void init(final Params params, Map<String, String> vars) {
+    super.init(params, vars);
     hostname = params.get("-host", hostname);
     keys_password = params.get("-keys-file-password", keys_password);
     trusts_password = params.get("-trusts-file-password", trusts_password);

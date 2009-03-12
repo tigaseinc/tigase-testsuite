@@ -21,7 +21,6 @@
  */
 package tigase.test;
 
-import java.net.Socket;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -122,7 +121,35 @@ public class Test {
     stop_on_fail = main_params.get("-stop-on-fail", false);
     int loop = main_params.get("-loop", 1);
 		latch = new CountDownLatch(loop);
-		int loop_start = main_params.get("-loop-start", 0);
+		if (node.getParent() != null &&
+						node.getParent().getPars().get("$(outer-loop)") != null) {
+			node.addVar("$(outer-loop)",
+							node.getParent().getPars().get("$(outer-loop)"));
+//			System.out.println("\n\nSetting variable $(outer-loop) = " +
+//							node.getParent().getPars().get("$(outer-loop)"));
+		}
+//		System.out.println(main_params.toString());
+		int loop_start = 1;
+		if (main_params.get("-loop-start") != null &&
+//						main_params.get("-loop-start").equals("$(outer-loop)") &&
+						node.getParent().getPars().get("$(outer-loop)") != null) {
+			try {
+				loop_start =
+								Integer.parseInt(node.getParent().getPars().get("$(outer-loop)")) + 1;
+			} catch (Exception e) {
+				loop_start = 1;
+			}
+			//			main_params.put("-loop-start",
+//							node.getParent().getPars().get("$(outer-loop)"));
+			System.out.println("Setting property -loop-start = " +
+							node.getParent().getPars().get("$(outer-loop)"));
+		} else {
+			loop_start = main_params.get("-loop-start", 0);
+		}
+//		if (node.getParent() != null) {
+//			System.out.println(node.getParent().getPars().toString());
+//		}
+//		System.out.println(main_params.toString());
     //String user_name = (String)main_params.get("-user-name");
     boolean loop_user_name = true;
 // 		if (loop > 1) {
@@ -143,6 +170,8 @@ public class Test {
 // 			+ ", lopp_start: " + loop_start);
     for (int cnt = loop_start; cnt < loop+loop_start; cnt++) {
       try {
+				node.addPar("$(outer-loop)", ""+cnt);
+				node.addVar("$(loop)", ""+cnt);
         if (on_one_socket && cnt > 0 && last_result) {
           LinkedList<TestIfc> suite_tmp = getDependsTree(test_ns, test_params);
 					suite.clear();
@@ -169,7 +198,7 @@ public class Test {
 					}
 					//test_params.put("-user-name", user_name+cnt);
         } // end of if (loop_user_name)
-        runTest(suite, test_params);
+        runTest(suite, test_params, node.getVars());
 				if ((stop_on_fail || cnt > 10) && (tests_ok <= tests_er)) {
 					debug("Too many errors, stopping test...\n", debug);
 					result = false;
@@ -203,11 +232,12 @@ public class Test {
 		total_time = System.currentTimeMillis() - all_tests_start_time;
   }
 
-  private void runTest(LinkedList<TestIfc> suite, Params test_params) {
+  private void runTest(LinkedList<TestIfc> suite, Params test_params,
+					Map<String, String> vars) {
     boolean daemon = test_params.containsKey("-daemon");
 		boolean background = test_params.containsKey("-background");
 		long socket_wait = test_params.get("-socket-wait", 5000);
-    DaemonTest dt = new DaemonTest(suite, test_params, this);
+    DaemonTest dt = new DaemonTest(suite, test_params, this, vars);
     if (daemon) {
       runThread(dt, true);
 			++tests_ok;
@@ -404,13 +434,15 @@ public class Test {
 
     private List<TestIfc> suite = null;
     private Params params = null;
+		private Map<String, String> vars = null;
     private boolean authorized = false;
 		private Test resultsHandler = null;
 
     public DaemonTest(LinkedList<TestIfc> suite, Params params,
-			Test resultsHandler) {
+			Test resultsHandler, Map<String, String> vars) {
       this.suite = suite;
       this.params = params;
+			this.vars = vars;
 			this.resultsHandler = resultsHandler;
     }
 
@@ -428,7 +460,7 @@ public class Test {
           debug("Testing: " + toStringArrayNS(test.implemented(), "..."),
             debug);
 					tmptest = test;
-          test.init(params);
+          test.init(params, vars);
           boolean res = test.run();
           if (collectHistory) {
             history.addAll(test.getHistory());

@@ -21,6 +21,7 @@
  */
 package tigase.test.impl;
 
+import java.util.Map;
 import javax.management.Attribute;
 import tigase.test.TestAbstract;
 import tigase.xml.Element;
@@ -140,8 +141,8 @@ public class TestXMPPBind extends TestAbstract {
    *
    * @param map a <code>Map</code> value
    */
-  public void init(final Params map) {
-    super.init(map);
+  public void init(final Params map, Map<String, String> vars) {
+    super.init(map, vars);
     user_resr = params.get("-user-resr", user_resr);
   }
 

@@ -128,8 +128,8 @@ public class TestExtCompOpen extends TestAbstract {
    *
    * @param map a <code>Map</code> value
    */
-  public void init(final Params map) {
-    super.init(map);
+  public void init(final Params map, Map<String, String> vars) {
+    super.init(map, vars);
     hostname = params.get("-host", hostname);
 		secret = params.get("-secret", secret);
   }

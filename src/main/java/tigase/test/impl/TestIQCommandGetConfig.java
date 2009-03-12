@@ -23,6 +23,7 @@ package tigase.test.impl;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import tigase.test.TestAbstract;
 import tigase.test.StatItem;
 import tigase.test.util.Params;
@@ -198,8 +199,8 @@ public class TestIQCommandGetConfig extends TestAbstract {
    *
    * @param params a <code>Params</code> value
    */
-  public void init(final Params params) {
-    super.init(params);
+  public void init(final Params params, Map<String, String> vars) {
+    super.init(params, vars);
     user_name = params.get("-user-name", user_name);
     user_resr = params.get("-user-resr", user_resr);
     user_emil = params.get("-user-emil", user_emil);

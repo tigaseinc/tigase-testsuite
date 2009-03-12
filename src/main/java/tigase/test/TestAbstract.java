@@ -21,14 +21,13 @@
  */
 package tigase.test;
 
-import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Arrays;
+import java.util.Map;
 import javax.management.Attribute;
 import tigase.xml.Element;
 import tigase.test.util.Params;
@@ -49,6 +48,7 @@ import static tigase.test.util.TestUtil.*;
 public abstract class TestAbstract extends TestEmpty {
 
   protected Params params = null;
+	protected Map<String, String> vars = null;
   protected ResultCode resultCode = ResultCode.TEST_OK;
   protected Exception exception = null;
   protected Element reply = null;
@@ -229,9 +229,10 @@ public abstract class TestAbstract extends TestEmpty {
    *
    * @param params a <code>Params</code> value
    */
-  public void init(final Params params) {
-		super.init(params);
+  public void init(final Params params, Map<String, String> vars) {
+		super.init(params, vars);
     this.params = params;
+		this.vars = vars;
 		timeoutOk = params.containsKey("-time-out-ok");
 		fullExceptionStack = params.containsKey("-full-stack-trace");
 //       && !params.containsKey("-on-one-socket");

@@ -22,6 +22,7 @@
 package tigase.test;
 
 import java.util.List;
+import java.util.Map;
 import tigase.test.util.Params;
 import tigase.xml.Element;
 
@@ -44,7 +45,7 @@ public interface TestIfc {
 
   String[] optional();
 
-  void init(Params params);
+  void init(Params params, Map<String, String> vars);
 
 	void release();
 

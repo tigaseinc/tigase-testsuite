@@ -74,6 +74,10 @@ public class TestNode {
     this.vars.putAll(vars);
   }
 
+  public void addVar(String key, String val) {
+    this.vars.put(key, val);
+  }
+
   public void addGlobalVars(Map<String, String> vars) {
     Map<String, String> tmp = new TreeMap<String, String>(vars);
     tmp.putAll(this.vars);
@@ -95,6 +99,10 @@ public class TestNode {
 
   public void addPars(Map<String, String> pars) {
     this.pars.putAll(pars);
+  }
+
+  public void addPar(String key, String val) {
+    this.pars.put(key, val);
   }
 
   public void addGlobalPars(Map<String, String> pars) {

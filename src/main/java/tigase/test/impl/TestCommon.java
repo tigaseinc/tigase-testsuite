@@ -63,6 +63,7 @@ public class TestCommon extends TestEmpty {
 	private static final SimpleParser parser =
 		SingletonFactory.getParserInstance();
   protected Params params = null;
+	protected Map<String, String> vars = null;
   private String user_name = "test_user@localhost";
   private String user_resr = "xmpp-test";
   private String user_emil = "test_user@localhost";
@@ -201,6 +202,17 @@ public class TestCommon extends TestEmpty {
 
 	private String applyParams(String input) {
 		String result = input;
+    for (String key : vars.keySet()) {
+      //System.out.println("key: " + key);
+			while (result.contains(key)) {
+				String newVal = vars.get(key);
+				if (newVal != null && newVal.startsWith("\"") && newVal.endsWith("\"")) {
+					newVal = newVal.substring(1, newVal.length() - 1);
+				}
+				//System.out.println("Replacing with: " + newVal);
+        result = result.replace(key, newVal);
+      } // end of while (result.contains(key))
+    } // end of for ()
 		if (lastReceived == null) {
 			return result;
 		}
@@ -258,9 +270,12 @@ public class TestCommon extends TestEmpty {
   }
 
 	@Override
-  public void init(final Params params) {
-		super.init(params);
+  public void init(final Params params, Map<String, String> vars) {
+		super.init(params, vars);
     this.params = params;
+		this.vars = vars;
+		//System.out.println(params.toString());
+		//System.out.println(vars.toString());
 		if (stanzas_buff == null) {
 			user_name = params.get("-user-name", user_name);
 			user_resr = params.get("-user-resr", user_resr);

@@ -145,8 +145,8 @@ public class TestAuth extends TestAbstract {
    *
    * @param map a <code>Map</code> value
    */
-  public void init(final Params map) {
-    super.init(map);
+  public void init(final Params map, Map<String, String> vars) {
+    super.init(map, vars);
     user_name = params.get("-user-name", user_name);
     user_pass = params.get("-user-pass", user_pass);
     user_resr = params.get("-user-resr", user_resr);

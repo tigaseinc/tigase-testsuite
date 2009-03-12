@@ -21,6 +21,7 @@
  */
 package tigase.test.impl;
 
+import java.util.Map;
 import javax.management.Attribute;
 import tigase.test.TestAbstract;
 import tigase.test.util.Params;
@@ -151,8 +152,8 @@ public class TestSendMessage extends TestAbstract {
    *
    * @param params a <code>Params</code> value
    */
-  public void init(final Params params) {
-    super.init(params);
+  public void init(final Params params, Map<String, String> vars) {
+    super.init(params, vars);
     user_name = params.get("-user-name", user_name);
     hostname = params.get("-host", hostname);
     user_resr = params.get("-user-resr", user_resr);

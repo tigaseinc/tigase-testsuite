@@ -23,6 +23,7 @@ package tigase.test;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import tigase.test.util.Params;
 import tigase.xml.Element;
 
@@ -73,7 +74,7 @@ public abstract class TestEmpty implements TestIfc {
 	 *
 	 * @param params a <code>Params</code> value
 	 */
-	public void init(final Params params) {
+	public void init(final Params params, Map<String, String> vars) {
     collectHistory = params.get("-output-history", true)
 			&&
 			!(params.containsKey("-daemon")
