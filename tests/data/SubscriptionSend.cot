@@ -49,23 +49,6 @@ expect: {
     <item jid="$(to-id)" subscription="none" ask="subscribe"/>
   </query>
 </iq>
-#<presence from="$(to-id)" type="subscribed"/>
-}
-# expect: {
-# <presence from="$(to-id)" type="subscribed"/>
-# <iq type="set">
-#   <query xmlns="jabber:iq:roster">
-#     <item jid="$(to-id)" subscription="none" ask="subscribe"/>
-#   </query>
-# </iq>
-# }
-expect: {
-<iq type="set">
-  <query xmlns="jabber:iq:roster">
-    <item jid="$(to-id)" subscription="to"/>
-  </query>
-</iq>
-<presence from="$(to-jid)" type="available"/>
 }
 expect: {
 <iq type="set">
@@ -74,11 +57,24 @@ expect: {
   </query>
 </iq>
 <presence from="$(to-jid)" type="available"/>
+<presence type="subscribe" from="$(to-id)"/>
 }
-
-
-
 expect: {
+<iq type="set">
+  <query xmlns="jabber:iq:roster">
+    <item jid="$(to-id)" subscription="to"/>
+  </query>
+</iq>
+<presence from="$(to-jid)" type="available"/>
+<presence type="subscribe" from="$(to-id)"/>
+}
+expect: {
+<iq type="set">
+  <query xmlns="jabber:iq:roster">
+    <item jid="$(to-id)" subscription="to"/>
+  </query>
+</iq>
+<presence from="$(to-jid)" type="available"/>
 <presence type="subscribe" from="$(to-id)"/>
 }
 

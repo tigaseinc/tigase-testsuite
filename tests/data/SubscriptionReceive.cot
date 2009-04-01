@@ -38,9 +38,17 @@ expect: {
     </item>
   </query>
 </iq>
+<presence type="subscribe" from="$(to-id)"/>
 }
 
 expect: {
+<iq id="dr-1" type="set">
+  <query xmlns="jabber:iq:roster">
+    <item name="dynrost" subscription="both" jid="dynrost@test-d">
+      <group>test group</group>
+    </item>
+  </query>
+</iq>
 <presence type="subscribe" from="$(to-id)"/>
 }
 
@@ -64,16 +72,7 @@ expect: {
     <item jid="$(to-id)" subscription="from" ask="subscribe"/>
   </query>
 </iq>
-#<presence from="$(to-id)" type="subscribed"/>
 }
-# expect: {
-# <presence from="$(to-id)" type="subscribed"/>
-# <iq type="set">
-#   <query xmlns="jabber:iq:roster">
-#     <item jid="$(to-id)" subscription="from" ask="subscribe"/>
-#   </query>
-# </iq>
-# }
 expect: {
 <iq type="set">
   <query xmlns="jabber:iq:roster">
@@ -92,12 +91,12 @@ expect: {
 }
 
 send: {
-<iq type="get" id="roster_11" >
+<iq type="get" id="roster_28" >
   <query xmlns="jabber:iq:roster"/>
 </iq>
 }
 expect: {
-<iq type="result" id="roster_11" >
+<iq type="result" id="roster_28" >
   <query xmlns="jabber:iq:roster">
     <item jid="$(to-id)" subscription="both"/>
   </query>
@@ -105,6 +104,11 @@ expect: {
 <presence type="unavailable"/>
 }
 expect: {
+<iq type="result" id="roster_28" >
+  <query xmlns="jabber:iq:roster">
+    <item jid="$(to-id)" subscription="both"/>
+  </query>
+</iq>
 <iq id="dr-1" type="set">
   <query xmlns="jabber:iq:roster">
     <item name="dynrost" subscription="both" jid="dynrost@test-d">

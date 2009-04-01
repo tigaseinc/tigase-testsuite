@@ -25,7 +25,7 @@
 # @version $Rev$
 
 send: {
-<message type="chat" to="$(to-jid)" id="ab00a" >
+<message type="chat" from="$(from-jid)" to="$(to-jid)" id="ab00a" >
 <body>Test message no $(counter)</body>
 </message>
 }

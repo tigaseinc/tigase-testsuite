@@ -27,10 +27,13 @@ expect: {
   <command status="completed" xmlns="http://jabber.org/protocol/commands" node="http://jabber.org/protocol/admin#new-command">
     <x xmlns="jabber:x:data" type="result">
       <field var="Note" type="fixed">
-	<value>Script execution error.</value>
+        <value>Script execution error.</value>
       </field>
-      <field var="Script text" type="text-multi">
-	<value>javax.script.ScriptException: tigase.db.UserNotFoundException: User does not exist: honestlawyer@test-d</value>
+      <field var="Error message" type="fixed">
+        <value>tigase.db.UserNotFoundException: User does not exist: honestlawyer@test-d</value>
+      </field><field var="Debug info" type="text-multi">
+        <value>tigase.db.UserNotFoundException: User does not exist: honestlawyer@test-d</value>
+        <value>javax.script.ScriptException: tigase.db.UserNotFoundException: User does not exist: honestlawyer@test-d</value>
       </field>
     </x>
   </command>
