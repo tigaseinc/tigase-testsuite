@@ -36,4 +36,6 @@ public interface XMLIO {
 
 	void close();
 
+	void setIgnorePresence(boolean ignore);
+
 }

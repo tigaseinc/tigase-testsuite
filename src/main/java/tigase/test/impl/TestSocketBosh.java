@@ -25,7 +25,6 @@ import java.net.Socket;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.util.Map;
-import java.util.List;
 import tigase.test.TestAbstract;
 import tigase.test.ResultCode;
 import javax.management.Attribute;
@@ -54,6 +53,8 @@ public class TestSocketBosh extends TestAbstract {
 	private String serverip = null;
   private int port = 5280;
   private int socket_wait = 5000;
+	private boolean ignore_presence = false;
+
 
   /**
    * Creates a new <code>TestScoket</code> instance.
@@ -121,7 +122,9 @@ public class TestSocketBosh extends TestAbstract {
       //      debug("socket done.");
       params.put("socket", client);
 // 			System.out.println("Creating SocketBosh");
-      params.put("socketxmlio", new SocketBosh(client));
+			SocketBosh socket = new SocketBosh(client);
+			socket.setIgnorePresence(ignore_presence);
+      params.put("socketxmlio", socket);
 			params.put("bosh-mode", "true");
       return true;
     } catch (SocketTimeoutException e) {
@@ -148,6 +151,7 @@ public class TestSocketBosh extends TestAbstract {
 		hostname = map.get("-host", "localhost");
     port = map.get("-port", port);
     socket_wait = params.get("-socket-wait", socket_wait);
+		ignore_presence = params.get("-ignore-presence", ignore_presence);
   }
 
 } // TestScoket

@@ -21,13 +21,13 @@
  */
 package tigase.test.util;
 
-import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.Iterator;
 import java.util.Queue;
 import tigase.xml.Element;
 import tigase.xml.SimpleParser;
@@ -53,6 +53,7 @@ public class SocketXMLIO implements XMLIO {
   private DomBuilderHandler dom = null;
   private SimpleParser parser = null;
   private char[] in_data = new char[BUFF_SIZE];
+	protected boolean ignore_presence = false;
 
   /**
    * Creates a new <code>SocketXMLReader</code> instance.
@@ -71,6 +72,7 @@ public class SocketXMLIO implements XMLIO {
     parser = new SimpleParser();
 	}
 
+	@Override
 	public void close() {
 		try {
 			socket.close();
@@ -80,6 +82,7 @@ public class SocketXMLIO implements XMLIO {
 	/* (non-Javadoc)
 	 * @see tigase.test.util.XMLIO#write(tigase.xml.Element)
 	 */
+	@Override
 	public void write(Element data) throws IOException {
 	  write(data.toString());
   }
@@ -87,6 +90,7 @@ public class SocketXMLIO implements XMLIO {
   /* (non-Javadoc)
 	 * @see tigase.test.util.XMLIO#write(java.lang.String)
 	 */
+	@Override
 	public void write(String data) throws IOException {
     if (!socket.isConnected()) {
       throw new ConnectException("Socket is not connected.");
@@ -99,6 +103,7 @@ public class SocketXMLIO implements XMLIO {
   /* (non-Javadoc)
 	 * @see tigase.test.util.XMLIO#read()
 	 */
+	@Override
 	public Queue<Element> read() throws IOException {
     if (!socket.isConnected()) {
       throw new ConnectException("Socket is not connected.");
@@ -115,7 +120,22 @@ public class SocketXMLIO implements XMLIO {
 // 			System.out.println("INPUT: " + new String(in_data, 0, res));
       parser.parse(dom, in_data, 0, res);
     } // end of if (res > 0)
-    return dom.getParsedElements();
+		Queue<Element> results = dom.getParsedElements();
+		if (ignore_presence && results != null) {
+			Iterator<Element> it = results.iterator();
+			while (it.hasNext()) {
+				Element el = it.next();
+				if (el.getName() == "presence") {
+					it.remove();
+				}
+			}
+		}
+    return results;
   }
+
+	@Override
+	public void setIgnorePresence(boolean ignore) {
+		ignore_presence = ignore;
+	}
 
 } // SocketXMLIO

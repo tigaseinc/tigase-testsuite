@@ -73,7 +73,7 @@ public class Test {
 	protected boolean last_result = false;
   private boolean stop_on_fail = false;
 
-	private static TimerThread[] backroundTasks = new TimerThread[100];
+	private static TimerThread[] backroundTasks = new TimerThread[10000];
 	private static int timer_idx = 0;
 
 // 	static {
@@ -199,7 +199,7 @@ public class Test {
 					//test_params.put("-user-name", user_name+cnt);
         } // end of if (loop_user_name)
         runTest(suite, test_params, node.getVars());
-				if ((stop_on_fail || cnt > 10) && (tests_ok <= tests_er)) {
+				if ((stop_on_fail || cnt > 10) && (tests_ok < tests_er)) {
 					debug("Too many errors, stopping test...\n", debug);
 					result = false;
 					errorMsg =

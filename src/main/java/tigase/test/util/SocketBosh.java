@@ -21,19 +21,14 @@
  */
 package tigase.test.util;
 
-import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Iterator;
 import java.util.Queue;
 import java.util.LinkedList;
 import tigase.xml.Element;
-import tigase.xml.SimpleParser;
-import tigase.xml.DefaultElementFactory;
 
 /**
  * Describe class SocketBosh here.
@@ -64,6 +59,7 @@ public class SocketBosh extends SocketXMLIO {
   /* (non-Javadoc)
 	 * @see tigase.test.util.XMLIO#write(java.lang.String)
 	 */
+	@Override
 	public void write(String data) throws IOException {
  		//System.out.println("SocketBosh writing data: " + data);
 		if (data != null && data.startsWith("<stream:stream")) {
@@ -77,14 +73,18 @@ public class SocketBosh extends SocketXMLIO {
   /* (non-Javadoc)
 	 * @see tigase.test.util.XMLIO#read()
 	 */
+	@Override
 	public Queue<Element> read() throws IOException {
 		Queue<Element> results = new LinkedList<Element>();
 		try {
+			boolean body_found = false;
 			Queue<Element> elements = super.read();
 			if (elements != null) {
 				results = new LinkedList<Element>();
 				for (Element body: elements) {
+					//System.out.println("Received: " + body.toString());
 					if (body.getName() == "body") {
+						body_found = true;
 						String temp = body.getAttribute("sid");
 						if (temp != null) {
 							sid = temp;
@@ -101,14 +101,33 @@ public class SocketBosh extends SocketXMLIO {
 					}
 				}
 			}
+//			if (body_found) {
+//				//System.out.println("Opening new connection...");
+//				initSocket(null);
+//			}
 		} catch (EOFException e) {
 			initSocket(null);
 		} catch (SocketException e) {
 			initSocket(null);
 		}
+		if (ignore_presence) {
+			Iterator<Element> it = results.iterator();
+			int counter = 0;
+			while (it.hasNext()) {
+				Element el = it.next();
+				if (el.getName() == "presence") {
+					it.remove();
+					++counter;
+				}
+			}
+			if (counter > 0) {
+				//System.out.println("Removed " + counter + " presences...");
+			}
+		}
 		return results;
   }
 
+	@Override
 	public void close() {
 		//System.out.println("Closing Bosh socket.");
 		//super.close();

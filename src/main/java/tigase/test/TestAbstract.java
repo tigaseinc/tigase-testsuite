@@ -172,6 +172,7 @@ public abstract class TestAbstract extends TestEmpty {
 			if (timeoutOk) {
 				return true;
 			}	else {
+				System.out.println(params.toString());
 				resultCode = ResultCode.PROCESSING_EXCEPTION;
 				exception = e;
 				addInput(getClass().getName() + ", " + e.getMessage());

@@ -21,9 +21,7 @@
  */
 package tigase.test.impl;
 
-import tigase.util.Base64;
 import java.util.Set;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.io.IOException;
@@ -32,7 +30,6 @@ import tigase.test.TestAbstract;
 import tigase.xml.Element;
 import tigase.test.util.Params;
 import javax.security.sasl.Sasl;
-import javax.security.sasl.SaslException;
 import javax.security.sasl.SaslClient;
 import javax.security.sasl.AuthorizeCallback;
 import javax.security.sasl.RealmCallback;

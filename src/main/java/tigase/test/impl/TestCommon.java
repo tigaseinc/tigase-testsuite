@@ -26,6 +26,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,7 @@ public class TestCommon extends TestEmpty {
 	private String cdata = "";
 	protected boolean timeoutOk = false;
 	private boolean fullExceptionStack = false;
+	private boolean initial_presence = false;
   protected ResultCode resultCode = ResultCode.TEST_OK;
   protected Exception exception = null;
 	private String error_message = "";
@@ -110,19 +112,29 @@ public class TestCommon extends TestEmpty {
 	@Override
 	public boolean run() {
 // 		for (int repeat = 0; repeat < repeat_max; repeat++) {
-		++repeat;
-		Queue<StanzaEntry> stanzas = new LinkedList<StanzaEntry>(stanzas_buff);
-			try {
-				StanzaEntry entry = null;
-				while ((entry = stanzas.poll()) != null) {
-					XMLIO io = (XMLIO)params.get("socketxmlio");
-					if (io == null) {
-						resultCode = ResultCode.SOCKET_NOT_INITALIZED;
-						return false;
-					} // end of if (sock == null)
-					switch (entry.getAction()) {
+		try {
+			if (repeat == 0 && initial_presence) {
+				XMLIO io = (XMLIO) params.get("socketxmlio");
+				String toWrite = "<presence/>";
+				debug("\nSending: " + toWrite);
+				addOutput(toWrite);
+				io.write(toWrite);
+			}
+			++repeat;
+			Queue<StanzaEntry> stanzas = new LinkedList<StanzaEntry>(stanzas_buff);
+			StanzaEntry entry = null;
+			while ((entry = stanzas.poll()) != null) {
+				XMLIO io = (XMLIO) params.get("socketxmlio");
+				if (io == null) {
+					resultCode = ResultCode.SOCKET_NOT_INITALIZED;
+					return false;
+				} // end of if (sock == null)
+				switch (entry.getAction()) {
 					case send:
-						for (Element elem: entry.getStanza()) {
+						for (Element elem : entry.getStanza()) {
+							if (elem.getAttribute("id") == null) {
+								elem.setAttribute("id", "" + repeat);
+							}
 							String toWrite = applyParams(elem.toString());
 							debug("\nSending: " + toWrite);
 							addOutput(toWrite);
@@ -132,14 +144,16 @@ public class TestCommon extends TestEmpty {
 					case expect:
 						boolean found = false;
 						Queue<Element> results = null;
-						error_message = "\n Expected: " + Arrays.toString(entry.getStanza());
-						while (all_results.size() == 0
-							&& (results == null || results.size() == 0)) {
+						error_message = "\n" + repeat + ": Expected: " +
+										Arrays.toString(entry.getStanza());
+						while (all_results.size() == 0 && (results == null ||
+										results.size() == 0)) {
 							results = io.read();
 						} // end of while (!found)
 						if (results != null) {
-							for (Element el: results) {
+							for (Element el : results) {
 								debug("\nReceived: " + el.toString());
+								addInput(el.toString());
 							}
 							all_results.addAll(results);
 							results.clear();
@@ -148,9 +162,9 @@ public class TestCommon extends TestEmpty {
 						for (int exp = 0; exp < entry.getStanza().length && !found; ++exp) {
 							for (int idx = 0; idx < all_results.size(); idx++) {
 								lastReceived = all_results.get(idx);
-								addInput(lastReceived.toString());
 								EqualError res =
-									ElementUtil.equalElemsDeep(entry.getStanza()[exp], lastReceived);
+												ElementUtil.equalElemsDeep(entry.getStanza()[exp],
+												lastReceived);
 								found = res.equals;
 								eq_msg += (found ? "" : res.message + "\n");
 								if (found) {
@@ -163,35 +177,35 @@ public class TestCommon extends TestEmpty {
 						if (!found) {
 							//System.out.println("\nFound: " + found + ", message: " + eq_msg);
 							resultCode = ResultCode.RESULT_DOESNT_MATCH;
-							error_message = "Expected one of: " + Arrays.toString(entry.getStanza())
-								+ ", received: "
-								+ Arrays.toString(all_results.toArray(new Element[0]))
-								+ "\n equals error message: " + eq_msg;
+							error_message = "\n" + repeat + ": Expected one of: " +
+											Arrays.toString(entry.getStanza()) + ", received: " +
+											Arrays.toString(all_results.toArray(new Element[0])) +
+											"\n equals error message: " + eq_msg;
 							return false;
 						} // end of if (!found)
 						break;
 					default:
 						break;
-					} // end of switch (entry.action)
-				} // end of while ((entry = stanzas.poll()) != null)
-			} catch (SocketTimeoutException e) {
-				if (timeoutOk) {
-					return true;
-				}	else {
-					resultCode = ResultCode.PROCESSING_EXCEPTION;
-					exception = e;
-					addInput(getClass().getName() + ", " + e.getMessage()
-						+ error_message);
-					return false;
-				} // end of if (timeoutOk) else
-			} catch (Exception e) {
-				addInput(getClass().getName() + ", " + e + "\n" + TestUtil.stack2String(e)
-					+ error_message);
+				} // end of switch (entry.action)
+			} // end of while ((entry = stanzas.poll()) != null)
+		} catch (SocketTimeoutException e) {
+			if (timeoutOk) {
+				return true;
+			} else {
 				resultCode = ResultCode.PROCESSING_EXCEPTION;
 				exception = e;
-				e.printStackTrace();
+				addInput("" + repeat + ": " + getClass().getName() + ", " +
+								e.getMessage() + error_message);
 				return false;
-			} // end of catch
+			} // end of if (timeoutOk) else
+		} catch (Exception e) {
+			addInput("" + repeat + ": " + getClass().getName() + ", " + e + "\n" +
+							TestUtil.stack2String(e) + error_message);
+			resultCode = ResultCode.PROCESSING_EXCEPTION;
+			exception = e;
+			e.printStackTrace();
+			return false;
+		} // end of catch
 // 			try { Thread.sleep(repeat_wait);
 // 			} catch (InterruptedException e) { } // end of try-catch
 // 		}
@@ -236,7 +250,9 @@ public class TestCommon extends TestEmpty {
 		try {
 			XMLIO io = (XMLIO)params.get("socketxmlio");
 			io.close();
-		} catch (Exception e) {	e.printStackTrace(); }
+		} catch (Exception e) {
+			//e.printStackTrace();
+		}
 	}
 
   /**
@@ -282,6 +298,7 @@ public class TestCommon extends TestEmpty {
 			user_emil = params.get("-user-emil", user_emil);
 			hostname = params.get("-host", hostname);
 			cdata = params.get("-cdata", cdata);
+			initial_presence = params.get("-initial-presence", initial_presence);
 			String name = JIDUtils.getNodeNick(user_name);
 			if (name == null || name.equals("")) {
 				jid = user_name + "@" + hostname + "/" + user_resr;

@@ -131,15 +131,21 @@ public class TestScriptLoader {
       return result;
     } // end of if (stop_on_fail)
 		int loop_end = 1;
+		int loop_start = 0;
 		if (loop_only) {
 			try {
 				loop_end = Integer.parseInt(node.getPars().get("-loop"));
 			} catch (Exception e) {
 				loop_end = 1;
 			}
+			try {
+				loop_start = Integer.parseInt(node.getPars().get("-loop-start"));
+			} catch (Exception e) {
+				loop_start = 0;
+			}
 		}
 		//System.out.println(node.getId() + ", loop_end: " + loop_end);
-		for (int i = 0; i < loop_end; i++) {
+		for (int i = loop_start; i < loop_end; i++) {
 			node.addPar("$(outer-loop)", "" + (i+1));
 			if (node.getChildren() != null) {
 				for (TestNode child : node.getChildren()) {
