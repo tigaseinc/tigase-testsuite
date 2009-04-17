@@ -21,19 +21,10 @@
  */
 package tigase.test.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import javax.management.Attribute;
-import tigase.test.HistoryEntry;
 import tigase.test.util.Params;
 import tigase.test.TestAbstract;
-import tigase.test.util.SocketXMLIO;
-import tigase.test.util.ElementUtil;
 import tigase.xml.Element;
 
 /**

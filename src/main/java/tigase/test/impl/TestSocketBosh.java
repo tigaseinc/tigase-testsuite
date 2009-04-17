@@ -53,6 +53,7 @@ public class TestSocketBosh extends TestAbstract {
 	private String serverip = null;
   private int port = 5280;
   private int socket_wait = 5000;
+	private boolean keep_alive = false;
 	private boolean ignore_presence = false;
 
 
@@ -70,22 +71,27 @@ public class TestSocketBosh extends TestAbstract {
       );
   }
 
+	@Override
   public String nextElementName(final Element reply) {
     return null;
   }
 
+	@Override
   public String getElementData(final String element) {
     return null;
   }
 
+	@Override
   public String[] getRespElementNames(final String element) {
     return null;
   }
 
+	@Override
   public Attribute[] getRespElementAttributes(final String element) {
     return null;
   }
 
+	@Override
   public String[] getRespOptionalNames(final String element) {
     return null;
   }
@@ -100,6 +106,7 @@ public class TestSocketBosh extends TestAbstract {
    *
    * @return a <code>boolean</code> value
    */
+	@Override
   public boolean run() {
     try {
       //      debug("socket create...\n");
@@ -124,6 +131,7 @@ public class TestSocketBosh extends TestAbstract {
 // 			System.out.println("Creating SocketBosh");
 			SocketBosh socket = new SocketBosh(client);
 			socket.setIgnorePresence(ignore_presence);
+			socket.setKeepAlive(keep_alive);
       params.put("socketxmlio", socket);
 			params.put("bosh-mode", "true");
       return true;
@@ -143,8 +151,10 @@ public class TestSocketBosh extends TestAbstract {
   /**
    * Describe <code>init</code> method here.
    *
-   * @param map a <code>Map</code> value
+	 * @param map a <code>Map</code> value
+	 * @param vars
    */
+	@Override
   public void init(final Params map, Map<String, String> vars) {
     super.init(map, vars);
 		serverip = map.get("-serverip", "127.0.0.1");
@@ -152,6 +162,7 @@ public class TestSocketBosh extends TestAbstract {
     port = map.get("-port", port);
     socket_wait = params.get("-socket-wait", socket_wait);
 		ignore_presence = params.get("-ignore-presence", ignore_presence);
+		keep_alive = params.get("-keep-alive", keep_alive);
   }
 
 } // TestScoket
