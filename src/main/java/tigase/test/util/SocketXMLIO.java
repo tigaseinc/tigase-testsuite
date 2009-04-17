@@ -79,6 +79,10 @@ public class SocketXMLIO implements XMLIO {
 		} catch (Exception e) {	}
 	}
 
+	public boolean isConnected() {
+		return socket != null && socket.isConnected();
+	}
+
 	/* (non-Javadoc)
 	 * @see tigase.test.util.XMLIO#write(tigase.xml.Element)
 	 */
@@ -95,7 +99,7 @@ public class SocketXMLIO implements XMLIO {
     if (!socket.isConnected()) {
       throw new ConnectException("Socket is not connected.");
     } // end of if (!socket.isConnected())
-    //    System.out.println("OUTPUT: " + data);
+    //System.out.println("OUTPUT: " + data);
     out.write(data.toString().getBytes());
 		out.flush();
   }
@@ -117,7 +121,7 @@ public class SocketXMLIO implements XMLIO {
 //       for (int i = 0; i < tmp_data.length; i++) {
 //         tmp_data[i] = in_data[i];
 //       } // end of for (int i = 0; i < tmp_data.length; i++)
-// 			System.out.println("INPUT: " + new String(in_data, 0, res));
+ 			//System.out.println("INPUT: " + new String(in_data, 0, res));
       parser.parse(dom, in_data, 0, res);
     } // end of if (res > 0)
 		Queue<Element> results = dom.getParsedElements();

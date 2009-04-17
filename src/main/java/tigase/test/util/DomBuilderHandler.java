@@ -23,11 +23,12 @@
 package tigase.test.util;
 
 import java.util.Arrays;
+import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import tigase.xml.DefaultElementFactory;
 import tigase.xml.Element;
 import tigase.xml.ElementFactory;
 import tigase.xml.SimpleHandler;
@@ -109,12 +110,20 @@ public class DomBuilderHandler implements SimpleHandler {
     } // end of if (tmp_name.equals())
   }
 
+	@Override
   public void elementCData(StringBuilder cdata) {
-    log.finest("Element CDATA: "+cdata);
-
-    el_stack.peek().setCData(cdata.toString());
+		if (log.isLoggable(Level.FINEST)) {
+			log.finest("Element CDATA: "+cdata);
+		}
+		try {
+			el_stack.peek().setCData(cdata.toString());
+		} catch (EmptyStackException e) {
+			// Do nothing here, it happens sometimes that client sends
+			// some white characters after sending open stream data....
+		}
   }
 
+	@Override
   public void endElement(StringBuilder name) {
     log.finest("End element name: "+name);
 

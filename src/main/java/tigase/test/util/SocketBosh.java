@@ -41,12 +41,16 @@ import tigase.xml.Element;
  */
 public class SocketBosh extends SocketXMLIO {
 
-  private static final int BUFF_SIZE = 2*1024;
+  private static long new_socket = 0;
+	private static final int BUFF_SIZE = 2*1024;
 	private long rid = 1216;
 	private String sid = null;
 	private String authId = null;
 	private boolean restart = false;
 	private boolean terminate = false;
+	private boolean keep_alive = false;
+	private boolean reinitialized = false;
+
 
 	/**
    * Creates a new <code>SocketXMLReader</code> instance.
@@ -55,6 +59,10 @@ public class SocketBosh extends SocketXMLIO {
   public SocketBosh(Socket sock) throws IOException {
 		super(sock);
   }
+
+	public void setKeepAlive(boolean keep_alive) {
+		this.keep_alive = keep_alive;
+	}
 
   /* (non-Javadoc)
 	 * @see tigase.test.util.XMLIO#write(java.lang.String)
@@ -68,23 +76,26 @@ public class SocketBosh extends SocketXMLIO {
 		} else {
 			initSocket(data);
 		}
-  }
+	}
 
   /* (non-Javadoc)
 	 * @see tigase.test.util.XMLIO#read()
 	 */
 	@Override
 	public Queue<Element> read() throws IOException {
+		if (!reinitialized) {
+			initSocket(null);
+		}
 		Queue<Element> results = new LinkedList<Element>();
 		try {
-			boolean body_found = false;
 			Queue<Element> elements = super.read();
 			if (elements != null) {
 				results = new LinkedList<Element>();
-				for (Element body: elements) {
+				Element body = null;
+				while ((body = elements.poll()) != null) {
 					//System.out.println("Received: " + body.toString());
 					if (body.getName() == "body") {
-						body_found = true;
+						reinitialized = false;
 						String temp = body.getAttribute("sid");
 						if (temp != null) {
 							sid = temp;
@@ -140,12 +151,16 @@ public class SocketBosh extends SocketXMLIO {
 	}
 
 	protected void initSocket(String data) throws IOException {
-		Socket client = new Socket();
-		client.setReuseAddress(true);
-		client.setSoTimeout(socket.getSoTimeout());
-		client.setReceiveBufferSize(BUFF_SIZE);
-		client.connect(socket.getRemoteSocketAddress(), socket.getSoTimeout());
-		setSocket(client);
+		if (!keep_alive || !isConnected()) {
+			Socket client = new Socket();
+			client.setReuseAddress(true);
+			client.setSoTimeout(socket.getSoTimeout());
+			client.setReceiveBufferSize(BUFF_SIZE);
+			client.connect(socket.getRemoteSocketAddress(), socket.getSoTimeout());
+			setSocket(client);
+			reinitialized = true;
+			//System.out.println("New Bosh socket: " + (++new_socket));
+		}
 		if (data != null && data.startsWith("<body")) {
 			super.write(data);
 		} else {
