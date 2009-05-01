@@ -7,9 +7,9 @@ Specification-Title: Tigase Test Suite
 Specification-Version: 2.1.1
 Specification-Vendor: tigase.org
 Implementation-Title: tigase.test
-Implementation-Version: 2.1.1-b178
+Implementation-Version: 2.1.1-b181
 Implementation-Vendor: tigase.org
 Package-Title: tigase.test
-Package-Version: build178
+Package-Version: build181
 Package-Vendor: tigase.org
-Tigase-Version: 2.1.1-b178
+Tigase-Version: 2.1.1-b181

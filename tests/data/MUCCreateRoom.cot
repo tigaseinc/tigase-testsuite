@@ -33,24 +33,11 @@ send: {
 </presence>
 }
 expect: {
-<presence from='new_chat@muc.$(hostname)/my_nick' to='$(from-jid)'>
-  <x xmlns='http://jabber.org/protocol/muc#user'>
-		<item role="moderator" jid="$(from-jid)" affiliation="owner"/>
-    <status code='110'/>
+<presence to="$(from-jid)" from="new_chat@muc.$(hostname)/my_nick">
+  <x xmlns="http://jabber.org/protocol/muc#user">
+    <status code="110"/>
+    <status code="201"/>
+    <item role="moderator" affiliation="owner" jid="$(from-jid)"/>
   </x>
 </presence>
-<message type="groupchat" from="new_chat@muc.$(hostname)" to="$(from-jid)">
-  <body>Room is locked. Please configure.</body>
-</message>
-}
-expect: {
-<presence from='new_chat@muc.$(hostname)/my_nick' to='$(from-jid)'>
-  <x xmlns='http://jabber.org/protocol/muc#user'>
-		<item role="moderator" jid="$(from-jid)" affiliation="owner"/>
-    <status code='110'/>
-  </x>
-</presence>
-<message type="groupchat" from="new_chat@muc.$(hostname)" to="$(from-jid)">
-  <body>Room is locked. Please configure.</body>
-</message>
 }

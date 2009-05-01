@@ -131,6 +131,7 @@ public class Test {
 //		System.out.println(main_params.toString());
 		int loop_start = 1;
 		if (main_params.get("-loop-start") != null &&
+						node.getParent() != null &&
 //						main_params.get("-loop-start").equals("$(outer-loop)") &&
 						node.getParent().getPars().get("$(outer-loop)") != null) {
 			try {

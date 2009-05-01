@@ -485,21 +485,21 @@ Admin commands Tests:
    RosterMan 2@common: Ad-Hoc user mgmt - Adding user {
      -user-name = $(stats-user)
      -user-pass = $(stats-pass)
-     #-to-jid = "$(def-user)@$(server-host)"
+     -to-jid = "$(def-user)@$(server-host)"
      -source-file = "tests/data/AdHocUsrMgmtAddUser.cot"
    } >> Adding a user through Ad-Hoc user management <<
 
    RosterMan 3@common: Ad-Hoc user mgmt - Check added user {
      -user-name = $(def-user)
      -user-pass = $(def-user-pass)
-     #-to-jid = "$(stats-user)@$(server-host)"
+     -to-jid = "$(stats-user)@$(server-host)"
      -source-file = "tests/data/AdHocUsrMgmtAddUserCheck.cot"
    } >> Checking if user was added properly using Ad-Hoc <<
 
    RosterMan 4@common: Ad-Hoc user mgmt - Removing user {
      -user-name = $(stats-user)
      -user-pass = $(stats-pass)
-     #-to-jid = "$(def-user)@$(server-host)"
+     -to-jid = "$(def-user)@$(server-host)"
      -source-file = "tests/data/AdHocUsrMgmtRemoveUser.cot"
    } >> Removing a user through Ad-Hoc user management <<
 
@@ -523,7 +523,7 @@ Admin commands Tests:
        -user-name   = $(def-user)
        -user-pass   = $(def-user-pass)
        -user-resr   = $(def-user-resr)
-       #-to-jid = "$(stats-user)@$(server-host)"
+       -to-jid = "$(stats-user)@$(server-host)"
        -source-file = "tests/data/AdHocUsrMgmtLiveReceiveAddUser.cot"
       } >> Login and receive roster updates <<
 
@@ -531,7 +531,7 @@ Admin commands Tests:
 #       -delay = 250
        -user-name = $(stats-user)
        -user-pass = $(stats-pass)
-       #-to-jid = "$(def-user)@$(server-host)"
+       -to-jid = "$(def-user)@$(server-host)"
        -source-file = "tests/data/AdHocUsrMgmtAddUser.cot"
       } >> Add / remove user to the test user roster <<
 
@@ -670,9 +670,13 @@ Bosh Tests:
   Bosh 8@msg-send: { -to-jid = $(self) }
   >> Send a message to self user and don't wait for response <<
 
-  Bosh 9@msg-send: Send a message to $(daemon-user) user
-  { -to-jid = "$(daemon-user)@$(server-host)/xmpp-test" }
-  >> Send a message to $(daemon-user)@$(server-host)/xmpp-test user
+  Bosh 9@common: Send a message to $(daemon-user) user
+  {
+#    -to-jid = "$(daemon-user)@$(server-host)/xmpp-test"
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterMessage.cot"
+  }
+  >> Send a message to $(tester-user)@srecv.$(server-host) user
   and wait for message response <<
 
   Bosh 10@iq-version: >> XEP-0092 - get entity version <<
@@ -693,35 +697,29 @@ Bosh Tests:
 #    -time-out-ok
   } >> Privacy lists test - send a message to $(blocking-user) user blocking all messages and wait for error response <<
 
-  Bosh 15@msg-send: Send a message to $(long-list-user) user
-  {
-    -to-jid = "$(long-list-user)@$(server-host)/xmpp-test"
-  } >> Send a message to $(long-list-user)@$(server-host)/xmpp-test user
-  with very long privacy list and wait for message response <<
-
-  Bosh 16@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
+  Bosh 15@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
   >> XEP-0049: Private XML Storage <<
 
-  Bosh 17@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
+  Bosh 16@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
   >> Test for feature-not-implemented error which should be returned when client sends unsupported stanza <<
 
-  Bosh 18@common: { -source-file = "tests/data/vcard-temp.cot" }
+  Bosh 17@common: { -source-file = "tests/data/vcard-temp.cot" }
   >> XEP-0054: vcard-temp <<
 
-  Bosh 19@common: {
+  Bosh 18@common: {
     -to-jid = $(server-host)
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping to domain '$(server-host)' the user is logged in <<
 
-  Bosh 20@common: {
+  Bosh 19@common: {
     -to-jid = $(virtual-host)
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping to another, vrtual domain '$(virtual-host)' on the server <<
 
-  Bosh 21@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
+  Bosh 20@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
   >> XEP-0030: XMPP Service Discovery <<
 
-  Bosh 22: {
+  Bosh 21: {
     -multi-thread
 
     Subscription receive@common: {
@@ -743,7 +741,7 @@ Bosh Tests:
 
   } >> Presence subscription test between '$(stats-user)' and '$(def-user)'. <<
 
-  Bosh 23: {
+  Bosh 22: {
     -multi-thread
 
     Subscription receive@common: {
@@ -765,7 +763,7 @@ Bosh Tests:
 
   } >> Presence cancel test between '$(stats-user)' and '$(def-user)'. <<
 
-  Bosh 24: {
+  Bosh 23: {
     -multi-thread
 
     Subscription receive@common: {
@@ -787,7 +785,7 @@ Bosh Tests:
 
   } >> Presence unsubscribe test between '$(stats-user)' and '$(def-user)'. <<
 
-  Bosh 25: {
+  Bosh 24: {
     -multi-thread
 
     Subscription receive@common: {
@@ -809,7 +807,7 @@ Bosh Tests:
 
   } >> Presence subscription between '$(stats-user)' and '$(def-user)' again to prepare for the next test. <<
 
-  Bosh 26: {
+  Bosh 25: {
     -multi-thread
 
     Subscription receive@common: {
@@ -831,7 +829,7 @@ Bosh Tests:
 
   } >> Remove subscribed contact '$(def-user)' from the roster of the user '$(stats-user)', all subscriptions should be cancelled automatically by the server. <<
 
-  Bosh 27: {
+  Bosh 26: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
@@ -852,7 +850,7 @@ Bosh Tests:
 
   } >> 2 user connections, each using a different resource waiting for a presence from each other. <<
 
-  Bosh 28: {
+  Bosh 27: {
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
@@ -875,7 +873,7 @@ Bosh Tests:
 
   } >> Mixed, one connectiob via Bosh another standard c2s, each using a different resource. <<
 
-  Bosh 29: {
+  Bosh 28: {
     -multi-thread
 
     Subscription receive@common: {
@@ -897,7 +895,7 @@ Bosh Tests:
 
   } >> Presence subscription deny test between '$(stats-user)' and '$(def-user)'. <<
 
-  Bosh 30@auth-sasl;common-no-bind: {
+  Bosh 29@auth-sasl;common-no-bind: {
     -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
     -source-file = "tests/data/MessageNoBind.cot"
   } >> Send a message without resource binding and expect an error response. <<
@@ -907,6 +905,263 @@ Bosh Tests:
 
 }
 >> Testing bosh component <<
+
+Bosh keep-alive Tests:
+{
+  -port = 5280
+  -def-stream  = stream-bosh
+
+  -loop = 1
+
+  -keep-alive = yes
+
+  Bosh keep-alive 1@socket-bosh: >> Socket connect. <<
+  Bosh keep-alive 2@stream-open: { } >> Stream open to server. <<
+  Bosh keep-alive3@user-register: { } >> XEP-0077 - In-Band Registration, register <<
+
+  Bosh keep-alive 4@auth-plain: { -def-auth = auth-plain } >> XEP-0078 Non-SASL authorization with plain password. <<
+  Bosh keep-alive 5@auth-sasl: { } >> SASL authorization <<
+  Bosh keep-alive 6@xmpp-bind: { } >> XMPP resource bind <<
+  Bosh keep-alive 7@xmpp-session: { } >> Establish XMPP session <<
+  Bosh keep-alive 8@msg-send: { -to-jid = $(self) }
+  >> Send a message to self user and don't wait for response <<
+
+  Bosh keep-alive 9@common: Send a message to $(daemon-user) user
+  {
+#    -to-jid = "$(daemon-user)@$(server-host)/xmpp-test"
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterMessage.cot"
+  }
+  >> Send a message to $(tester-user)@srecv.$(server-host) user
+  and wait for message response <<
+
+  Bosh keep-alive 10@iq-version: >> XEP-0092 - get entity version <<
+  Bosh keep-alive 11@iq-stats: XEP-0039 Statistics Gathering
+  { -user-name=$(stats-user) -user-pass=$(stats-pass) }
+  >> XEP-0039 Statistics Gathering. <<
+
+  Bosh keep-alive 12@common: { -source-file = "tests/data/RosterTest.cot" }
+  >> Roster management test <<
+
+  Bosh keep-alive 13@privacy-lists: >> Privacy lists management test <<
+
+  Bosh keep-alive 14@msg-send: Privacy lists - send a message to $(blocking-user) user
+  {
+    -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
+    -expect-type = error
+#    -socket-wait = 1000
+#    -time-out-ok
+  } >> Privacy lists test - send a message to $(blocking-user) user blocking all messages and wait for error response <<
+
+  Bosh keep-alive 15@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
+  >> XEP-0049: Private XML Storage <<
+
+  Bosh keep-alive 16@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
+  >> Test for feature-not-implemented error which should be returned when client sends unsupported stanza <<
+
+  Bosh keep-alive 17@common: { -source-file = "tests/data/vcard-temp.cot" }
+  >> XEP-0054: vcard-temp <<
+
+  Bosh keep-alive 18@common: {
+    -to-jid = $(server-host)
+    -source-file = "tests/data/UrnXmppPing.cot"
+  } >> XEP-0199: XMPP Ping to domain '$(server-host)' the user is logged in <<
+
+  Bosh keep-alive 19@common: {
+    -to-jid = $(virtual-host)
+    -source-file = "tests/data/UrnXmppPing.cot"
+  } >> XEP-0199: XMPP Ping to another, vrtual domain '$(virtual-host)' on the server <<
+
+  Bosh keep-alive 20@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
+  >> XEP-0030: XMPP Service Discovery <<
+
+  Bosh keep-alive 21: {
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence subscription test between '$(stats-user)' and '$(def-user)'. <<
+
+  Bosh keep-alive 22: {
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionCancelReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionCancelSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence cancel test between '$(stats-user)' and '$(def-user)'. <<
+
+  Bosh keep-alive 23: {
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionUnsubscribeReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionUnsubscribeSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence unsubscribe test between '$(stats-user)' and '$(def-user)'. <<
+
+  Bosh keep-alive 24: {
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence subscription between '$(stats-user)' and '$(def-user)' again to prepare for the next test. <<
+
+  Bosh keep-alive 25: {
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/RemoveSubscribedReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/RemoveSubscribedSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Remove subscribed contact '$(def-user)' from the roster of the user '$(stats-user)', all subscriptions should be cancelled automatically by the server. <<
+
+  Bosh keep-alive 26: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-resr   = res-1
+      -to-jid = "$(def-user)@$(server-host)/res-2"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
+
+    Subscription send@common: {
+      -user-resr   = res-2
+      -to-jid = "$(def-user)@$(server-host)/res-1"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> 2 user connections, each using a different resource waiting for a presence from each other. <<
+
+  Bosh keep-alive 27: {
+    -user-name   = $(def-user)
+    -user-pass   = $(def-user-pass)
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-resr   = bosh
+      -to-jid = "$(def-user)@$(server-host)/c2s"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and wait for presence from another resource. <<
+
+    Subscription send@common: {
+      -port = 5222
+      -def-stream  = stream-client
+      -user-resr   = c2s
+      -to-jid = "$(def-user)@$(server-host)/bosh"
+      -source-file = "tests/data/PresenceWait.cot"
+     } >> Login and waut for presence from another resource. <<
+
+  } >> Mixed, one connectiob via Bosh keep-aliveanother standard c2s, each using a different resource. <<
+
+  Bosh keep-alive 28: {
+    -multi-thread
+
+    Subscription receive@common: {
+      -delay = 250
+
+      -user-name   = $(def-user)
+      -user-pass   = $(def-user-pass)
+      -user-resr   = $(def-user-resr)
+      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionDeniedReceive.cot"
+     } >> Login and wait for subscription request from '$(stats-user)'. <<
+
+    Subscription send@common: {
+      -user-name = $(stats-user)
+      -user-pass = $(stats-pass)
+      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
+      -source-file = "tests/data/SubscriptionDeniedSend.cot"
+     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
+
+  } >> Presence subscription deny test between '$(stats-user)' and '$(def-user)'. <<
+
+  Bosh keep-alive 29@auth-sasl;common-no-bind: {
+    -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
+    -source-file = "tests/data/MessageNoBind.cot"
+  } >> Send a message without resource binding and expect an error response. <<
+
+  Bosh keep-alive end@user-unregister:
+  >> XEP-0077 - In-Band Registration - user unregister <<
+
+}
+>> Testing bosh component in keep-alive mode <<
+
 
 Multi thread tests:
 {

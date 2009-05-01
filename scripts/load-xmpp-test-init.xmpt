@@ -28,7 +28,7 @@
 -output-cols    = 7
 -title          = "Repository init..."
 
-$(server-host) = "nktalk.pl"
+$(server-host) = "tigase.test"
 $(def-user)    = load-tester
 $(daemon-user) = tester_1
 $(ssl-tls-wait) = 5000
@@ -54,14 +54,14 @@ Version@auth-sasl;iq-version: { -user-name=$(stats-user) -user-pass=$(stats-pass
 Configuration@command-get-config: { -user-name=$(stats-user) -user-pass=$(stats-pass) } >> Server configuration <<
 Statistics@iq-stats: { -user-name=$(stats-user) -user-pass=$(stats-pass) } >> Server statistics <<
 
-#Prep 1@user-register: {
-#  -loop = 10000000
-#  -no-record
-#  -user-name = "load-tester_$(loop)"
-#} >> Create tester user accounts <<
+Prep 1@user-register: {
+  -loop = 10000000
+  -no-record
+  -user-name = "load-tester_$(loop)"
+} >> Create tester user accounts <<
 
 Prep 2: {
-  -loop = 200000
+  -loop = 10000000
   -no-record
   -loop-only
 

@@ -27,7 +27,7 @@
 _classpath="jars/tigase-xmpp-testsuite.jar:libs/tigase-utils.jar:libs/tigase-xmltools.jar"
 _properties="-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dcom.sun.management.jmxremote"
 #_options=" -agentlib:yjpagent -server -Xmx400M"
-_options=" -server -Xmx300M"
+_options=" -server -Xmx600M"
 
 function db_reload_mysql() {
 
@@ -36,8 +36,23 @@ function db_reload_mysql() {
 	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
 	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
 
-	mysqladmin -u ${_db_user} -p${_db_pass} -f drop ${_db_name}
-	mysqladmin -u ${_db_user} -p${_db_pass} create ${_db_name}
+	mysqladmin -u root -p${_db_pass} -f drop ${_db_name}
+	mysqladmin -u root -p${_db_pass} create ${_db_name}
+        echo "GRANT ALL ON ${_db_name}.* TO ${_db_user}@'%' \
+                IDENTIFIED BY '${_db_pass}'; \
+                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+        echo "GRANT ALL ON ${_db_name}.* TO ${_db_user}@'localhost' \
+                IDENTIFIED BY '${_db_pass}'; \
+                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+        echo "GRANT ALL ON ${_db_name}.* TO ${_db_user} \
+                IDENTIFIED BY '${_db_pass}'; \
+                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+        echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}@'%'; \
+                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+        echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}@'localhost'; \
+                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+        echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}; \
+                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
 	mysql -N -u ${_db_user} -p${_db_pass} ${_db_name} \
 		< database/mysql-schema.sql
 	mysql -N -u ${_db_user} -p${_db_pass} ${_db_name} \
