@@ -108,6 +108,7 @@ public abstract class TestAbstract extends TestEmpty {
 
   // Implementation of tigase.test.TestIfc
 
+	@Override
 	public void release() {
 		try {
 			XMLIO io = (XMLIO)params.get("socketxmlio");
@@ -120,6 +121,7 @@ public abstract class TestAbstract extends TestEmpty {
    *
    * @return a <code>boolean</code> value
    */
+	@Override
   public boolean run() {
     try {
       String elem = null;
@@ -228,8 +230,10 @@ public abstract class TestAbstract extends TestEmpty {
   /**
    * Describe <code>init</code> method here.
    *
-   * @param params a <code>Params</code> value
+	 * @param params a <code>Params</code> value
+	 * @param vars
    */
+	@Override
   public void init(final Params params, Map<String, String> vars) {
 		super.init(params, vars);
     this.params = params;
@@ -249,10 +253,12 @@ public abstract class TestAbstract extends TestEmpty {
    *
    * @return an <code>int</code> value
    */
+	@Override
   public ResultCode getResultCode() {
     return resultCode;
   }
 
+	@Override
   public Element getLastResult() {
     return reply;
   }
@@ -262,6 +268,7 @@ public abstract class TestAbstract extends TestEmpty {
    *
    * @return a <code>String</code> value
    */
+	@Override
   public String getResultMessage() {
     switch (resultCode) {
     case PROCESSING_EXCEPTION:

@@ -21,7 +21,6 @@
  */
 package tigase.test;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -56,12 +55,13 @@ public class Test {
   private boolean result = false;
   private String errorMsg = null;
   private Exception exception = null;
-  private List<HistoryEntry> history = null;
+  private HistoryCollectorIfc historyColl = null;
   private int tests_ok = 0;
   private int tests_er = 0;
   private long total_time = 0;
   private long total_successful = 0;
   private boolean collectHistory = false;
+	private LinkedList<HistoryEntry> history = new LinkedList<HistoryEntry>();
   private boolean on_one_socket = false;
   private boolean active_connection = false;
   private Element lastResult = null;
@@ -103,7 +103,7 @@ public class Test {
       && !main_params.containsKey("-daemon")
 			&& !main_params.containsKey("-background")) {
       collectHistory = true;
-      history = new LinkedList<HistoryEntry>();
+//      history = new LinkedList<HistoryEntry>();
     } // end of if (!main_params.isFalse())
   }
 
@@ -113,8 +113,9 @@ public class Test {
 			|| main_params.containsKey("-background");
   }
 
-  public void runTest() {
-    initParams();
+  public void runTest(HistoryCollectorIfc historyColl) {
+    this.historyColl = historyColl;
+		initParams();
     debug = main_params.containsKey("-debug");
     debug_on_error = (main_params.containsKey("-debug-on-error")
         && !main_params.containsKey("-no-record"));
@@ -142,8 +143,8 @@ public class Test {
 			}
 			//			main_params.put("-loop-start",
 //							node.getParent().getPars().get("$(outer-loop)"));
-			System.out.println("Setting property -loop-start = " +
-							node.getParent().getPars().get("$(outer-loop)"));
+//			System.out.println("Setting property -loop-start = " +
+//							node.getParent().getPars().get("$(outer-loop)"));
 		} else {
 			loop_start = main_params.get("-loop-start", 0);
 		}
@@ -171,8 +172,8 @@ public class Test {
 // 			+ ", lopp_start: " + loop_start);
     for (int cnt = loop_start; cnt < loop+loop_start; cnt++) {
       try {
-				node.addPar("$(outer-loop)", ""+cnt);
-				node.addVar("$(loop)", ""+cnt);
+				node.addPar("$(outer-loop)", "" + cnt);
+				node.addVar("$(loop)", "" + cnt);
         if (on_one_socket && cnt > 0 && last_result) {
           LinkedList<TestIfc> suite_tmp = getDependsTree(test_ns, test_params);
 					suite.clear();
@@ -283,7 +284,7 @@ public class Test {
 			++tests_er;
 			String on_error = (String)dt.params.get("-on-error");
 			if (onError != null) {
-				onError.runTest();
+				onError.runTest(historyColl);
 			}
 		} // end of if (this_result) else
 	}
@@ -406,6 +407,7 @@ public class Test {
 // 				+ ", repeat_wait = " + repeat_wait);
 		}
 
+		@Override
 		public void run() {
 			++counter;
 			if (counter == 2 && dt.suite.size() > 1) {
@@ -431,7 +433,7 @@ public class Test {
 		}
 	}
 
-	class DaemonTest implements Runnable {
+	class DaemonTest implements Runnable, HistoryCollectorIfc {
 
     private List<TestIfc> suite = null;
     private Params params = null;
@@ -447,25 +449,32 @@ public class Test {
 			this.resultsHandler = resultsHandler;
     }
 
+		@Override
+		public void handleHistoryEntry(HistoryEntry historyEntry) {
+			if (collectHistory) {
+				historyColl.handleHistoryEntry(historyEntry);
+			} // end of if (history)
+		}
+
     // Implementation of java.lang.Runnable
 
     /**
      * Describe <code>run</code> method here.
      *
      */
+		@Override
     public void run() {
 			long test_start_time = System.currentTimeMillis();
 			TestIfc tmptest = null;
       try {
         for (TestIfc test : suite) {
-          debug("Testing: " + toStringArrayNS(test.implemented(), "..."),
+          test.setHistoryCollector(this);
+					debug("Testing: " + toStringArrayNS(test.implemented(), "..."),
             debug);
 					tmptest = test;
+					test.setName(getName());
           test.init(params, vars);
           boolean res = test.run();
-          if (collectHistory) {
-            history.addAll(test.getHistory());
-          } // end of if (history)
           if (res) {
             lastResult = test.getLastResult();
             authorized = params.get("authorized", false);
@@ -493,9 +502,9 @@ public class Test {
         } // end of for ()
       } // end of try
       catch (Exception e) {
-        //e.printStackTrace();
-				System.out.println(Arrays.toString(tmptest.implemented()));
-				System.out.println(params.toString());
+        e.printStackTrace();
+//				System.out.println(Arrays.toString(tmptest.implemented()));
+//				System.out.println(params.toString());
         exception = e;
         errorMsg = e.toString();
         last_result = false;

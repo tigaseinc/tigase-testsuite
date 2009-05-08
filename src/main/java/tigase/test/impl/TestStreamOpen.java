@@ -21,19 +21,10 @@
  */
 package tigase.test.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import javax.management.Attribute;
-import tigase.test.HistoryEntry;
 import tigase.test.util.Params;
 import tigase.test.TestAbstract;
-import tigase.test.util.SocketXMLIO;
-import tigase.test.util.ElementUtil;
 import tigase.xml.Element;
 
 /**
@@ -76,6 +67,7 @@ public class TestStreamOpen extends TestAbstract {
       );
   }
 
+	@Override
   public String nextElementName(final Element reply) {
     if (counter < elems.length) {
       return elems[counter++];
@@ -83,6 +75,7 @@ public class TestStreamOpen extends TestAbstract {
     return null;
   }
 
+	@Override
   public void replyElement(final Element reply) throws Exception {
     if (reply != null && reply.getName().equals("stream:stream")) {
       params.put("session-id", reply.getAttribute("id"));
@@ -90,6 +83,7 @@ public class TestStreamOpen extends TestAbstract {
   }
 
 
+	@Override
   public String getElementData(final String element) throws Exception {
     if (element.equals("stream:stream")) {
       return "<stream:stream "
@@ -101,6 +95,7 @@ public class TestStreamOpen extends TestAbstract {
     return null;
   }
 
+	@Override
   public String[] getRespElementNames(final String element) {
     if (element.equals("stream:stream")) {
       return new String[] {"stream:stream", "stream:features"};
@@ -108,6 +103,7 @@ public class TestStreamOpen extends TestAbstract {
     return null;
   }
 
+	@Override
   public Attribute[] getRespElementAttributes(final String element) {
     if (element.equals("stream:stream")) {
       return new Attribute[]
@@ -124,6 +120,12 @@ public class TestStreamOpen extends TestAbstract {
     return null;
   }
 
+	@Override
+	public void addOutput(String output) {
+		super.addOutput(output.replace(">", "/>"));
+  }
+
+	@Override
   public String[] getRespOptionalNames(final String element) {
     return null;
   }
@@ -135,6 +137,7 @@ public class TestStreamOpen extends TestAbstract {
    *
    * @param map a <code>Map</code> value
    */
+	@Override
   public void init(final Params map, Map<String, String> vars) {
     super.init(map, vars);
     hostname = params.get("-host", hostname);

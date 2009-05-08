@@ -32,16 +32,18 @@ package tigase.test;
  */
 public class HistoryEntry {
 
-  private Direction direction = null;
+	private String name = null;
+	private Direction direction = null;
   private String content = null;
 
   /**
    * Creates a new <code>HistoryEntry</code> instance.
    *
    */
-  public HistoryEntry(Direction dir, String cont) {
+  public HistoryEntry(Direction dir, String cont, String testName) {
     direction = dir;
     content = cont;
+		name = testName;
   }
 
   public Direction getDirection() {
@@ -52,8 +54,10 @@ public class HistoryEntry {
     return content;
   }
 
+	@Override
   public String toString() {
-    return direction + ": " + content;
+    return "<" + direction + " test='" + name + "'>\n" +
+						content + "\n</" + direction + ">";
   }
 
 } // HistoryEntry

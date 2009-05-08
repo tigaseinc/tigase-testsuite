@@ -21,7 +21,6 @@
  */
 package tigase.test;
 
-import java.util.List;
 import java.util.Map;
 import tigase.test.util.Params;
 import tigase.xml.Element;
@@ -57,6 +56,13 @@ public interface TestIfc {
 
   Element getLastResult();
 
-  List<HistoryEntry> getHistory();
+  //List<HistoryEntry> getHistory();
+
+	void setHistoryCollector(HistoryCollectorIfc histColl);
+
+
+	String getName();
+
+	void setName(String name);
 
 } // TestIfc

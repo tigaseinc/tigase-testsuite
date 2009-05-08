@@ -22,7 +22,6 @@
 package tigase.test;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import tigase.test.util.Params;
 import tigase.xml.Element;
@@ -42,13 +41,20 @@ public abstract class TestEmpty implements TestIfc {
   private String[] IMPLEMENTED = null;
   private String[] DEPENDS = null;
   private String[] OPTIONAL = null;
-  private List<HistoryEntry> history = null;
+  //private List<HistoryEntry> history = null;
   private boolean collectHistory = true;
   private boolean deb = false;
+	private String testName = null;
+	private HistoryCollectorIfc historyColl = null;
 
 	/**
 	 * Creates a new <code>TestEmpty</code> instance.
 	 *
+	 *
+	 * @param base_xmlns
+	 * @param implemented
+	 * @param depends
+	 * @param optional
 	 */
 	public TestEmpty(final String[] base_xmlns, final String[] implemented,
     final String[] depends, final String[] optional) {
@@ -65,6 +71,7 @@ public abstract class TestEmpty implements TestIfc {
 	 *
 	 * @return a <code>boolean</code> value
 	 */
+	@Override
 	public boolean run() {
 		return false;
 	}
@@ -73,15 +80,17 @@ public abstract class TestEmpty implements TestIfc {
 	 * Describe <code>init</code> method here.
 	 *
 	 * @param params a <code>Params</code> value
+	 * @param vars
 	 */
+	@Override
 	public void init(final Params params, Map<String, String> vars) {
     collectHistory = params.get("-output-history", true)
 			&&
 			!(params.containsKey("-daemon")
 				|| params.containsKey("-background"));
-    if (collectHistory) {
-      history = new LinkedList<HistoryEntry>();
-    } // end of if (collectHistory)
+//    if (collectHistory) {
+//      history = new LinkedList<HistoryEntry>();
+//    } // end of if (collectHistory)
     deb = params.containsKey("-debug");
 	}
 
@@ -90,6 +99,7 @@ public abstract class TestEmpty implements TestIfc {
 	 *
 	 * @return a <code>String[]</code> value
 	 */
+	@Override
 	public String[] baseXMLNS() {
     return BASE_XMLNS;
 	}
@@ -99,6 +109,7 @@ public abstract class TestEmpty implements TestIfc {
 	 *
 	 * @return a <code>String[]</code> value
 	 */
+	@Override
 	public String[] implemented() {
     return IMPLEMENTED;
 	}
@@ -108,6 +119,7 @@ public abstract class TestEmpty implements TestIfc {
 	 *
 	 * @return a <code>String[]</code> value
 	 */
+	@Override
 	public String[] depends() {
     return DEPENDS;
 	}
@@ -117,6 +129,7 @@ public abstract class TestEmpty implements TestIfc {
 	 *
 	 * @return a <code>String[]</code> value
 	 */
+	@Override
 	public String[] optional() {
     return OPTIONAL;
 	}
@@ -126,6 +139,7 @@ public abstract class TestEmpty implements TestIfc {
 	 *
 	 * @return an <code>int</code> value
 	 */
+	@Override
 	public ResultCode getResultCode() {
 		return ResultCode.TEST_OK;
 	}
@@ -135,6 +149,7 @@ public abstract class TestEmpty implements TestIfc {
 	 *
 	 * @return a <code>String</code> value
 	 */
+	@Override
 	public String getResultMessage() {
 		return null;
 	}
@@ -144,8 +159,13 @@ public abstract class TestEmpty implements TestIfc {
 	 *
 	 * @return an <code>Element</code> value
 	 */
+	@Override
 	public Element getLastResult() {
 		return null;
+	}
+
+	public void setHistoryCollector(HistoryCollectorIfc histColl) {
+		this.historyColl = histColl;
 	}
 
   /**
@@ -153,23 +173,38 @@ public abstract class TestEmpty implements TestIfc {
    *
    * @return a <code>List</code> value
    */
-  public List<HistoryEntry> getHistory() {
-    return history;
-  }
+//	@Override
+//  public List<HistoryEntry> getHistory() {
+//    return history;
+//  }
 
   public void addInput(String input) {
     if (collectHistory) {
 			//System.out.println("Adding input!!");
-      history.add(new HistoryEntry(Direction.INPUT, input));
+      //history.add(new HistoryEntry(Direction.INPUT, input, getName()));
+			historyColl.handleHistoryEntry(new HistoryEntry(Direction.INPUT, input,
+							testName));
     }
   }
 
   public void addOutput(String output) {
     if (collectHistory) {
 			//System.out.println("Adding output!!");
-      history.add(new HistoryEntry(Direction.OUTPUT, output));
+      //history.add(new HistoryEntry(Direction.OUTPUT, output, testName));
+			historyColl.handleHistoryEntry(new HistoryEntry(Direction.OUTPUT, output,
+							testName));
     }
   }
+
+	@Override
+	public String getName() {
+		return testName;
+	}
+
+	@Override
+	public void setName(String testName) {
+		this.testName = testName;
+	}
 
   public void debug(String msg) {
     if (deb) {

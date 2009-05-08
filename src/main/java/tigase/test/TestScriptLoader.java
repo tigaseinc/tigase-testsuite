@@ -28,7 +28,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -40,7 +39,6 @@ import tigase.test.util.HTMLFilter;
 import tigase.test.util.NullFilter;
 import tigase.test.util.OutputFilter;
 import tigase.test.util.Params;
-import tigase.test.util.TestUtil;
 
 import static tigase.test.util.TestUtil.*;
 
@@ -53,7 +51,7 @@ import static tigase.test.util.TestUtil.*;
  * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
-public class TestScriptLoader {
+public class TestScriptLoader implements HistoryCollectorIfc {
 
   private TestScript parser = null;
   private Params params = null;
@@ -122,10 +120,10 @@ public class TestScriptLoader {
     boolean result = true;
     if (node.getId() != null) {
       debug(node.getName() + ": " + getDescription(node) + " ... ", true);
-      Test test = new Test(node);
-      test.runTest();
-      calculateResult(test);
-      result = test.getResult();
+      multiResCont = new Test(node);
+      multiResCont.runTest(this);
+      calculateResult(multiResCont);
+      result = multiResCont.getResult();
     }
     if (stop_on_fail && !result) {
       return result;
@@ -189,7 +187,16 @@ public class TestScriptLoader {
     return true;
   }
 
-  private synchronized void calculateMultiResult(Test test) {
+	@Override
+	public synchronized void handleHistoryEntry(HistoryEntry historyEntry) {
+    if (output_history) {
+      multiResCont.getHistory().add(historyEntry);
+    } // end of if (output_history)
+	}
+
+
+
+	private synchronized void calculateMultiResult(Test test) {
     Params multiParams = multiResCont.getParams();
     multiParams.put("-loop",
       multiParams.get("-loop", 0) + test.getParams().get("-loop", 1));
@@ -197,9 +204,9 @@ public class TestScriptLoader {
     multiResCont.addSuccessfulTotalTime(test.getSuccessfulTotalTime());
     multiResCont.addTestsOK(test.getTestsOK());
     multiResCont.addTestsErr(test.getTestsErr());
-    if (output_history) {
-      multiResCont.getHistory().addAll(test.getHistory());
-    } // end of if (output_history)
+//    if (output_history) {
+//      multiResCont.getHistory().addAll(test.getHistory());
+//    } // end of if (output_history)
     multiResCont.setResult(
       (multiResCont.getTestsOK() > multiResCont.getTestsErr()));
   }
@@ -376,7 +383,7 @@ public class TestScriptLoader {
 			node.addGlobalPars(params.getMap());
 			node.addGlobalVars(parser.getGlobalVars());
       Test tmp_test = new Test(node);
-      tmp_test.runTest();
+      tmp_test.runTest(this);
       return (Map<String, String>) tmp_test.getParams().get("Version");
     } // end of if (node != null)
     return null;
@@ -416,7 +423,7 @@ public class TestScriptLoader {
 			node.addGlobalPars(params.getMap());
 			node.addGlobalVars(parser.getGlobalVars());
       Test tmp_test = new Test(node);
-      tmp_test.runTest();
+      tmp_test.runTest(this);
       return (List<StatItem>) tmp_test.getParams().get("Statistics");
     } // end of if (node != null)
     return null;
@@ -429,7 +436,7 @@ public class TestScriptLoader {
 			node.addGlobalPars(params.getMap());
 			node.addGlobalVars(parser.getGlobalVars());
       Test tmp_test = new Test(node);
-      tmp_test.runTest();
+      tmp_test.runTest(this);
       return (List<StatItem>) tmp_test.getParams().get("Configuration");
     } // end of if (node != null)
     return null;
@@ -461,9 +468,11 @@ public class TestScriptLoader {
   private void saveHistory(Test test, File file_name) throws IOException {
 		if (test.getHistory() != null) {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file_name, false));
+			bw.write("<test-history test='" + test.getName() + "'>\n");
 			for (HistoryEntry entry: test.getHistory()) {
 				bw.write(entry.toString() + "\n");
 			} // end of for ()
+			bw.write("\n</test-history>");
 			bw.close();
 		}
   }
@@ -531,7 +540,7 @@ public class TestScriptLoader {
      *
      */
     public void run() {
-      test.runTest();
+      test.runTest(TestScriptLoader.this);
       try {
         calculateMultiResult(test);
       } // end of try
