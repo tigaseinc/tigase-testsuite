@@ -55,4 +55,4 @@ $(stats-pass) = stats
 Version@auth-sasl;iq-version: >> Get server version <<
 Configuration@command-get-config: >> Server configuration <<
 Statistics@iq-stats: >> Server statistics <<
-Common test@common: >> Common test <<
+Common test@xmpp-session;common: >> Common test <<

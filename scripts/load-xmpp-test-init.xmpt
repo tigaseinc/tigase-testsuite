@@ -56,12 +56,15 @@ Statistics@iq-stats: { -user-name=$(stats-user) -user-pass=$(stats-pass) } >> Se
 
 Prep 1@user-register: {
   -loop = 10000000
+  -loop-start = 1
   -no-record
   -user-name = "load-tester_$(loop)"
+  -user-pass = "load-tester_$(loop)"
 } >> Create tester user accounts <<
 
 Prep 2: {
   -loop = 10000000
+  -loop-start = 1
   -no-record
   -loop-only
 

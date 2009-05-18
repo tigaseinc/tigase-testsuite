@@ -81,6 +81,7 @@ public class TestRoster extends TestAbstract {
    * @return a <code>String</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String nextElementName(final Element element) throws Exception {
 		boolean error = false;
 		String message = null;

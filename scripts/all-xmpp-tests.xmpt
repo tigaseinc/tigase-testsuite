@@ -92,6 +92,14 @@ Global settings:
     >> XMPP resource bind <<
   Test 10@tls-init;xmpp-session: { -socket-wait = $(ssl-tls-wait) }
     >> Establish XMPP session <<
+
+  Test IO@common: Checking Tigase IO subsystem {
+#      -debug
+    -loop=10
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterMessage10.cot"
+  } >> Send a message to $(tester-user) user to check whether it responds. <<
+
   Test 11@msg-send: { -to-jid = $(self) }
     >> Send a message to self user and don't wait for response <<
 
@@ -191,10 +199,9 @@ Global settings:
 
   Test 25: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -213,10 +220,9 @@ Global settings:
 
   Test 26: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -235,10 +241,9 @@ Global settings:
 
   Test 27: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -257,10 +262,9 @@ Global settings:
 
   Test 28: {
     -multi-thread
-
+    -delay = 250
+    
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -279,10 +283,9 @@ Global settings:
 
   Test 29: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -303,10 +306,9 @@ Global settings:
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-resr   = res-1
       -to-jid = "$(def-user)@$(server-host)/res-2"
       -source-file = "tests/data/PresenceWait.cot"
@@ -322,10 +324,9 @@ Global settings:
 
   Test 31: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -517,9 +518,9 @@ Admin commands Tests:
 
  RosterMan 7: {
      -multi-thread
+     -delay = 1000
 
      Receive added user@common: {
-       -delay = 1000
        -user-name   = $(def-user)
        -user-pass   = $(def-user-pass)
        -user-resr   = $(def-user-resr)
@@ -528,7 +529,6 @@ Admin commands Tests:
       } >> Login and receive roster updates <<
 
       Add user to live roster@common: {
-#       -delay = 250
        -user-name = $(stats-user)
        -user-pass = $(stats-pass)
        -to-jid = "$(def-user)@$(server-host)"
@@ -721,10 +721,9 @@ Bosh Tests:
 
   Bosh 21: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -743,10 +742,9 @@ Bosh Tests:
 
   Bosh 22: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -765,10 +763,9 @@ Bosh Tests:
 
   Bosh 23: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -787,10 +784,9 @@ Bosh Tests:
 
   Bosh 24: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -809,10 +805,9 @@ Bosh Tests:
 
   Bosh 25: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -833,10 +828,9 @@ Bosh Tests:
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-resr   = res-1
       -to-jid = "$(def-user)@$(server-host)/res-2"
       -source-file = "tests/data/PresenceWait.cot"
@@ -854,10 +848,9 @@ Bosh Tests:
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-resr   = bosh
       -to-jid = "$(def-user)@$(server-host)/c2s"
       -source-file = "tests/data/PresenceWait.cot"
@@ -875,10 +868,9 @@ Bosh Tests:
 
   Bosh 28: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -977,10 +969,9 @@ Bosh keep-alive Tests:
 
   Bosh keep-alive 21: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -999,10 +990,9 @@ Bosh keep-alive Tests:
 
   Bosh keep-alive 22: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -1021,10 +1011,9 @@ Bosh keep-alive Tests:
 
   Bosh keep-alive 23: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -1043,10 +1032,9 @@ Bosh keep-alive Tests:
 
   Bosh keep-alive 24: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -1065,10 +1053,9 @@ Bosh keep-alive Tests:
 
   Bosh keep-alive 25: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
@@ -1089,10 +1076,9 @@ Bosh keep-alive Tests:
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-resr   = res-1
       -to-jid = "$(def-user)@$(server-host)/res-2"
       -source-file = "tests/data/PresenceWait.cot"
@@ -1110,10 +1096,9 @@ Bosh keep-alive Tests:
     -user-name   = $(def-user)
     -user-pass   = $(def-user-pass)
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-resr   = bosh
       -to-jid = "$(def-user)@$(server-host)/c2s"
       -source-file = "tests/data/PresenceWait.cot"
@@ -1131,10 +1116,9 @@ Bosh keep-alive Tests:
 
   Bosh keep-alive 28: {
     -multi-thread
+    -delay = 250
 
     Subscription receive@common: {
-      -delay = 250
-
       -user-name   = $(def-user)
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
