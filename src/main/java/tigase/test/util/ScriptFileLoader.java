@@ -37,11 +37,11 @@ import tigase.xml.SingletonFactory;
 public class ScriptFileLoader {
 
 	public static enum Action {
-		expect, send;
+		expect, expect_all, expect_strict, send;
 	}
 
 	private enum ParserState {
-		expect_stanza, send_stanza, start;
+		expect_stanza, send_stanza, start,expect_all_stanza,expect_strict_stanza;
 	}
 
 	public static class StanzaEntry {
@@ -113,9 +113,22 @@ public class ScriptFileLoader {
 						description = param;
 						buff = new StringBuilder();
 					}
+					if ("expect all".equals(keyword)) {
+						state = ParserState.expect_all_stanza;
+						description = param;
+						buff = new StringBuilder();
+					}
+					if ("expect strict".equals(keyword)) {
+						state = ParserState.expect_strict_stanza;
+						description = param;
+						buff = new StringBuilder();
+					}
+					
 					break;
 				case send_stanza:
+				case expect_all_stanza:
 				case expect_stanza:
+				case expect_strict_stanza:
 					if (!line.equals("{") && !line.equals("}") && !line.startsWith("#")) {
 						buff.append(line + '\n');
 					}
@@ -128,6 +141,12 @@ public class ScriptFileLoader {
 								break;
 							case expect_stanza:
 								stanzas_buff.offer(new StanzaEntry(Action.expect, elems, description));
+								break;
+							case expect_all_stanza:
+								stanzas_buff.offer(new StanzaEntry(Action.expect_all, elems, description));
+								break;
+							case expect_strict_stanza:
+								stanzas_buff.offer(new StanzaEntry(Action.expect_strict, elems, description));
 								break;
 							default:
 								break;
