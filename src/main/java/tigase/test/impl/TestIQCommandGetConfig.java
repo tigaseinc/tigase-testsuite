@@ -31,8 +31,6 @@ import javax.management.Attribute;
 import tigase.test.ResultsDontMatchException;
 import tigase.xml.Element;
 import tigase.xml.XMLUtils;
-import tigase.test.util.ElementUtil;
-import tigase.test.util.EqualError;
 
 import static tigase.util.JIDUtils.*;
 
@@ -83,6 +81,7 @@ public class TestIQCommandGetConfig extends TestAbstract {
    * @return a <code>String</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String nextElementName(final Element element) throws Exception {
 		boolean error = true;
 		String message = null;
@@ -100,9 +99,11 @@ public class TestIQCommandGetConfig extends TestAbstract {
 						comp = name.substring(0, idx);
 						stat = name.substring(idx+1);
 					}
-					stats.add(new StatItem(comp,
-							XMLUtils.unescape(item.getChildCData("/field/value")),
-							"&nbsp;",	stat));
+					String cdata = item.getChildCData("/field/value");
+					if (cdata == null) {
+						cdata = "";
+					}
+					stats.add(new StatItem(comp, XMLUtils.unescape(cdata), "&nbsp;",	stat));
 				} // end of for (Element item: items)
 				params.put("Configuration", stats);
 			} else {
@@ -131,6 +132,7 @@ public class TestIQCommandGetConfig extends TestAbstract {
    * @return a <code>String</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String getElementData(final String string) throws Exception {
     result = new Attribute[] {
       new Attribute("type", "result"),
@@ -166,6 +168,7 @@ public class TestIQCommandGetConfig extends TestAbstract {
    * @return a <code>String[]</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String[] getRespElementNames(final String string) throws Exception {
     return resp_name;
   }
@@ -177,6 +180,7 @@ public class TestIQCommandGetConfig extends TestAbstract {
    * @return a <code>String[]</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String[] getRespOptionalNames(final String string) throws Exception {
     return null;
   }
@@ -188,6 +192,7 @@ public class TestIQCommandGetConfig extends TestAbstract {
    * @return an <code>Attribute[]</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public Attribute[] getRespElementAttributes(final String string) throws Exception {
 		return result;
   }
@@ -199,6 +204,7 @@ public class TestIQCommandGetConfig extends TestAbstract {
    *
    * @param params a <code>Params</code> value
    */
+	@Override
   public void init(final Params params, Map<String, String> vars) {
     super.init(params, vars);
     user_name = params.get("-user-name", user_name);
