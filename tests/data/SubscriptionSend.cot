@@ -20,7 +20,6 @@
 ##  $Date$
 ##
 send: {
-<presence type="available"/>
 <iq type="get" id="roster_1" >
   <query xmlns="jabber:iq:roster"/>
 </iq>
@@ -41,6 +40,10 @@ expect: {
 }
 
 send: {
+<presence type="available"/>
+}
+
+send: {
 <presence to="$(to-id)" type="subscribe"/>
 }
 expect: {
@@ -56,8 +59,8 @@ expect: {
     <item jid="$(to-id)" subscription="to"/>
   </query>
 </iq>
-<presence from="$(to-jid)" type="available"/>
 <presence type="subscribe" from="$(to-id)"/>
+<presence type="available" from="$(to-jid)"/>
 }
 expect: {
 <iq type="set">
@@ -65,8 +68,8 @@ expect: {
     <item jid="$(to-id)" subscription="to"/>
   </query>
 </iq>
-<presence from="$(to-jid)" type="available"/>
 <presence type="subscribe" from="$(to-id)"/>
+<presence type="available" from="$(to-jid)"/>
 }
 expect: {
 <iq type="set">
@@ -74,8 +77,8 @@ expect: {
     <item jid="$(to-id)" subscription="to"/>
   </query>
 </iq>
-<presence from="$(to-jid)" type="available"/>
 <presence type="subscribe" from="$(to-id)"/>
+<presence type="available" from="$(to-jid)"/>
 }
 
 send: {

@@ -40,16 +40,6 @@ send: {
 }
 
 expect: {
-<iq to="$(from-id)" type="get">
-  <command node="CHECK_USER_CONNECTION" xmlns="http://jabber.org/protocol/commands"/>
-</iq>
-}
-
-send: {
-<iq to="@{from}" from="$(from-id)" type="result" id="@{id}"/>
-}
-
-expect: {
 <iq type="result" from="$(to-hostname)" to="$(from-id)" id="111"/>
 }
 

@@ -227,7 +227,7 @@ function run_test() {
 	end_test=`date +%s`
 	total_time=$((end_test-start_test))
 	total_str=`date -u -d @$total_time +%H:%M:%S`
-	echo "<td><A href=\"/${_output_file}\">${total_str}</A></td>" >> "${_test_type}-rep.html"
+	echo "<td><a href=\"/${_output_file}\">${total_str}</a></td>" >> "${_test_type}-rep.html"
 	echo "Test finished after: ${total_str}"
 	sleep 1
 	if [ -z "${SKIP_SERVER_START}" ] ; then

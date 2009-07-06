@@ -33,8 +33,8 @@ SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
 
 	MS_MEM=100
 	MX_MEM=1000
-	SMALL_MS_MEM=5
 	SMALL_MS_MEM=10
+	SMALL_MX_MEM=20
 }
 export MIN_MEM=$MS_MEM
 export MAX_MEM=$MX_MEM

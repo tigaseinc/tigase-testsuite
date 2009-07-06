@@ -784,91 +784,7 @@ Bosh Tests:
 
   Bosh 24: {
     -multi-thread
-    -delay = 250
-
-    Subscription receive@common: {
-      -user-name   = $(def-user)
-      -user-pass   = $(def-user-pass)
-      -user-resr   = $(def-user-resr)
-      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
-      -source-file = "tests/data/SubscriptionReceive.cot"
-     } >> Login and wait for subscription request from '$(stats-user)'. <<
-
-    Subscription send@common: {
-      -user-name = $(stats-user)
-      -user-pass = $(stats-pass)
-      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
-      -source-file = "tests/data/SubscriptionSend.cot"
-     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
-
-  } >> Presence subscription between '$(stats-user)' and '$(def-user)' again to prepare for the next test. <<
-
-  Bosh 25: {
-    -multi-thread
-    -delay = 250
-
-    Subscription receive@common: {
-      -user-name   = $(def-user)
-      -user-pass   = $(def-user-pass)
-      -user-resr   = $(def-user-resr)
-      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
-      -source-file = "tests/data/RemoveSubscribedReceive.cot"
-     } >> Login and wait for subscription request from '$(stats-user)'. <<
-
-    Subscription send@common: {
-      -user-name = $(stats-user)
-      -user-pass = $(stats-pass)
-      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
-      -source-file = "tests/data/RemoveSubscribedSend.cot"
-     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
-
-  } >> Remove subscribed contact '$(def-user)' from the roster of the user '$(stats-user)', all subscriptions should be cancelled automatically by the server. <<
-
-  Bosh 26: {
-    -user-name   = $(def-user)
-    -user-pass   = $(def-user-pass)
-    -multi-thread
-    -delay = 250
-
-    Subscription receive@common: {
-      -user-resr   = res-1
-      -to-jid = "$(def-user)@$(server-host)/res-2"
-      -source-file = "tests/data/PresenceWait.cot"
-     } >> Login and wait for presence from another resource. <<
-
-    Subscription send@common: {
-      -user-resr   = res-2
-      -to-jid = "$(def-user)@$(server-host)/res-1"
-      -source-file = "tests/data/PresenceWait.cot"
-     } >> Login and waut for presence from another resource. <<
-
-  } >> 2 user connections, each using a different resource waiting for a presence from each other. <<
-
-  Bosh 27: {
-    -user-name   = $(def-user)
-    -user-pass   = $(def-user-pass)
-    -multi-thread
-    -delay = 250
-
-    Subscription receive@common: {
-      -user-resr   = bosh
-      -to-jid = "$(def-user)@$(server-host)/c2s"
-      -source-file = "tests/data/PresenceWait.cot"
-     } >> Login and wait for presence from another resource. <<
-
-    Subscription send@common: {
-      -port = 5222
-      -def-stream  = stream-client
-      -user-resr   = c2s
-      -to-jid = "$(def-user)@$(server-host)/bosh"
-      -source-file = "tests/data/PresenceWait.cot"
-     } >> Login and waut for presence from another resource. <<
-
-  } >> Mixed, one connectiob via Bosh another standard c2s, each using a different resource. <<
-
-  Bosh 28: {
-    -multi-thread
-    -delay = 250
+    -delay = 500
 
     Subscription receive@common: {
       -user-name   = $(def-user)
@@ -887,7 +803,7 @@ Bosh Tests:
 
   } >> Presence subscription deny test between '$(stats-user)' and '$(def-user)'. <<
 
-  Bosh 29@auth-sasl;common-no-bind: {
+  Bosh 25@auth-sasl;common-no-bind: {
     -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
     -source-file = "tests/data/MessageNoBind.cot"
   } >> Send a message without resource binding and expect an error response. <<
@@ -1039,90 +955,6 @@ Bosh keep-alive Tests:
       -user-pass   = $(def-user-pass)
       -user-resr   = $(def-user-resr)
       -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
-      -source-file = "tests/data/SubscriptionReceive.cot"
-     } >> Login and wait for subscription request from '$(stats-user)'. <<
-
-    Subscription send@common: {
-      -user-name = $(stats-user)
-      -user-pass = $(stats-pass)
-      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
-      -source-file = "tests/data/SubscriptionSend.cot"
-     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
-
-  } >> Presence subscription between '$(stats-user)' and '$(def-user)' again to prepare for the next test. <<
-
-  Bosh keep-alive 25: {
-    -multi-thread
-    -delay = 250
-
-    Subscription receive@common: {
-      -user-name   = $(def-user)
-      -user-pass   = $(def-user-pass)
-      -user-resr   = $(def-user-resr)
-      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
-      -source-file = "tests/data/RemoveSubscribedReceive.cot"
-     } >> Login and wait for subscription request from '$(stats-user)'. <<
-
-    Subscription send@common: {
-      -user-name = $(stats-user)
-      -user-pass = $(stats-pass)
-      -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
-      -source-file = "tests/data/RemoveSubscribedSend.cot"
-     } >> Login add user to the roster and send subscription request to '$(def-user)'. <<
-
-  } >> Remove subscribed contact '$(def-user)' from the roster of the user '$(stats-user)', all subscriptions should be cancelled automatically by the server. <<
-
-  Bosh keep-alive 26: {
-    -user-name   = $(def-user)
-    -user-pass   = $(def-user-pass)
-    -multi-thread
-    -delay = 250
-
-    Subscription receive@common: {
-      -user-resr   = res-1
-      -to-jid = "$(def-user)@$(server-host)/res-2"
-      -source-file = "tests/data/PresenceWait.cot"
-     } >> Login and wait for presence from another resource. <<
-
-    Subscription send@common: {
-      -user-resr   = res-2
-      -to-jid = "$(def-user)@$(server-host)/res-1"
-      -source-file = "tests/data/PresenceWait.cot"
-     } >> Login and waut for presence from another resource. <<
-
-  } >> 2 user connections, each using a different resource waiting for a presence from each other. <<
-
-  Bosh keep-alive 27: {
-    -user-name   = $(def-user)
-    -user-pass   = $(def-user-pass)
-    -multi-thread
-    -delay = 250
-
-    Subscription receive@common: {
-      -user-resr   = bosh
-      -to-jid = "$(def-user)@$(server-host)/c2s"
-      -source-file = "tests/data/PresenceWait.cot"
-     } >> Login and wait for presence from another resource. <<
-
-    Subscription send@common: {
-      -port = 5222
-      -def-stream  = stream-client
-      -user-resr   = c2s
-      -to-jid = "$(def-user)@$(server-host)/bosh"
-      -source-file = "tests/data/PresenceWait.cot"
-     } >> Login and waut for presence from another resource. <<
-
-  } >> Mixed, one connectiob via Bosh keep-aliveanother standard c2s, each using a different resource. <<
-
-  Bosh keep-alive 28: {
-    -multi-thread
-    -delay = 250
-
-    Subscription receive@common: {
-      -user-name   = $(def-user)
-      -user-pass   = $(def-user-pass)
-      -user-resr   = $(def-user-resr)
-      -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
       -source-file = "tests/data/SubscriptionDeniedReceive.cot"
      } >> Login and wait for subscription request from '$(stats-user)'. <<
 
@@ -1135,7 +967,7 @@ Bosh keep-alive Tests:
 
   } >> Presence subscription deny test between '$(stats-user)' and '$(def-user)'. <<
 
-  Bosh keep-alive 29@auth-sasl;common-no-bind: {
+  Bosh keep-alive 25@auth-sasl;common-no-bind: {
     -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
     -source-file = "tests/data/MessageNoBind.cot"
   } >> Send a message without resource binding and expect an error response. <<

@@ -23,5 +23,5 @@ send: {
 <presence/>
 }
 expect: {
-<presence from="$(to-jid)" to="$(from-jid)"/>
+<presence from="$(to-jid)" to="$(from-id)"/>
 }
