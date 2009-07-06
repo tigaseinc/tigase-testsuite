@@ -59,7 +59,11 @@ public abstract class TestAbstract extends TestEmpty {
   /**
    * Creates a new <code>TestAbstract</code> instance.
    *
-   */
+	 * @param base_xmlns
+	 * @param implemented 
+	 * @param depends
+	 * @param optional
+	 */
   public TestAbstract(final String[] base_xmlns, final String[] implemented,
     final String[] depends, final String[] optional) {
 		super(base_xmlns, implemented, depends, optional);
@@ -174,19 +178,22 @@ public abstract class TestAbstract extends TestEmpty {
 			if (timeoutOk) {
 				return true;
 			}	else {
-				System.out.println(params.toString());
+				//System.out.println(params.toString());
 				resultCode = ResultCode.PROCESSING_EXCEPTION;
 				exception = e;
-				addInput(getClass().getName() + ", " + e.getMessage());
+				addInput(getClass().getName() + ", " + getUserPasswordResource() + ", " +
+								e.getMessage());
 				return false;
 			} // end of if (timeoutOk) else
 		} catch (ResultsDontMatchException e) {
 			resultCode = ResultCode.PROCESSING_EXCEPTION;
 			exception = e;
-			addInput(getClass().getName() + ", " + e.getMessage());
+			addInput(getClass().getName() + ", " + getUserPasswordResource() + ", " +
+							e.getMessage());
 			return false;
     } catch (Exception e) {
-      addInput(getClass().getName() + ", " + e + "\n" + TestUtil.stack2String(e));
+      addInput(getClass().getName() + ", " + getUserPasswordResource() + ", " +
+							e + "\n" + TestUtil.stack2String(e));
       resultCode = ResultCode.PROCESSING_EXCEPTION;
       exception = e;
 			System.out.println(Arrays.toString(implemented()));
@@ -248,6 +255,27 @@ public abstract class TestAbstract extends TestEmpty {
 //     return resultCode;
 //   }
 
+	private String getUserPasswordResource() {
+		String user_name = params.get("-user-name", null);
+		String hostname = params.get("-host", null);
+    String user_resr = params.get("-user-resr", null);
+    String user_pass = params.get("-user-pass", null);
+		String result = "";
+		if (user_name != null) {
+			result += user_name + "@";
+		}
+	  if (hostname != null) {
+			result += hostname;
+		}
+		if (user_resr != null) {
+			result += "/" + user_resr;
+		}
+		if (user_pass != null) {
+			result += "(" + user_pass + ")";
+		}
+		return result;
+	}
+
   /**
    * Describe <code>getResultCode</code> method here.
    *
@@ -273,16 +301,16 @@ public abstract class TestAbstract extends TestEmpty {
     switch (resultCode) {
     case PROCESSING_EXCEPTION:
 			if (fullExceptionStack) {
-				return getClass().getName() + ", " +
+				return getClass().getName() + ", " + getUserPasswordResource() + ", " +
 					resultCode.getMessage() + exception.toString() + "\n"
 					+ stack2String(exception);
 			} else {
-				return getClass().getName() + ", " + exception.getMessage();
+				return getClass().getName() + ", " + getUserPasswordResource() + ", " +
+								exception.getMessage();
 			}
     default:
-      return getClass().getName() + ", " + resultCode.getMessage()
-				+ ", "
-				+ error_message;
+      return getClass().getName() + ", " + getUserPasswordResource() + ", " +
+							resultCode.getMessage()	+ ", " + error_message;
     } // end of switch (resultCode)
   }
 

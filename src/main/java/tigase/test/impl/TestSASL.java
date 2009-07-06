@@ -75,6 +75,7 @@ public class TestSASL extends TestAbstract {
   }
 
 	@SuppressWarnings("unchecked")
+	@Override
   public String nextElementName(final Element reply) throws Exception {
     if (reply == null) {
       response = "challenge";
@@ -144,6 +145,7 @@ public class TestSASL extends TestAbstract {
     return null;
   }
 
+	@Override
   public String[] getRespOptionalNames(final String element) {
     if (element.equals("response")) {
       return new String[] {"success", "challenge"};
@@ -151,10 +153,12 @@ public class TestSASL extends TestAbstract {
     return null;
   }
 
+	@Override
   public String getElementData(final String element) {
     return data;
   }
 
+	@Override
   public String[] getRespElementNames(final String element) {
     if (element.equals("stream:stream")) {
 			if (bosh_mode) {
@@ -166,6 +170,7 @@ public class TestSASL extends TestAbstract {
     return new String[] {response};
   }
 
+	@Override
   public Attribute[] getRespElementAttributes(final String element) {
     if (element.equals("stream:stream")) {
       return new Attribute[]
@@ -187,6 +192,7 @@ public class TestSASL extends TestAbstract {
 
   private class AuthCallbackHandler implements CallbackHandler {
 
+		@Override
     public void handle(final Callback[] callbacks)
       throws IOException, UnsupportedCallbackException {
 
@@ -230,6 +236,7 @@ public class TestSASL extends TestAbstract {
    *
    * @param map a <code>Map</code> value
    */
+	@Override
   public void init(final Params map, Map<String, String> vars) {
     super.init(map, vars);
     user_name = params.get("-user-name", user_name);

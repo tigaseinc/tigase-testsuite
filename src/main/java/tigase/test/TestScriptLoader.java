@@ -68,7 +68,8 @@ public class TestScriptLoader implements HistoryCollectorIfc {
   /**
    * Creates a new <code>TestScriptLoader</code> instance.
    *
-   */
+	 * @param params
+	 */
   public TestScriptLoader(Params params) {
     this.params = params;
   }

@@ -121,20 +121,27 @@ public class Test {
         && !main_params.containsKey("-no-record"));
     stop_on_fail = main_params.get("-stop-on-fail", false);
     int loop = main_params.get("-loop", 1);
+		String deb_name = "" +
+						(node.getParent() != null ? node.getParent().getName() : "null") +
+						"/" + getName();
 		latch = new CountDownLatch(loop);
 		if (node.getParent() != null &&
-						node.getParent().getPars().get("$(outer-loop)") != null) {
+						node.getParent().getPars().get("$(outer-loop)") != null &&
+						!node.getParent().getPars().containsKey("-multi-thread")) {
 			node.addVar("$(outer-loop)",
 							node.getParent().getPars().get("$(outer-loop)"));
-//			System.out.println("\n\nSetting variable $(outer-loop) = " +
-//							node.getParent().getPars().get("$(outer-loop)"));
+//			if (getName().equals("Multi 7")) {
+//				System.out.println("\n\n" + deb_name + ": Setting variable $(outer-loop) = " +
+//								node.getParent().getPars().get("$(outer-loop)"));
+//			}
 		}
 //		System.out.println(main_params.toString());
 		int loop_start = 1;
 		if (main_params.get("-loop-start") != null &&
 						node.getParent() != null &&
 //						main_params.get("-loop-start").equals("$(outer-loop)") &&
-						node.getParent().getPars().get("$(outer-loop)") != null) {
+						node.getParent().getPars().get("$(outer-loop)") != null &&
+						!node.getParent().getPars().containsKey("-multi-thread")) {
 			try {
 				loop_start =
 								Integer.parseInt(node.getParent().getPars().get("$(outer-loop)")) + 1;
@@ -143,11 +150,16 @@ public class Test {
 			}
 			//			main_params.put("-loop-start",
 //							node.getParent().getPars().get("$(outer-loop)"));
-//			System.out.println("Setting property -loop-start = " +
-//							node.getParent().getPars().get("$(outer-loop)"));
+//			if (getName().equals("Multi 7")) {
+//				System.out.println(deb_name + ": Setting property -loop-start = " +
+//								node.getParent().getPars().get("$(outer-loop)"));
+//			}
 		} else {
 			loop_start = main_params.get("-loop-start", 0);
 		}
+//		if (getName().equals("Multi 7")) {
+//			System.out.println("" + deb_name + ": loop_start = " + loop_start);
+//		}
 //		if (node.getParent() != null) {
 //			System.out.println(node.getParent().getPars().toString());
 //		}

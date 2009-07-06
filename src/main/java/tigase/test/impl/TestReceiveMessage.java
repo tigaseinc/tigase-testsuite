@@ -79,6 +79,7 @@ public class TestReceiveMessage extends TestAbstract {
    * @return a <code>String</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String nextElementName(final Element element) throws Exception {
     if (element == null) {
       //      System.out.println("JIDUtils = " + jid);
@@ -97,6 +98,7 @@ public class TestReceiveMessage extends TestAbstract {
    * @return a <code>String</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String getElementData(final String string) throws Exception {
     return data;
   }
@@ -108,6 +110,7 @@ public class TestReceiveMessage extends TestAbstract {
    * @return a <code>String[]</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String[] getRespElementNames(final String string) throws Exception {
     return new String[] {"message"};
   }
@@ -119,6 +122,7 @@ public class TestReceiveMessage extends TestAbstract {
    * @return a <code>String[]</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String[] getRespOptionalNames(final String string) throws Exception {
     return null;
   }
@@ -130,6 +134,7 @@ public class TestReceiveMessage extends TestAbstract {
    * @return an <code>Attribute[]</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public Attribute[] getRespElementAttributes(final String string)
     throws Exception {
     return resp_attribs;
@@ -142,6 +147,7 @@ public class TestReceiveMessage extends TestAbstract {
    *
    * @param params a <code>Params</code> value
    */
+	@Override
   public void init(final Params params, Map<String, String> vars) {
     super.init(params, vars);
     user_name = params.get("-user-name", user_name);
@@ -164,6 +170,7 @@ public class TestReceiveMessage extends TestAbstract {
    *
    * @return a <code>boolean</code> value
    */
+	@Override
   public boolean run() {
     try {
       String elem = null;
@@ -181,15 +188,16 @@ public class TestReceiveMessage extends TestAbstract {
         Element rep = null;
         while ((rep = results.poll()) != null) {
           reply = rep;
-          debug("Response data: " + reply.toString() + "\n");
+          debug("Received data: " + reply.toString() + "\n");
           elem = nextElementName(reply);
           String data = getElementData(elem);
           if (data != null && !data.equals("")) {
-            debug("Element data: " + data + "\n");
             io.write(data);
+            debug("Sent data: " + data + "\n");
           } // end of if (data != null && !data.equals(""))
         }
       }
+			Thread.sleep(100);
 			TestUtil.removeDaemonJID(jid);
 			//System.out.println("Message listener FINISHED 2");
       return true;

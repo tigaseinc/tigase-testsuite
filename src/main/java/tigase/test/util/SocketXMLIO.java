@@ -121,7 +121,7 @@ public class SocketXMLIO implements XMLIO {
 //       for (int i = 0; i < tmp_data.length; i++) {
 //         tmp_data[i] = in_data[i];
 //       } // end of for (int i = 0; i < tmp_data.length; i++)
- 			//System.out.println("INPUT: " + new String(in_data, 0, res));
+// 			System.out.println("\n [" + res + "] INPUT: " + new String(in_data, 0, res));
       parser.parse(dom, in_data, 0, res);
     } // end of if (res > 0)
 		Queue<Element> results = dom.getParsedElements();
