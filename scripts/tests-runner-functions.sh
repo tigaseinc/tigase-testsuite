@@ -186,15 +186,15 @@ function run_test() {
 				rm -fr tigasetest/
 				java -Dij.protocol=jdbc:derby: -Dij.database="tigasetest;create=true" \
 					-Dderby.system.home=`pwd` \
-					-cp libs/derby.jar:libs/derbytools.jar:../server/jars/tigase-server.jar \
+					-cp libs/derby.jar:libs/derbytools.jar:${_server_dir}/jars/tigase-server.jar \
 					org.apache.derby.tools.ij database/derby-schema-4.sql
 				java -Dij.protocol=jdbc:derby: -Dij.database="tigasetest" \
 					-Dderby.system.home=`pwd` \
-					-cp libs/derby.jar:libs/derbytools.jar:../server/jars/tigase-server.jar \
+					-cp libs/derby.jar:libs/derbytools.jar:${_server_dir}/jars/tigase-server.jar \
 					org.apache.derby.tools.ij database/derby-schema-4-sp.schema
 				java -Dij.protocol=jdbc:derby: -Dij.database="tigasetest" \
 					-Dderby.system.home=`pwd` \
-					-cp libs/derby.jar:libs/derbytools.jar:../server/jars/tigase-server.jar \
+					-cp libs/derby.jar:libs/derbytools.jar:${_server_dir}/jars/tigase-server.jar \
 					org.apache.derby.tools.ij database/derby-schema-4-props.sql
 				;;
 			*)
