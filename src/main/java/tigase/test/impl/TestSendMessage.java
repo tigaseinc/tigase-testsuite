@@ -78,6 +78,7 @@ public class TestSendMessage extends TestAbstract {
    * @return a <code>String</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String nextElementName(final Element element) throws Exception {
     if (counter++ < loop) {
       return msg;
@@ -92,9 +93,14 @@ public class TestSendMessage extends TestAbstract {
    * @return a <code>String</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String getElementData(final String string) throws Exception {
     if (string.equals("message")) {
-      remote_address = daemon_to ? getDaemonTo() : to;
+//      try {
+//				Thread.sleep(1000);
+//			} catch (Exception e) {
+//			}
+			remote_address = daemon_to ? getDaemonTo() : to;
       return msg_1 + remote_address + "'>Test message no. " + counter + msg_2;
     } // end of if (string.equals("message"))
     return null;
@@ -111,6 +117,7 @@ public class TestSendMessage extends TestAbstract {
    * @return a <code>String[]</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String[] getRespElementNames(final String string) throws Exception {
 		if (timeoutOk) {
 			return new String[] {"complete rubish, there should be no response at all"};
@@ -126,6 +133,7 @@ public class TestSendMessage extends TestAbstract {
    * @return a <code>String[]</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public String[] getRespOptionalNames(final String string) throws Exception {
     return new String[] {"presence"};
   }
@@ -137,6 +145,7 @@ public class TestSendMessage extends TestAbstract {
    * @return an <code>Attribute[]</code> value
    * @exception Exception if an error occurs
    */
+	@Override
   public Attribute[] getRespElementAttributes(final String string) throws Exception {
 		//		return null;
     return new Attribute[]
@@ -152,6 +161,7 @@ public class TestSendMessage extends TestAbstract {
    *
    * @param params a <code>Params</code> value
    */
+	@Override
   public void init(final Params params, Map<String, String> vars) {
     super.init(params, vars);
     user_name = params.get("-user-name", user_name);
