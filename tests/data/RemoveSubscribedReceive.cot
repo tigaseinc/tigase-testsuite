@@ -61,6 +61,9 @@ expect: {
 }
 
 expect: {
+<presence from="$(to-jid)" type="unavailable"/>
+}
+expect: {
 <iq type="set">
   <query xmlns="jabber:iq:roster">
     <item jid="$(to-id)" subscription="to"/>
@@ -73,9 +76,6 @@ expect: {
     <item jid="$(to-id)" subscription="none"/>
   </query>
 </iq>
-}
-expect: {
-<presence from="$(to-jid)" type="unavailable"/>
 }
 
 send: {

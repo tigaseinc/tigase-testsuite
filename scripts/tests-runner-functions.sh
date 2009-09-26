@@ -187,15 +187,15 @@ function run_test() {
 				java -Dij.protocol=jdbc:derby: -Dij.database="tigasetest;create=true" \
 					-Dderby.system.home=`pwd` \
 					-cp libs/derby.jar:libs/derbytools.jar:${_server_dir}/jars/tigase-server.jar \
-					org.apache.derby.tools.ij database/derby-schema-4.sql
+					org.apache.derby.tools.ij database/derby-schema-4.sql > /dev/null
 				java -Dij.protocol=jdbc:derby: -Dij.database="tigasetest" \
 					-Dderby.system.home=`pwd` \
 					-cp libs/derby.jar:libs/derbytools.jar:${_server_dir}/jars/tigase-server.jar \
-					org.apache.derby.tools.ij database/derby-schema-4-sp.schema
+					org.apache.derby.tools.ij database/derby-schema-4-sp.schema > /dev/null
 				java -Dij.protocol=jdbc:derby: -Dij.database="tigasetest" \
 					-Dderby.system.home=`pwd` \
 					-cp libs/derby.jar:libs/derbytools.jar:${_server_dir}/jars/tigase-server.jar \
-					org.apache.derby.tools.ij database/derby-schema-4-props.sql
+					org.apache.derby.tools.ij database/derby-schema-4-props.sql > /dev/null
 				;;
 			*)
 				echo "Not supported database: '${database}'"
@@ -222,11 +222,11 @@ function run_test() {
 	fi
 	mkdir -p "${_output_dir}"
 	echo -e "\nRunning: ${ver}-${_database} test, IP ${_server_ip}..."
-	start_test=`date +%s`
+	start_test=`gdate +%s`
 	ts_start ${_script_file} ${_server_ip} ${_output_file} ${_extra_params}
-	end_test=`date +%s`
+	end_test=`gdate +%s`
 	total_time=$((end_test-start_test))
-	total_str=`date -u -d @$total_time +%H:%M:%S`
+	total_str=`gdate -u -d @$total_time +%H:%M:%S`
 	echo "<td><a href=\"/${_output_file}\">${total_str}</a></td>" >> "${_test_type}-rep.html"
 	echo "Test finished after: ${total_str}"
 	sleep 1

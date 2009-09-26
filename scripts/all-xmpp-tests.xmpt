@@ -95,6 +95,8 @@ Global settings:
 
   Test IO@common: Checking Tigase IO subsystem {
 #      -debug
+#    -delay = 500
+    -on-one-socket
     -loop=10
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterMessage10.cot"
@@ -378,47 +380,47 @@ Global settings:
     -source-file = "tests/data/TesterMessage.cot"
   } >> Send a message to $(tester-user) user to check whether it responds. <<
 
-  Test 36@common: {
-#      -debug
-    $(number) = 10
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
-    -source-file = "tests/data/TesterGenTraffic.cot"
-  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+#  Test 36@common: {
+##      -debug
+#    $(number) = 10
+#    -to-jid = "$(tester-user)@srecv.$(server-host)"
+#    -source-file = "tests/data/TesterGenTraffic.cot"
+#  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 37@common: {
-#      -debug
-    $(number) = 100
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
-    -source-file = "tests/data/TesterGenTraffic.cot"
-  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+#  Test 37@common: {
+##      -debug
+#    $(number) = 100
+#    -to-jid = "$(tester-user)@srecv.$(server-host)"
+#    -source-file = "tests/data/TesterGenTraffic.cot"
+#  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 38@common: {
-#      -debug
-    $(number) = 1000
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
-    -source-file = "tests/data/TesterGenTraffic.cot"
-  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+#  Test 38@common: {
+##      -debug
+#    $(number) = 1000
+#    -to-jid = "$(tester-user)@srecv.$(server-host)"
+#    -source-file = "tests/data/TesterGenTraffic.cot"
+#  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 39@common: {
-#      -debug
-    $(number) = 10000
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
-    -source-file = "tests/data/TesterGenTraffic.cot"
-    # We expect timeout here as a result of queue overfill, the point is to check whether
-    # the server continues to run after that correctly
-    -time-out-ok
-  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+#  Test 39@common: {
+##      -debug
+#    $(number) = 10000
+#    -to-jid = "$(tester-user)@srecv.$(server-host)"
+#    -source-file = "tests/data/TesterGenTraffic.cot"
+#    # We expect timeout here as a result of queue overfill, the point is to check whether
+#    # the server continues to run after that correctly
+#    -time-out-ok
+#  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 40@common: {
-#      -debug
-    -socket-wait = 30000
-    $(number) = 100000
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
-    -source-file = "tests/data/TesterGenTraffic.cot"
-    # We expect timeout here to happen as a result of queues overfill, the point is to check whether
-    # the server continues to run after that
-    -time-out-ok
-  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+#  Test 40@common: {
+##      -debug
+#    -socket-wait = 30000
+#    $(number) = 100000
+#    -to-jid = "$(tester-user)@srecv.$(server-host)"
+#    -source-file = "tests/data/TesterGenTraffic.cot"
+#    # We expect timeout here to happen as a result of queues overfill, the point is to check whether
+#    # the server continues to run after that
+#    -time-out-ok
+#  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
   Test 41@common: Dynamic roster storage test {
     -source-file = "tests/data/DynamicRosterStorageTest.cot"
@@ -601,12 +603,14 @@ VHosts Tests:
 
   VHost 11@common: {
     -loop = $(vhosts-number)
+    -on-one-socket
     -to-jid = "vhost-$(loop)"
     -source-file = "tests/data/PingNonExistenDomain.cot"
   } >> XEP-0199: XMPP Ping $(vhosts-number) non-existen vhosts on the server, expecting error responses <<
 
   VHost 12@common: {
     -loop = $(vhosts-number)
+    -on-one-socket
     -user-name = $(stats-user)
     -user-pass = $(stats-pass)
     -cdata = "vhost-$(loop)"
@@ -615,6 +619,7 @@ VHosts Tests:
 
   VHost 13@common: {
     -loop = $(vhosts-number)
+    -on-one-socket
     -to-jid = "vhost-$(loop)"
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping all $(vhosts-number) virtual hosts on the server <<
@@ -628,6 +633,7 @@ VHosts Tests:
 
   VHost 15@common: {
     -loop = $(vhosts-number)
+    -on-one-socket
     -user-name = $(stats-user)
     -user-pass = $(stats-pass)
     -cdata = "vhost-$(loop)"
@@ -636,6 +642,7 @@ VHosts Tests:
 
   VHost 16@common: {
     -loop = $(vhosts-number)
+    -on-one-socket
     -to-jid = "vhost-$(loop)"
     -source-file = "tests/data/PingNonExistenDomain.cot"
   } >> XEP-0199: XMPP Ping $(vhosts-number) non-existen vhosts on the server, expecting error responses <<
