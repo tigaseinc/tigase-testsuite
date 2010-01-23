@@ -21,20 +21,11 @@
  */
 package tigase.test.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import javax.management.Attribute;
 import tigase.util.Algorithms;
-import tigase.test.HistoryEntry;
 import tigase.test.util.Params;
 import tigase.test.TestAbstract;
-import tigase.test.util.SocketXMLIO;
-import tigase.test.util.ElementUtil;
 import tigase.xml.Element;
 
 /**
@@ -68,6 +59,7 @@ public class TestExtCompOpen extends TestAbstract {
       );
   }
 
+	@Override
   public String nextElementName(final Element reply) {
     if (counter < elems.length) {
       return elems[counter++];
@@ -75,18 +67,20 @@ public class TestExtCompOpen extends TestAbstract {
     return null;
   }
 
+	@Override
   public void replyElement(final Element reply) throws Exception {
     if (reply != null && reply.getName().equals("stream:stream")) {
 			conn_id = reply.getAttribute("id");
     }
   }
 
+	@Override
   public String getElementData(final String element) throws Exception {
     if (element.equals("stream:stream")) {
       return "<stream:stream "
         + "xmlns='jabber:component:accept' "
         + "xmlns:stream='http://etherx.jabber.org/streams' "
-        + "to='test." + hostname + "'> ";
+        + "to='" + hostname + "'> ";
 		}
     if (element.equals("handshake")) {
 			String digest = Algorithms.hexDigest(conn_id, secret, "SHA");
@@ -95,6 +89,7 @@ public class TestExtCompOpen extends TestAbstract {
     return null;
   }
 
+	@Override
   public String[] getRespElementNames(final String element) {
     if (element.equals("stream:stream")) {
       return new String[] {"stream:stream"};
@@ -105,18 +100,20 @@ public class TestExtCompOpen extends TestAbstract {
     return null;
   }
 
+	@Override
   public Attribute[] getRespElementAttributes(final String element) {
     if (element.equals("stream:stream")) {
       return new Attribute[]
       {
         new Attribute("xmlns", "jabber:component:accept"),
         new Attribute("xmlns:stream", "http://etherx.jabber.org/streams"),
-        new Attribute("from", "test." + hostname)
+        new Attribute("from", hostname)
       };
     }
     return null;
   }
 
+	@Override
   public String[] getRespOptionalNames(final String element) {
     return null;
   }
@@ -128,6 +125,7 @@ public class TestExtCompOpen extends TestAbstract {
    *
    * @param map a <code>Map</code> value
    */
+	@Override
   public void init(final Params map, Map<String, String> vars) {
     super.init(map, vars);
     hostname = params.get("-host", hostname);

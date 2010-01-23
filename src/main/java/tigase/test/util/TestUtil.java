@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import tigase.test.TestIfc;
 import tigase.util.ClassUtil;
@@ -53,7 +53,7 @@ public class TestUtil {
   private static List<String> daemons_jids =
 		new CopyOnWriteArrayList<String>();
   private static Map<String, Socket> daemons =
-		new ConcurrentSkipListMap<String, Socket>();
+		new ConcurrentHashMap<String, Socket>();
   private static Queue<Socket> active_connections =
 		new ConcurrentLinkedQueue<Socket>();
   private static Random rand = new Random(System.currentTimeMillis());

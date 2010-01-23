@@ -19,22 +19,33 @@
  * Last modified by $Author$
  * $Date$
  */
+
 package tigase.test;
 
-import java.net.SocketTimeoutException;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Arrays;
-import java.util.Map;
-import javax.management.Attribute;
-import tigase.xml.Element;
+//~--- non-JDK imports --------------------------------------------------------
+
 import tigase.test.util.Params;
 import tigase.test.util.TestUtil;
 import tigase.test.util.XMLIO;
 
+import tigase.xml.Element;
+
 import static tigase.test.util.TestUtil.*;
+
+//~--- JDK imports ------------------------------------------------------------
+
+import java.net.SocketTimeoutException;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
+import javax.management.Attribute;
+
+//~--- classes ----------------------------------------------------------------
 
 /**
  * Describe class TestAbstract here.
@@ -46,272 +57,424 @@ import static tigase.test.util.TestUtil.*;
  * @version $Rev$
  */
 public abstract class TestAbstract extends TestEmpty {
-
-  protected Params params = null;
-	protected Map<String, String> vars = null;
-  protected ResultCode resultCode = ResultCode.TEST_OK;
-  protected Exception exception = null;
-  protected Element reply = null;
-	protected boolean timeoutOk = false;
-	private boolean fullExceptionStack = false;
 	private String error_message = "";
+	protected Exception exception = null;
+	protected Params params = null;
+	protected Element reply = null;
+	protected Map<String, String> vars = null;
+	protected boolean timeoutOk = false;
+	protected ResultCode resultCode = ResultCode.TEST_OK;
+	private boolean fullExceptionStack = false;
 
-  /**
-   * Creates a new <code>TestAbstract</code> instance.
-   *
+	//~--- constructors ---------------------------------------------------------
+
+	/**
+	 * Creates a new <code>TestAbstract</code> instance.
+	 *
 	 * @param base_xmlns
-	 * @param implemented 
+	 * @param implemented
 	 * @param depends
 	 * @param optional
 	 */
-  public TestAbstract(final String[] base_xmlns, final String[] implemented,
-    final String[] depends, final String[] optional) {
+	public TestAbstract(final String[] base_xmlns, final String[] implemented,
+											final String[] depends, final String[] optional) {
 		super(base_xmlns, implemented, depends, optional);
-  }
-
-  public static String substituteVars(final String data,
-    final String[] vars, final String[] vals) {
-    String result = data;
-    for (int i = 0; i < vars.length; i++) {
-      result = result.replace(vars[i], vals[i]);
-    } // end of for (int i = 0; i < vars.length; i++)
-    return result;
-  }
-
-  public static boolean hasAttributes(Element elem, Attribute[] attrs) {
-    if (attrs != null) {
-      for (Attribute attr : attrs) {
-        String val = elem.getAttribute(attr.getName());
-        if (val == null) {
-          return false;
-        } // end of if (val == null)
-        else {
-          if (!val.equals(attr.getValue())) {
-            return false;
-          } // end of if (!val.equals(attr.getValue()))
-        } // end of if (val == null) else
-      } // end of for ()
-    } // end of if (attrs != null)
-    return true;
-  }
-
-  public abstract String nextElementName(final Element reply) throws Exception;
-
-  public abstract String getElementData(final String element) throws Exception;
-
-  public abstract String[] getRespElementNames(final String element)
-    throws Exception;
-
-  public abstract String[] getRespOptionalNames(final String element)
-    throws Exception;
-
-  public abstract Attribute[] getRespElementAttributes(final String element)
-    throws Exception;
-
-  public void replyElement(final Element reply) throws Exception {}
-
-  // Implementation of tigase.test.TestIfc
-
-	@Override
-	public void release() {
-		try {
-			XMLIO io = (XMLIO)params.get("socketxmlio");
-			io.close();
-		} catch (Exception e) {	e.printStackTrace(); }
 	}
+
+	//~--- get methods ----------------------------------------------------------
 
 	/**
-   * Describe <code>run</code> method here.
-   *
-   * @return a <code>boolean</code> value
-   */
-	@Override
-  public boolean run() {
-    try {
-      String elem = null;
-      while ((elem = nextElementName(reply)) != null) {
-        debug("Processing element: " + elem + "\n");
-        XMLIO io = (XMLIO)params.get("socketxmlio");
-        if (io == null) {
-          resultCode = ResultCode.SOCKET_NOT_INITALIZED;
-          return false;
-        } // end of if (sock == null)
-        String data = getElementData(elem);
-        if (data != null && !data.equals("")) {
-          debug("Element data: " + data + "\n");
-          addOutput(data);
-          io.write(data);
-        } // end of if (data != null && !data.equals(""))
-        String[] responses = getRespElementNames(elem);
-        boolean[] resp_found = new boolean[responses.length];
-        String[] optional_resp = getRespOptionalNames(elem);
-        Arrays.fill(resp_found, false);
-        int index = 0;
-        while (!resp_found[resp_found.length - 1]) {
-          Queue<Element> results = io.read();
-          Element rep = null;
-          while (index < resp_found.length
-            && (rep = results.poll()) != null) {
-            reply = rep;
-						if (reply.getName().equals("stream:features")) {
-							processStreamFeatures(reply);
-						}
-            replyElement(reply);
-            debug("Received: " + reply.toString() + "\n");
-            addInput(reply.toString());
-            resp_found[index] =
-              checkResponse(reply, responses[index], optional_resp);
-            if (!resp_found[index++]) {
-              resultCode = ResultCode.RESULT_DOESNT_MATCH;
-              return false;
-            } // end of else
-          }
-          if (results.size() > 0) {
-            reply = results.poll();
-            resultCode = ResultCode.RESULT_DOESNT_MATCH;
-            return false;
-          } // end of if (index >= resp_found.length)
-        } // end of while (!resp_found[resp_found-1])
-      }
-      return true;
-    } catch (SocketTimeoutException e) {
-			if (timeoutOk) {
-				return true;
-			}	else {
-				//System.out.println(params.toString());
-				resultCode = ResultCode.PROCESSING_EXCEPTION;
-				exception = e;
-				addInput(getClass().getName() + ", " + getUserPasswordResource() + ", " +
-								e.getMessage());
-				return false;
-			} // end of if (timeoutOk) else
-		} catch (ResultsDontMatchException e) {
-			resultCode = ResultCode.PROCESSING_EXCEPTION;
-			exception = e;
-			addInput(getClass().getName() + ", " + getUserPasswordResource() + ", " +
-							e.getMessage());
-			return false;
-    } catch (Exception e) {
-      addInput(getClass().getName() + ", " + getUserPasswordResource() + ", " +
-							e + "\n" + TestUtil.stack2String(e));
-      resultCode = ResultCode.PROCESSING_EXCEPTION;
-      exception = e;
-			System.out.println(Arrays.toString(implemented()));
-			System.out.println(params.toString());
-      e.printStackTrace();
-      return false;
-    } // end of try-catch
-  }
+	 * Method description
+	 *
+	 *
+	 * @param element
+	 *
+	 * @return
+	 *
+	 * @throws Exception
+	 */
+	public abstract String getElementData(final String element) throws Exception;
 
-  private boolean checkResponse(Element reply, String response,
-    String[] optional_resp) throws Exception {
-    if (reply.getName().equals(response)
-      && hasAttributes(reply, getRespElementAttributes(response))) {
-      return true;
-    } else {
-      if (optional_resp != null) {
-        for (String opt : optional_resp) {
-          if (reply.getName().equals(opt)
-            && hasAttributes(reply, getRespElementAttributes(opt))) {
-            return true;
-          }
-        } // end of for ()
-      }
-    } // end of else
-		error_message = getClass().getName() +
-			", expected: '" + response + "', Received: '" + reply.toString() + "'";
-    return false;
-  }
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param element
+	 *
+	 * @return
+	 *
+	 * @throws Exception
+	 */
+	public abstract Attribute[] getRespElementAttributes(final String element)
+					throws Exception;
 
-	private void processStreamFeatures(Element features) {
-		List<Element> children = features.getChildren("/stream:features/mechanisms");
-		if (children != null && children.size() > 0) {
-			Set<String> mechs = new HashSet<String>();
-			for (Element child: children) {
-				mechs.add(child.getCData());
-			}
-			params.put("features", mechs);
-		}
-	}
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param element
+	 *
+	 * @return
+	 *
+	 * @throws Exception
+	 */
+	public abstract String[] getRespElementNames(final String element) throws Exception;
 
-  /**
-   * Describe <code>init</code> method here.
-   *
-	 * @param params a <code>Params</code> value
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param element
+	 *
+	 * @return
+	 *
+	 * @throws Exception
+	 */
+	public abstract String[] getRespOptionalNames(final String element) throws Exception;
+
+	//~--- methods --------------------------------------------------------------
+
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param reply
+	 *
+	 * @return
+	 *
+	 * @throws Exception
+	 */
+	public abstract String nextElementName(final Element reply) throws Exception;
+
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param data
 	 * @param vars
-   */
-	@Override
-  public void init(final Params params, Map<String, String> vars) {
-		super.init(params, vars);
-    this.params = params;
-		this.vars = vars;
-		timeoutOk = params.containsKey("-time-out-ok");
-		fullExceptionStack = params.containsKey("-full-stack-trace");
-//       && !params.containsKey("-on-one-socket");
-//    collectHistory = true;
-  }
+	 * @param vals
+	 *
+	 * @return
+	 */
+	public static String substituteVars(final String data, final String[] vars,
+					final String[] vals) {
+		String result = data;
 
-//   public ResultCode getResult() {
-//     return resultCode;
-//   }
+		for (int i = 0; i < vars.length; i++) {
+			result = result.replace(vars[i], vals[i]);
+		}    // end of for (int i = 0; i < vars.length; i++)
 
-	private String getUserPasswordResource() {
-		String user_name = params.get("-user-name", null);
-		String hostname = params.get("-host", null);
-    String user_resr = params.get("-user-resr", null);
-    String user_pass = params.get("-user-pass", null);
-		String result = "";
-		if (user_name != null) {
-			result += user_name + "@";
-		}
-	  if (hostname != null) {
-			result += hostname;
-		}
-		if (user_resr != null) {
-			result += "/" + user_resr;
-		}
-		if (user_pass != null) {
-			result += "(" + user_pass + ")";
-		}
 		return result;
 	}
 
-  /**
-   * Describe <code>getResultCode</code> method here.
-   *
-   * @return an <code>int</code> value
-   */
-	@Override
-  public ResultCode getResultCode() {
-    return resultCode;
-  }
+	//~--- get methods ----------------------------------------------------------
 
+	/**
+	 * Method description
+	 *
+	 *
+	 * @return
+	 */
 	@Override
-  public Element getLastResult() {
-    return reply;
-  }
+	public Element getLastResult() {
+		return reply;
+	}
 
-  /**
-   * Describe <code>getResultMessage</code> method here.
-   *
-   * @return a <code>String</code> value
-   */
+	/**
+	 * Describe <code>getResultCode</code> method here.
+	 *
+	 * @return an <code>int</code> value
+	 */
 	@Override
-  public String getResultMessage() {
-    switch (resultCode) {
-    case PROCESSING_EXCEPTION:
-			if (fullExceptionStack) {
-				return getClass().getName() + ", " + getUserPasswordResource() + ", " +
-					resultCode.getMessage() + exception.toString() + "\n"
-					+ stack2String(exception);
-			} else {
-				return getClass().getName() + ", " + getUserPasswordResource() + ", " +
-								exception.getMessage();
+	public ResultCode getResultCode() {
+		return resultCode;
+	}
+
+	/**
+	 * Describe <code>getResultMessage</code> method here.
+	 *
+	 * @return a <code>String</code> value
+	 */
+	@Override
+	public String getResultMessage() {
+		switch (resultCode) {
+			case PROCESSING_EXCEPTION :
+				if (fullExceptionStack) {
+					return getClass().getName() + ", " + getUserPasswordResource() + ", "
+								 + resultCode.getMessage() + exception.toString() + "\n"
+								 + stack2String(exception);
+				} else {
+					return getClass().getName() + ", " + getUserPasswordResource() + ", "
+								 + exception.getMessage();
+				}
+			default :
+				return getClass().getName() + ", " + getUserPasswordResource() + ", "
+							 + resultCode.getMessage() + ", " + error_message;
+		}    // end of switch (resultCode)
+	}
+
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param elem
+	 * @param attrs
+	 *
+	 * @return
+	 */
+	public boolean hasAttributes(Element elem, Attribute[] attrs) {
+		debug("Checking elem: " + elem + " for attributes: " + Arrays.toString(attrs) + "\n");
+
+		if (attrs != null) {
+			for (Attribute attr : attrs) {
+				String val = elem.getAttribute(attr.getName());
+
+				if (val == null) {
+					debug("Value null for attribute: " + attr.getName());
+
+					return false;
+				} else {
+					if (!val.equals(attr.getValue())) {
+						debug("Values are not equal for attribute: " + attr.getName() + ", elem: "
+									+ val + ", attr.getValue(): " + attr.getValue());
+
+						return false;
+					}    // end of if (!val.equals(attr.getValue()))
+				}      // end of if (val == null) else
+			}        // end of for ()
+		}          // end of if (attrs != null)
+
+		return true;
+	}
+
+	//~--- methods --------------------------------------------------------------
+
+	/**
+	 * Describe <code>init</code> method here.
+	 *
+	 * @param params a <code>Params</code> value
+	 * @param vars
+	 */
+	@Override
+	public void init(final Params params, Map<String, String> vars) {
+		super.init(params, vars);
+		this.params = params;
+		this.vars = vars;
+		timeoutOk = params.containsKey("-time-out-ok");
+		fullExceptionStack = params.containsKey("-full-stack-trace");
+
+//  && !params.containsKey("-on-one-socket");
+//    collectHistory = true;
+	}
+
+	// Implementation of tigase.test.TestIfc
+
+	/**
+	 * Method description
+	 *
+	 */
+	@Override
+	public void release() {
+		try {
+			XMLIO io = (XMLIO) params.get("socketxmlio");
+
+			io.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param reply
+	 *
+	 * @throws Exception
+	 */
+	public void replyElement(final Element reply) throws Exception {}
+
+	/**
+	 * Describe <code>run</code> method here.
+	 *
+	 * @return a <code>boolean</code> value
+	 */
+	@Override
+	public boolean run() {
+		try {
+			String elem = null;
+
+			while ((elem = nextElementName(reply)) != null) {
+				debug("Processing element: " + elem + "\n");
+
+				XMLIO io = (XMLIO) params.get("socketxmlio");
+
+				if (io == null) {
+					resultCode = ResultCode.SOCKET_NOT_INITALIZED;
+
+					return false;
+				}        // end of if (sock == null)
+
+				String data = getElementData(elem);
+
+				if ((data != null) &&!data.equals("")) {
+					debug("Element data: " + data + "\n");
+					addOutput(data);
+					io.write(data);
+				}        // end of if (data != null && !data.equals(""))
+
+				String[] responses = getRespElementNames(elem);
+				boolean[] resp_found = new boolean[responses.length];
+				String[] optional_resp = getRespOptionalNames(elem);
+
+				Arrays.fill(resp_found, false);
+
+				int index = 0;
+
+				while (!resp_found[resp_found.length - 1]) {
+					Queue<Element> results = io.read();
+					Element rep = null;
+
+					while ((index < resp_found.length) && (rep = results.poll()) != null) {
+						reply = rep;
+
+						if (reply.getName().equals("stream:features")) {
+							processStreamFeatures(reply);
+						}
+
+						replyElement(reply);
+						debug("Received: " + reply.toString() + "\n");
+						addInput(reply.toString());
+						resp_found[index] = checkResponse(reply, responses[index], optional_resp);
+
+						if (!resp_found[index++]) {
+							resultCode = ResultCode.RESULT_DOESNT_MATCH;
+
+							return false;
+						}    // end of else
+					}
+
+					if (results.size() > 0) {
+						reply = results.poll();
+
+						if (reply.getName() != "stream:stream") {
+							debug("Too many results: " + reply);
+							resultCode = ResultCode.RESULT_DOESNT_MATCH;
+
+							return false;
+						}
+					}      // end of if (index >= resp_found.length)
+				}        // end of while (!resp_found[resp_found-1])
 			}
-    default:
-      return getClass().getName() + ", " + getUserPasswordResource() + ", " +
-							resultCode.getMessage()	+ ", " + error_message;
-    } // end of switch (resultCode)
-  }
 
-} // TestAbstract
+			return true;
+		} catch (SocketTimeoutException e) {
+			if (timeoutOk) {
+				return true;
+			} else {
+
+				// System.out.println(params.toString());
+				resultCode = ResultCode.PROCESSING_EXCEPTION;
+				exception = e;
+				addInput(getClass().getName() + ", " + getUserPasswordResource() + ", "
+								 + e.getMessage());
+
+				return false;
+			}    // end of if (timeoutOk) else
+		} catch (ResultsDontMatchException e) {
+			resultCode = ResultCode.PROCESSING_EXCEPTION;
+			exception = e;
+			addInput(getClass().getName() + ", " + getUserPasswordResource() + ", "
+							 + e.getMessage());
+
+			return false;
+		} catch (Exception e) {
+			addInput(getClass().getName() + ", " + getUserPasswordResource() + ", " + e + "\n"
+							 + TestUtil.stack2String(e));
+			resultCode = ResultCode.PROCESSING_EXCEPTION;
+			exception = e;
+			System.out.println(Arrays.toString(implemented()));
+			System.out.println(params.toString());
+			e.printStackTrace();
+
+			return false;
+		}    // end of try-catch
+	}
+
+	private boolean checkResponse(Element reply, String response, String[] optional_resp)
+					throws Exception {
+		debug("checking reply: " + reply + " with expected: " + response + "\n");
+
+		if (reply.getName().equals(response)
+				&& hasAttributes(reply, getRespElementAttributes(response))) {
+			return true;
+		} else {
+			if (optional_resp != null) {
+				for (String opt : optional_resp) {
+					if (reply.getName().equals(opt)
+							&& hasAttributes(reply, getRespElementAttributes(opt))) {
+						return true;
+					}
+				}    // end of for ()
+			}
+		}        // end of else
+
+		error_message = getClass().getName() + ", expected: '" + response + "', Received: '"
+										+ reply.toString() + "'";
+
+		return false;
+	}
+
+	//~--- get methods ----------------------------------------------------------
+
+//public ResultCode getResult() {
+//  return resultCode;
+//}
+	private String getUserPasswordResource() {
+		String user_name = params.get("-user-name", null);
+		String hostname = params.get("-host", null);
+		String user_resr = params.get("-user-resr", null);
+		String user_pass = params.get("-user-pass", null);
+		String result = "";
+
+		if (user_name != null) {
+			result += user_name + "@";
+		}
+
+		if (hostname != null) {
+			result += hostname;
+		}
+
+		if (user_resr != null) {
+			result += "/" + user_resr;
+		}
+
+		if (user_pass != null) {
+			result += "(" + user_pass + ")";
+		}
+
+		return result;
+	}
+
+	//~--- methods --------------------------------------------------------------
+
+	private void processStreamFeatures(Element features) {
+		List<Element> children = features.getChildren("/stream:features/mechanisms");
+
+		if ((children != null) && (children.size() > 0)) {
+			Set<String> mechs = new HashSet<String>();
+
+			for (Element child : children) {
+				mechs.add(child.getCData());
+			}
+
+			params.put("features", mechs);
+		}
+	}
+}    // TestAbstract
+
+
+//~ Formatted in Sun Code Convention
+
+
+//~ Formatted by Jindent --- http://www.jindent.com
