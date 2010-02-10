@@ -65,10 +65,9 @@ public class TestUnregister extends TestAbstract {
 	 *
 	 */
 	public TestUnregister() {
-		super(new String[] { "jabber:client" },
-					new String[] { "user-unregister" },
-					new String[] { "stream-open", "auth", "xmpp-bind" },
-					new String[] { "user-register", "tls-init" });
+		super(new String[] { "jabber:client" }, new String[] { "user-unregister" },
+				new String[] { "stream-open",
+				"auth", "xmpp-bind" }, new String[] { "user-register", "tls-init" });
 	}
 
 	//~--- get methods ----------------------------------------------------------
@@ -87,8 +86,7 @@ public class TestUnregister extends TestAbstract {
 		switch (counter) {
 			case 1 :
 				return "<iq type='set' id='unreg1' from='" + jid + "'>"
-							 + "<query xmlns='jabber:iq:register'>" + "<remove/>" + "</query>"
-							 + "</iq>";
+						+ "<query xmlns='jabber:iq:register'>" + "<remove/>" + "</query>" + "</iq>";
 
 			default :
 				return null;
@@ -136,7 +134,7 @@ public class TestUnregister extends TestAbstract {
 	 * @return
 	 */
 	public String[] getRespOptionalNames(final String element) {
-		return new String[] { "stream:features" };
+		return new String[] { "stream:features", "stream:stream" };
 	}
 
 	//~--- methods --------------------------------------------------------------

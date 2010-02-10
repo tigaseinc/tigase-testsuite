@@ -19,18 +19,28 @@
  * Last modified by $Author$
  * $Date$
  */
+
 package tigase.test.impl;
+
+//~--- non-JDK imports --------------------------------------------------------
+
+import tigase.test.StatItem;
+import tigase.test.TestAbstract;
+import tigase.test.util.Params;
+
+import tigase.xml.Element;
+
+import static tigase.util.JIDUtils.*;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.management.Attribute;
-import tigase.test.StatItem;
-import tigase.test.TestAbstract;
-import tigase.test.util.Params;
-import tigase.xml.Element;
 
-import static tigase.util.JIDUtils.*;
+import javax.management.Attribute;
+
+//~--- classes ----------------------------------------------------------------
 
 /**
  * Describe class TestIQStats here.
@@ -42,141 +52,151 @@ import static tigase.util.JIDUtils.*;
  * @version $Rev$
  */
 public class TestIQStats extends TestAbstract {
+	private int counter = 0;
+	private String[] elems = { "iq" };
+	private String from = null;
+	private String hostname = "localhost";
 
-  private String hostname = "localhost";
-  private String from = null;
-  private String[] elems = {"iq"};
-  private int counter = 0;
+	//~--- constructors ---------------------------------------------------------
 
-  /**
-   * Creates a new <code>TestIQStats</code> instance.
-   *
-   */
-  public TestIQStats() {
-    super(
-      new String[] {"jabber:client"},
-      new String[] {"iq-stats"},
-      new String[] {"stream-open", "auth", "xmpp-bind"},
-      new String[] {"tls-init"}
-      );
-  }
+	/**
+	 * Creates a new <code>TestIQStats</code> instance.
+	 *
+	 */
+	public TestIQStats() {
+		super(new String[] { "jabber:client" },
+					new String[] { "iq-stats" },
+					new String[] { "stream-open", "auth", "xmpp-bind" },
+					new String[] { "tls-init" });
+	}
 
-  // Implementation of tigase.test.TestAbstract
+	//~--- get methods ----------------------------------------------------------
 
-  /**
-   * Describe <code>nextElementName</code> method here.
-   *
-   * @param element an <code>Element</code> value
-   * @return a <code>String</code> value
-   * @exception Exception if an error occurs
-   */
-  public String nextElementName(final Element element) throws Exception {
-    if (counter < elems.length) {
-      return elems[counter++];
-    } // end of if (counter < elems.length)
-    List<StatItem> stats = new LinkedList<StatItem>();
-    List<Element> items = element.getChildren("/iq/command/x");
-		for (Element item: items) {
+	/**
+	 * Describe <code>getElementData</code> method here.
+	 *
+	 * @param string a <code>String</code> value
+	 * @return a <code>String</code> value
+	 * @exception Exception if an error occurs
+	 */
+	public String getElementData(final String string) throws Exception {
+		switch (counter) {
+			case 1 :
+				return "<iq type='set' id='stats_1' to='stats@" + hostname + "'>"
+							 + "<command xmlns='http://jabber.org/protocol/commands' node='stats'>"
+							 + "<x xmlns='jabber:x:data' type='submit'>"
+							 + "<field type='list-single' var='Stats level' >" + "<value>FINER</value>"
+							 + "</field>" + "</x>" + "</command>" + "</iq>";
+
+			default :
+				return null;
+		}    // end of switch (counter)
+	}
+
+	/**
+	 * Describe <code>getRespElementAttributes</code> method here.
+	 *
+	 * @param string a <code>String</code> value
+	 * @return an <code>Attribute[]</code> value
+	 * @exception Exception if an error occurs
+	 */
+	public Attribute[] getRespElementAttributes(final String string) throws Exception {
+		switch (counter) {
+			case 1 :
+				return new Attribute[] { new Attribute("type",
+								"result"), new Attribute("id", "stats_1") };
+
+			default :
+				return null;
+		}    // end of switch (counter)
+	}
+
+	/**
+	 * Describe <code>getRespElementNames</code> method here.
+	 *
+	 * @param string a <code>String</code> value
+	 * @return a <code>String[]</code> value
+	 * @exception Exception if an error occurs
+	 */
+	public String[] getRespElementNames(final String string) throws Exception {
+		return new String[] { "iq" };
+	}
+
+	/**
+	 * Describe <code>getRespOptionalNames</code> method here.
+	 *
+	 * @param string a <code>String</code> value
+	 * @return a <code>String[]</code> value
+	 * @exception Exception if an error occurs
+	 */
+	public String[] getRespOptionalNames(final String string) throws Exception {
+		return null;
+	}
+
+	//~--- methods --------------------------------------------------------------
+
+	// Implementation of TestIfc
+
+	/**
+	 * Describe <code>init</code> method here.
+	 *
+	 * @param map a <code>Map</code> value
+	 * @param vars
+	 */
+	public void init(final Params map, Map<String, String> vars) {
+		super.init(map, vars);
+		hostname = params.get("-host", hostname);
+
+		String user_name = params.get("-user-name", "test_user@localhost");
+		String user_resr = params.get("-user-resr", "xmpp-test");
+		String name = getNodeNick(user_name);
+
+		if ((name == null) || name.equals("")) {
+			from = user_name + "@" + hostname + "/" + user_resr;
+		} else {
+			from = user_name + "/" + user_resr;
+		}    // end of else
+	}
+
+	// Implementation of tigase.test.TestAbstract
+
+	/**
+	 * Describe <code>nextElementName</code> method here.
+	 *
+	 * @param element an <code>Element</code> value
+	 * @return a <code>String</code> value
+	 * @exception Exception if an error occurs
+	 */
+	public String nextElementName(final Element element) throws Exception {
+		if (counter < elems.length) {
+			return elems[counter++];
+		}    // end of if (counter < elems.length)
+
+		List<StatItem> stats = new LinkedList<StatItem>();
+		List<Element> items = element.getChildren("/iq/command/x");
+
+		for (Element item : items) {
 			String name = item.getAttribute("var");
 			int idx = name.indexOf("/");
 			String comp = "unknown";
 			String stat = name;
+
 			if (idx >= 0) {
-			 comp = name.substring(0, idx);
-			 stat = name.substring(idx+1);
+				comp = name.substring(0, idx);
+				stat = name.substring(idx + 1);
 			}
-			stats.add(new StatItem(comp,
-					item.getCData("/field/value"), "none", stat));
-    } // end of for (Element item: items)
-    params.put("Statistics", stats);
-    return null;
-  }
 
-  /**
-   * Describe <code>getElementData</code> method here.
-   *
-   * @param string a <code>String</code> value
-   * @return a <code>String</code> value
-   * @exception Exception if an error occurs
-   */
-  public String getElementData(final String string) throws Exception {
-    switch (counter) {
-    case 1:
-      return
-        "<iq type='set' id='stats_1' to='stats@" + hostname + "'>"
-        + "<command xmlns='http://jabber.org/protocol/commands' node='stats'>"
-        + "<x xmlns='jabber:x:data' type='submit'>"
-        + "<field type='list-single' var='Stats level' >"
-        + "<value>FINEST</value>"
-        + "</field>"
-        + "</x>"
-        + "</command>"
-        + "</iq>";
-    default:
-      return null;
-    } // end of switch (counter)
-  }
+			stats.add(new StatItem(comp, item.getCData("/field/value"), "none", stat));
+		}    // end of for (Element item: items)
 
-  /**
-   * Describe <code>getRespElementNames</code> method here.
-   *
-   * @param string a <code>String</code> value
-   * @return a <code>String[]</code> value
-   * @exception Exception if an error occurs
-   */
-  public String[] getRespElementNames(final String string) throws Exception {
-    return new String[] {"iq"};
-  }
+		params.put("Statistics", stats);
 
-  /**
-   * Describe <code>getRespOptionalNames</code> method here.
-   *
-   * @param string a <code>String</code> value
-   * @return a <code>String[]</code> value
-   * @exception Exception if an error occurs
-   */
-  public String[] getRespOptionalNames(final String string) throws Exception {
-    return null;
-  }
+		return null;
+	}
+}    // TestIQStats
 
-  /**
-   * Describe <code>getRespElementAttributes</code> method here.
-   *
-   * @param string a <code>String</code> value
-   * @return an <code>Attribute[]</code> value
-   * @exception Exception if an error occurs
-   */
-  public Attribute[] getRespElementAttributes(final String string) throws Exception {
-    switch (counter) {
-    case 1:
-      return new Attribute[]
-      {
-        new Attribute("type", "result"),
-        new Attribute("id", "stats_1")
-      };
-    default:
-      return null;
-    } // end of switch (counter)
-  }
 
-  // Implementation of TestIfc
+//~ Formatted in Sun Code Convention
 
-  /**
-   * Describe <code>init</code> method here.
-   *
-   * @param map a <code>Map</code> value
-   */
-  public void init(final Params map, Map<String, String> vars) {
-    super.init(map, vars);
-    hostname = params.get("-host", hostname);
-    String user_name = params.get("-user-name", "test_user@localhost");
-    String user_resr = params.get("-user-resr", "xmpp-test");
-    String name = getNodeNick(user_name);
-    if (name == null || name.equals("")) {
-      from = user_name + "@" + hostname + "/" + user_resr;
-    } else {
-      from = user_name + "/" + user_resr;
-    } // end of else
-  }
 
-} // TestIQStats
+//~ Formatted by Jindent --- http://www.jindent.com
