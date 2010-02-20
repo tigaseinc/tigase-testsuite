@@ -19,14 +19,23 @@
  * Last modified by $Author$
  * $Date$
  */
+
 package tigase.test.impl;
 
-import java.util.List;
-import java.util.Map;
-import tigase.test.util.Params;
+//~--- non-JDK imports --------------------------------------------------------
+
 import tigase.test.TestAbstract;
-import javax.management.Attribute;
+import tigase.test.util.Params;
+
 import tigase.xml.Element;
+
+//~--- JDK imports ------------------------------------------------------------
+
+import java.util.Map;
+
+import javax.management.Attribute;
+
+//~--- classes ----------------------------------------------------------------
 
 /**
  * Describe class TestRegister here.
@@ -38,91 +47,140 @@ import tigase.xml.Element;
  * @version $Rev$
  */
 public class TestRegister extends TestAbstract {
+	private int counter = 0;
+	private String[] elems = { "iq", "iq" };
+	private String user_emil = "test_user@localhost";
+	private String user_name = "test_user@localhost";
+	private String user_pass = "test_pass";
 
-  private String user_name = "test_user@localhost";
-  private String user_pass = "test_pass";
-  private String user_emil = "test_user@localhost";
+	//~--- constructors ---------------------------------------------------------
 
-  private String[] elems = {"iq", "iq"};
-  private int counter = 0;
+	/**
+	 * Creates a new <code>TestRegister</code> instance.
+	 *
+	 */
+	public TestRegister() {
+		super(new String[] { "jabber:client" }, new String[] { "user-register" },
+				new String[] { "stream-open" }, new String[] { "ssl-init",
+				"tls-init" });
+	}
 
-  /**
-   * Creates a new <code>TestRegister</code> instance.
-   *
-   */
-  public TestRegister() {
-    super(
-      new String[] {"jabber:client"},
-      new String[] {"user-register"},
-      new String[] {"stream-open"},
-      new String[] {"ssl-init", "tls-init"}
-      );
-  }
+	//~--- get methods ----------------------------------------------------------
 
-  public String nextElementName(final Element reply) {
-    if (counter < elems.length) {
-      return elems[counter++];
-    } // end of if (counter < elems.length)
-    return null;
-  }
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param element
+	 *
+	 * @return
+	 *
+	 * @throws Exception
+	 */
+	@Override
+	public String getElementData(final String element) throws Exception {
+		switch (counter) {
+			case 1 :
+				return "<iq type='get' id='reg1'><query xmlns='jabber:iq:register'/></iq>";
 
-  public String getElementData(final String element) throws Exception {
-    switch (counter) {
-    case 1:
-      return "<iq type='get' id='reg1'><query xmlns='jabber:iq:register'/></iq>";
-    case 2:
-      return
-        "<iq type='set' id='reg2'>"
-        + "<query xmlns='jabber:iq:register'>"
-        + "<username>" + user_name + "</username>"
-        + "<password>" + user_pass + "</password>"
-        + "<email>" + user_emil + "</email>"
-        + "</query>" +
-        "</iq>";
-    default:
-      return null;
-    } // end of switch (counter)
-  }
+			case 2 :
+				return "<iq type='set' id='reg2'>" + "<query xmlns='jabber:iq:register'>"
+						+ "<username>" + user_name + "</username>" + "<password>" + user_pass
+							+ "</password>" + "<email>" + user_emil + "</email>" + "</query>" + "</iq>";
 
-  public String[] getRespElementNames(final String element) {
-    return new String[] {"iq"};
-  }
+			default :
+				return null;
+		}    // end of switch (counter)
+	}
 
-  public Attribute[] getRespElementAttributes(final String element) {
-    switch (counter) {
-    case 1:
-      return new Attribute[]
-      {
-        new Attribute("type", "result"),
-        new Attribute("id", "reg1")
-      };
-    case 2:
-      return new Attribute[]
-      {
-        new Attribute("type", "result"),
-        new Attribute("id", "reg2")
-      };
-    default:
-      return null;
-    } // end of switch (counter)
-  }
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param element
+	 *
+	 * @return
+	 */
+	@Override
+	public Attribute[] getRespElementAttributes(final String element) {
+		switch (counter) {
+			case 1 :
+				return new Attribute[] { new Attribute("type", "result"),
+						new Attribute("id", "reg1") };
 
-  public String[] getRespOptionalNames(final String element) {
-    return null;
-  }
+			case 2 :
+				return new Attribute[] { new Attribute("type", "result"),
+						new Attribute("id", "reg2") };
 
-  // Implementation of tigase.test.TestIfc
+			default :
+				return null;
+		}    // end of switch (counter)
+	}
 
-  /**
-   * Describe <code>init</code> method here.
-   *
-   * @param params a <code>Params</code> value
-   */
-  public void init(final Params params, Map<String, String> vars) {
-    super.init(params, vars);
-    user_name = params.get("-user-name", user_name);
-    user_pass = params.get("-user-pass", user_pass);
-    user_emil = params.get("-user-emil", user_emil);
-  }
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param element
+	 *
+	 * @return
+	 */
+	@Override
+	public String[] getRespElementNames(final String element) {
+		return new String[] { "iq" };
+	}
 
-} // TestRegister
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param element
+	 *
+	 * @return
+	 */
+	@Override
+	public String[] getRespOptionalNames(final String element) {
+		return null;
+	}
+
+	//~--- methods --------------------------------------------------------------
+
+	// Implementation of tigase.test.TestIfc
+
+	/**
+	 * Describe <code>init</code> method here.
+	 *
+	 * @param params a <code>Params</code> value
+	 * @param vars
+	 */
+	@Override
+	public void init(final Params params, Map<String, String> vars) {
+		super.init(params, vars);
+		user_name = params.get("-user-name", user_name);
+		user_pass = params.get("-user-pass", user_pass);
+		user_emil = params.get("-user-emil", user_emil);
+	}
+
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param reply
+	 *
+	 * @return
+	 */
+	@Override
+	public String nextElementName(final Element reply) {
+		if (counter < elems.length) {
+			return elems[counter++];
+		}    // end of if (counter < elems.length)
+
+		return null;
+	}
+}    // TestRegister
+
+
+//~ Formatted in Sun Code Convention
+
+
+//~ Formatted by Jindent --- http://www.jindent.com
