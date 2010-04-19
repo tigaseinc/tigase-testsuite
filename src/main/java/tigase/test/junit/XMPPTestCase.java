@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +65,7 @@ public abstract class XMPPTestCase {
 		return true;
 	}
 
-	private static EqualError equalsOneOf(Element[] expect, Collection<Element> data) {
+	private static EqualError equalsOneOf(Element[] expect, Set<String> params, Collection<Element> data) {
 		EqualError rs = null;
 		if (expect == null && data == null) {
 			return new EqualError(false, "Null expected");
@@ -75,7 +76,12 @@ public abstract class XMPPTestCase {
 			for (Element d : data) {
 				for (Element e : expect) {
 					EqualError error = ElementUtil.equalElemsDeep(e, d);
-					result |= error.equals;
+					boolean tmpRes = error.equals;
+					if (tmpRes && params.contains("equals")) {
+						EqualError error1 = ElementUtil.equalElemsDeep(d, e);
+						tmpRes &= error1.equals;
+					}
+					result |= tmpRes;
 					if (!error.equals) {
 						rs = error;
 					}
@@ -85,7 +91,7 @@ public abstract class XMPPTestCase {
 		}
 	}
 
-	private static boolean equalsAll(Element[] expect, Collection<Element> data) {
+	private static boolean equalsAll(Element[] expect, Set<String> params, Collection<Element> data) {
 		if (expect == null && data == null) {
 			return true;
 		} else if (expect == null || data == null) {
@@ -96,18 +102,23 @@ public abstract class XMPPTestCase {
 				boolean found = false;
 				for (Element d : data) {
 					EqualError error = ElementUtil.equalElemsDeep(e, d);
-					found |= error.equals;
+					boolean tmpRes = error.equals;
+					if (tmpRes && params.contains("equals")) {
+						EqualError error1 = ElementUtil.equalElemsDeep(d, e);
+						tmpRes &= error1.equals;
+					}
+					found |= tmpRes;
 				}
 				result &= found;
-				if(!found){
-					System.out.println("EQ :: not found  "+e);
+				if (!found) {
+					System.out.println("EQ :: not found  " + e);
 				}
 			}
 			return result;
 		}
 	}
 
-	private static boolean equalsStrict(Element[] expect, Collection<Element> data) {
+	private static boolean equalsStrict(Element[] expect, Set<String> params, Collection<Element> data) {
 		if (expect == null && data == null) {
 			return true;
 		} else if (expect == null || data == null) {
@@ -122,6 +133,11 @@ public abstract class XMPPTestCase {
 				Element e = expect[c++];
 				Element d = dataI.next();
 				EqualError error = ElementUtil.equalElemsDeep(e, d);
+				if (params.contains("equals")) {
+					EqualError error1 = ElementUtil.equalElemsDeep(d, e);
+					result &= error.equals;
+				}
+
 				result &= error.equals;
 			}
 			return result;
@@ -138,7 +154,7 @@ public abstract class XMPPTestCase {
 			if (configFile == null) {
 				throw new RuntimeException("Script file must be specified.");
 			}
-
+			System.out.println("Loading script " + configFile);
 			Queue<StanzaEntry> script = new LinkedList<StanzaEntry>();
 			ScriptFileLoader scriptFileLoader = new ScriptFileLoader(configFile, script, null);
 			scriptFileLoader.loadSourceFile();
@@ -149,15 +165,16 @@ public abstract class XMPPTestCase {
 				case send:
 					Element stanza = scriptEntry.getStanza()[0];
 					xmlio.read().clear();
-					System.out.println(" >> " + stanza.toString());
+					System.out.print("Sending stanza"
+							+ (scriptEntry.getDescription() == null ? " <" + stanza.getName()
+									+ (stanza.getAttribute("id") == null ? "" : " id='" + stanza.getAttribute("id") + "'")
+									+ ">" : " (" + scriptEntry.getDescription() + ")") + "...  ");
 					xmlio.write(stanza);
 					break;
 				case expect:
 					Queue<Element> read = xmlio.read();
-					for (Element element : read) {
-						System.out.println(" << " + element.toString());
-					}
-					EqualError ee = equalsOneOf(scriptEntry.getStanza(), read);
+					System.out.println(" checking response.");
+					EqualError ee = equalsOneOf(scriptEntry.getStanza(), scriptEntry.getParams(), read);
 					if (ee != null) {
 						String error_message = (scriptEntry.getDescription() != null ? (scriptEntry.getDescription() + " :: ")
 								: "")
@@ -169,7 +186,8 @@ public abstract class XMPPTestCase {
 					}
 					break;
 				case expect_all:
-					ok = equalsAll(scriptEntry.getStanza(), xmlio.read());
+					System.out.println(" checking response.");
+					ok = equalsAll(scriptEntry.getStanza(), scriptEntry.getParams(), xmlio.read());
 					if (!ok) {
 						String error_message = "Expected all of: " + Arrays.toString(scriptEntry.getStanza()) + ", received: "
 								+ Arrays.toString(xmlio.read().toArray(new Element[0]));
@@ -177,7 +195,8 @@ public abstract class XMPPTestCase {
 					}
 					break;
 				case expect_strict:
-					ok = equalsStrict(scriptEntry.getStanza(), xmlio.read());
+					System.out.println(" checking response.");
+					ok = equalsStrict(scriptEntry.getStanza(), scriptEntry.getParams(), xmlio.read());
 					if (!ok) {
 						String error_message = "Expected sequence: " + Arrays.toString(scriptEntry.getStanza())
 								+ ", received: " + Arrays.toString(xmlio.read().toArray(new Element[0]));

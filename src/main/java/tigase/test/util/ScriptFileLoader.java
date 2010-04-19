@@ -24,8 +24,11 @@ package tigase.test.util;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,11 +52,23 @@ public class ScriptFileLoader {
 		private Action action = null;
 		private Element[] stanza = null;
 		private String description;
+		private final Set<String> params;
 
 		public StanzaEntry(Action action, Element[] stanza, String description) {
 			this.action = action;
 			this.stanza = stanza;
 			this.description = description;
+
+			HashSet<String> ppp = new HashSet<String>();
+			if (description != null) {
+				String[] k = description.split(" ");
+				if (k != null)
+					for (String string : k) {
+						if (string != null && string.trim().startsWith("#") && string.length() > 1)
+							ppp.add(string.substring(1));
+					}
+			}
+			this.params = Collections.unmodifiableSet(ppp);
 		}
 
 		public Action getAction() {
@@ -66,6 +81,10 @@ public class ScriptFileLoader {
 
 		public String getDescription() {
 			return description;
+		}
+
+		public Set<String> getParams() {
+			return params;
 		}
 
 	}
