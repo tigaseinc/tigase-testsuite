@@ -82,7 +82,7 @@ public abstract class XMPPTestCase {
 						tmpRes &= error1.equals;
 					}
 					result |= tmpRes;
-					if (!error.equals) {
+					if (!tmpRes) {
 						rs = error;
 					}
 				}
@@ -135,7 +135,7 @@ public abstract class XMPPTestCase {
 				EqualError error = ElementUtil.equalElemsDeep(e, d);
 				if (params.contains("equals")) {
 					EqualError error1 = ElementUtil.equalElemsDeep(d, e);
-					result &= error.equals;
+					result &= error1.equals;
 				}
 
 				result &= error.equals;
