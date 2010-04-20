@@ -173,8 +173,9 @@ public abstract class XMPPTestCase {
 					break;
 				case expect:
 					Queue<Element> read = xmlio.read();
-					System.out.println(" checking response.");
+					System.out.print(" checking response... ");
 					EqualError ee = equalsOneOf(scriptEntry.getStanza(), scriptEntry.getParams(), read);
+					System.out.println(ee == null ? "OK" : "FAIL");
 					if (ee != null) {
 						String error_message = (scriptEntry.getDescription() != null ? (scriptEntry.getDescription() + " :: ")
 								: "")
@@ -186,8 +187,9 @@ public abstract class XMPPTestCase {
 					}
 					break;
 				case expect_all:
-					System.out.println(" checking response.");
+					System.out.print(" checking response... ");
 					ok = equalsAll(scriptEntry.getStanza(), scriptEntry.getParams(), xmlio.read());
+					System.out.println(ok ? "OK" : "FAIL");
 					if (!ok) {
 						String error_message = "Expected all of: " + Arrays.toString(scriptEntry.getStanza()) + ", received: "
 								+ Arrays.toString(xmlio.read().toArray(new Element[0]));
@@ -195,8 +197,9 @@ public abstract class XMPPTestCase {
 					}
 					break;
 				case expect_strict:
-					System.out.println(" checking response.");
+					System.out.print(" checking response.");
 					ok = equalsStrict(scriptEntry.getStanza(), scriptEntry.getParams(), xmlio.read());
+					System.out.println(ok ? "OK" : "FAIL");
 					if (!ok) {
 						String error_message = "Expected sequence: " + Arrays.toString(scriptEntry.getStanza())
 								+ ", received: " + Arrays.toString(xmlio.read().toArray(new Element[0]));
