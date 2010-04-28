@@ -1,6 +1,6 @@
 send: {
 <iq type="set" id="aadaa" >
-  <command xmlns="http://jabber.org/protocol/commands" node="http://jabber.org/protocol/admin#new-command" >
+  <command xmlns="http://jabber.org/protocol/commands" node="new-command" >
     <x xmlns="jabber:x:data" type="submit" >
       <field type="jid-single" var="rosterOwnerJID" >
 	<value>honestlawyer@test-d</value>
@@ -24,7 +24,7 @@ send: {
 
 expect: {
 <iq id="aadaa" type="result">
-  <command status="completed" xmlns="http://jabber.org/protocol/commands" node="http://jabber.org/protocol/admin#new-command">
+  <command status="completed" xmlns="http://jabber.org/protocol/commands" node="new-command">
     <x xmlns="jabber:x:data" type="result">
       <field var="Note" type="fixed">
         <value>Script execution error.</value>
