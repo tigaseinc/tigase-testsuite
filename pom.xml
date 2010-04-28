@@ -99,4 +99,7 @@
 			<url>scpexe://maven.tigase.org:/home/webapp/maven-repository</url>
 		</snapshotRepository>
 	</distributionManagement>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 </project>
