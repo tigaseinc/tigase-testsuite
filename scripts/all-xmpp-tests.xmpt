@@ -196,8 +196,11 @@ Global settings:
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping to another, vrtual domain '$(virtual-host)' on the server <<
 
-  Test 24@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
-  >> XEP-0030: XMPP Service Discovery <<
+  Test 24@common: { 
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -source-file = "tests/data/ServiceDiscovery.cot" 
+  } >> XEP-0030: XMPP Service Discovery <<
 
   Test 25: {
     -multi-thread
@@ -380,47 +383,47 @@ Global settings:
     -source-file = "tests/data/TesterMessage.cot"
   } >> Send a message to $(tester-user) user to check whether it responds. <<
 
-#  Test 36@common: {
-##      -debug
-#    $(number) = 10
-#    -to-jid = "$(tester-user)@srecv.$(server-host)"
-#    -source-file = "tests/data/TesterGenTraffic.cot"
-#  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+  Test 36@common: {
+#      -debug
+    $(number) = 10
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterGenTraffic.cot"
+  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-#  Test 37@common: {
-##      -debug
-#    $(number) = 100
-#    -to-jid = "$(tester-user)@srecv.$(server-host)"
-#    -source-file = "tests/data/TesterGenTraffic.cot"
-#  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+  Test 37@common: {
+#      -debug
+    $(number) = 100
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterGenTraffic.cot"
+  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-#  Test 38@common: {
-##      -debug
-#    $(number) = 1000
-#    -to-jid = "$(tester-user)@srecv.$(server-host)"
-#    -source-file = "tests/data/TesterGenTraffic.cot"
-#  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+  Test 38@common: {
+#      -debug
+    $(number) = 1000
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterGenTraffic.cot"
+  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-#  Test 39@common: {
-##      -debug
-#    $(number) = 10000
-#    -to-jid = "$(tester-user)@srecv.$(server-host)"
-#    -source-file = "tests/data/TesterGenTraffic.cot"
-#    # We expect timeout here as a result of queue overfill, the point is to check whether
-#    # the server continues to run after that correctly
-#    -time-out-ok
-#  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+  Test 39@common: {
+#      -debug
+    $(number) = 10000
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterGenTraffic.cot"
+    # We expect timeout here as a result of queue overfill, the point is to check whether
+    # the server continues to run after that correctly
+    -time-out-ok
+  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-#  Test 40@common: {
-##      -debug
-#    -socket-wait = 30000
-#    $(number) = 100000
-#    -to-jid = "$(tester-user)@srecv.$(server-host)"
-#    -source-file = "tests/data/TesterGenTraffic.cot"
-#    # We expect timeout here to happen as a result of queues overfill, the point is to check whether
-#    # the server continues to run after that
-#    -time-out-ok
-#  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+  Test 40@common: {
+#      -debug
+    -socket-wait = 30000
+    $(number) = 100000
+    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -source-file = "tests/data/TesterGenTraffic.cot"
+    # We expect timeout here to happen as a result of queues overfill, the point is to check whether
+    # the server continues to run after that
+    -time-out-ok
+  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
   Test 41@common: Dynamic roster storage test {
     -source-file = "tests/data/DynamicRosterStorageTest.cot"
@@ -485,26 +488,26 @@ Admin commands Tests:
      -source-file = "tests/data/AdHocUsrMgmtRegister.cot"
    } >> Registration of user script managing local users through Ad-Hoc <<
 
-   RosterMan 2@common: Ad-Hoc user mgmt - Adding user {
-     -user-name = $(stats-user)
-     -user-pass = $(stats-pass)
-     -to-jid = "$(def-user)@$(server-host)"
-     -source-file = "tests/data/AdHocUsrMgmtAddUser.cot"
-   } >> Adding a user through Ad-Hoc user management <<
+#   RosterMan 2@common: Ad-Hoc user mgmt - Adding user {
+#     -user-name = $(stats-user)
+#     -user-pass = $(stats-pass)
+#     -to-jid = "$(def-user)@$(server-host)"
+#     -source-file = "tests/data/AdHocUsrMgmtAddUser.cot"
+#   } >> Adding a user through Ad-Hoc user management <<
 
-   RosterMan 3@common: Ad-Hoc user mgmt - Check added user {
-     -user-name = $(def-user)
-     -user-pass = $(def-user-pass)
-     -to-jid = "$(stats-user)@$(server-host)"
-     -source-file = "tests/data/AdHocUsrMgmtAddUserCheck.cot"
-   } >> Checking if user was added properly using Ad-Hoc <<
+#   RosterMan 3@common: Ad-Hoc user mgmt - Check added user {
+#     -user-name = $(def-user)
+#     -user-pass = $(def-user-pass)
+#     -to-jid = "$(stats-user)@$(server-host)"
+#     -source-file = "tests/data/AdHocUsrMgmtAddUserCheck.cot"
+#   } >> Checking if user was added properly using Ad-Hoc <<
 
-   RosterMan 4@common: Ad-Hoc user mgmt - Removing user {
-     -user-name = $(stats-user)
-     -user-pass = $(stats-pass)
-     -to-jid = "$(def-user)@$(server-host)"
-     -source-file = "tests/data/AdHocUsrMgmtRemoveUser.cot"
-   } >> Removing a user through Ad-Hoc user management <<
+#   RosterMan 4@common: Ad-Hoc user mgmt - Removing user {
+#     -user-name = $(stats-user)
+#     -user-pass = $(stats-pass)
+#     -to-jid = "$(def-user)@$(server-host)"
+#     -source-file = "tests/data/AdHocUsrMgmtRemoveUser.cot"
+#   } >> Removing a user through Ad-Hoc user management <<
 
    RosterMan 5@common: Ad-Hoc user mgmt - Check removed user {
      -user-name = $(def-user)
@@ -518,26 +521,26 @@ Admin commands Tests:
      -source-file = "tests/data/AdHocUsrMgmtNonExistingUser.cot"
    } >> Managing non-existing user through Ad-Hoc user management <<
 
- RosterMan 7: {
-     -multi-thread
-     -delay = 1000
+# RosterMan 7: {
+#     -multi-thread
+#     -delay = 1000
 
-     Receive added user@common: {
-       -user-name   = $(def-user)
-       -user-pass   = $(def-user-pass)
-       -user-resr   = $(def-user-resr)
-       -to-jid = "$(stats-user)@$(server-host)"
-       -source-file = "tests/data/AdHocUsrMgmtLiveReceiveAddUser.cot"
-      } >> Login and receive roster updates <<
+#     Receive added user@common: {
+#       -user-name   = $(def-user)
+#       -user-pass   = $(def-user-pass)
+#       -user-resr   = $(def-user-resr)
+#       -to-jid = "$(stats-user)@$(server-host)"
+#       -source-file = "tests/data/AdHocUsrMgmtLiveReceiveAddUser.cot"
+#      } >> Login and receive roster updates <<
 
-      Add user to live roster@common: {
-       -user-name = $(stats-user)
-       -user-pass = $(stats-pass)
-       -to-jid = "$(def-user)@$(server-host)"
-       -source-file = "tests/data/AdHocUsrMgmtAddUser.cot"
-      } >> Add / remove user to the test user roster <<
+#      Add user to live roster@common: {
+#       -user-name = $(stats-user)
+#       -user-pass = $(stats-pass)
+#       -to-jid = "$(def-user)@$(server-host)"
+#       -source-file = "tests/data/AdHocUsrMgmtAddUser.cot"
+#      } >> Add / remove user to the test user roster <<
 
-   } >> Adding and removing user to logged in user using Ad-Hoc and live roster update <<
+#   } >> Adding and removing user to logged in user using Ad-Hoc and live roster update <<
 
 } >> Administration commands tests <<
 
@@ -723,8 +726,11 @@ Bosh Tests:
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping to another, vrtual domain '$(virtual-host)' on the server <<
 
-  Bosh 20@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
-  >> XEP-0030: XMPP Service Discovery <<
+  Bosh 20@common: { 
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -source-file = "tests/data/ServiceDiscovery.cot" 
+  } >> XEP-0030: XMPP Service Discovery <<
 
   Bosh 21: {
     -multi-thread
@@ -815,8 +821,10 @@ Bosh Tests:
     -source-file = "tests/data/MessageNoBind.cot"
   } >> Send a message without resource binding and expect an error response. <<
 
-  Bosh end@user-unregister:
-  >> XEP-0077 - In-Band Registration - user unregister <<
+  Bosh end@user-unregister: {
+    -port = 5222
+    -def-stream  = stream-client
+  } >> XEP-0077 - In-Band Registration - user unregister <<
 
 }
 >> Testing bosh component <<
@@ -887,8 +895,11 @@ Bosh keep-alive Tests:
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping to another, vrtual domain '$(virtual-host)' on the server <<
 
-  Bosh keep-alive 20@common: { -source-file = "tests/data/ServiceDiscovery.cot" }
-  >> XEP-0030: XMPP Service Discovery <<
+  Bosh keep-alive 20@common: { 
+    -user-name = $(stats-user)
+    -user-pass = $(stats-pass)
+    -source-file = "tests/data/ServiceDiscovery.cot" 
+  } >> XEP-0030: XMPP Service Discovery <<
 
   Bosh keep-alive 21: {
     -multi-thread
@@ -979,8 +990,10 @@ Bosh keep-alive Tests:
     -source-file = "tests/data/MessageNoBind.cot"
   } >> Send a message without resource binding and expect an error response. <<
 
-  Bosh keep-alive end@user-unregister:
-  >> XEP-0077 - In-Band Registration - user unregister <<
+  Bosh keep-alive end@user-unregister: {
+    -port = 5222
+    -def-stream  = stream-client
+  } >> XEP-0077 - In-Band Registration - user unregister <<
 
 }
 >> Testing bosh component in keep-alive mode <<
@@ -1124,20 +1137,20 @@ Multi thread tests:
     >> Send a message to daemon user <<
   } >> Multi-thread test privacy lists - send a message to daemon user with very long privacy list <<
 
-  Multi-test end: {
-    -multi-thread
-    -loop = 5
+#  Multi-test end: {
+#    -multi-thread
+#    -loop = 5
 
-    Register@user-unregister: { -user-name = "multi-reg_1_$(loop)" }
-    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
-    Register@user-unregister: { -user-name = "multi-reg_2_$(loop)" }
-    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
-    Register@user-unregister: { -user-name = "multi-reg_3_$(loop)" }
-    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
-    Register@user-unregister: { -user-name = "multi-reg_4_$(loop)" }
-    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
-    Register@user-unregister: { -user-name = "multi-reg_5_$(loop)" }
-    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
-  } >> Multi-thread test of XEP-0077 - In-Band Registration, user unregister <<
+#    Register@user-unregister: { -user-name = "multi-reg_1_$(loop)" }
+#    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
+#    Register@user-unregister: { -user-name = "multi-reg_2_$(loop)" }
+#    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
+#    Register@user-unregister: { -user-name = "multi-reg_3_$(loop)" }
+#    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
+#    Register@user-unregister: { -user-name = "multi-reg_4_$(loop)" }
+#    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
+#    Register@user-unregister: { -user-name = "multi-reg_5_$(loop)" }
+#    !! Remove user@user-unregister: { -loop = 1 } >> XEP-0077 <<
+#  } >> Multi-thread test of XEP-0077 - In-Band Registration, user unregister <<
 
 } >> Multi-threaded tests for various XMPP functions <<
