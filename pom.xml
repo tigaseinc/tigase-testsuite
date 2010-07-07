@@ -68,11 +68,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>tigase</groupId>
-			<artifactId>tigase-server</artifactId>
-			<version>4.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>tigase</groupId>
 			<artifactId>tigase-utils</artifactId>
 			<version>3.1.1</version>
 		</dependency>
