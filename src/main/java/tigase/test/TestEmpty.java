@@ -19,12 +19,22 @@
  * Last modified by $Author$
  * $Date$
  */
+
 package tigase.test;
+
+//~--- non-JDK imports --------------------------------------------------------
+
+import tigase.test.util.Params;
+
+import tigase.xml.Element;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.LinkedList;
 import java.util.Map;
-import tigase.test.util.Params;
-import tigase.xml.Element;
+import java.util.concurrent.ConcurrentHashMap;
+
+//~--- classes ----------------------------------------------------------------
 
 /**
  * Describe class TestEmpty here.
@@ -37,15 +47,30 @@ import tigase.xml.Element;
  */
 public abstract class TestEmpty implements TestIfc {
 
-  private String[] BASE_XMLNS = null;
-  private String[] IMPLEMENTED = null;
-  private String[] DEPENDS = null;
-  private String[] OPTIONAL = null;
-  //private List<HistoryEntry> history = null;
-  private boolean collectHistory = true;
-  private boolean deb = false;
-	private String testName = null;
+	/**
+	 * Test variables is data gathered from stanzas received from the server.
+	 * In the 'expect' statement you mark location of such data with @{var-name}
+	 * it is stored then in this Map and all occurrences of @{var-name} in
+	 * 'send' and subsequent 'expect' stanzas gets replaced with information
+	 * received from the server.
+	 */
+	protected static final Map<String, String> test_variables = new ConcurrentHashMap<String,
+		String>(10, 0.25f, 2);
+
+	//~--- fields ---------------------------------------------------------------
+
+	private String[] BASE_XMLNS = null;
+	private String[] DEPENDS = null;
+	private String[] IMPLEMENTED = null;
+	private String[] OPTIONAL = null;
+
+	// private List<HistoryEntry> history = null;
+	private boolean collectHistory = true;
+	private boolean deb = false;
 	private HistoryCollectorIfc historyColl = null;
+	private String testName = null;
+
+	//~--- constructors ---------------------------------------------------------
 
 	/**
 	 * Creates a new <code>TestEmpty</code> instance.
@@ -57,41 +82,48 @@ public abstract class TestEmpty implements TestIfc {
 	 * @param optional
 	 */
 	public TestEmpty(final String[] base_xmlns, final String[] implemented,
-    final String[] depends, final String[] optional) {
-    BASE_XMLNS = base_xmlns;
-    IMPLEMENTED = implemented;
-    DEPENDS = depends;
-    OPTIONAL = optional;
+			final String[] depends, final String[] optional) {
+		BASE_XMLNS = base_xmlns;
+		IMPLEMENTED = implemented;
+		DEPENDS = depends;
+		OPTIONAL = optional;
 	}
 
-	// Implementation of tigase.test.TestIfc
+	//~--- methods --------------------------------------------------------------
 
 	/**
-	 * Describe <code>run</code> method here.
+	 * Describe <code>getHistory</code> method here.
 	 *
-	 * @return a <code>boolean</code> value
+	 *
+	 * @param input
 	 */
-	@Override
-	public boolean run() {
-		return false;
+
+//@Override
+//public List<HistoryEntry> getHistory() {
+//  return history;
+//}
+	public void addInput(String input) {
+		if (collectHistory) {
+
+			// System.out.println("Adding input!!");
+			// history.add(new HistoryEntry(Direction.INPUT, input, getName()));
+			historyColl.handleHistoryEntry(new HistoryEntry(Direction.INPUT, input, testName));
+		}
 	}
 
 	/**
-	 * Describe <code>init</code> method here.
+	 * Method description
 	 *
-	 * @param params a <code>Params</code> value
-	 * @param vars
+	 *
+	 * @param output
 	 */
-	@Override
-	public void init(final Params params, Map<String, String> vars) {
-    collectHistory = params.get("-output-history", true)
-			&&
-			!(params.containsKey("-daemon")
-				|| params.containsKey("-background"));
-//    if (collectHistory) {
-//      history = new LinkedList<HistoryEntry>();
-//    } // end of if (collectHistory)
-    deb = params.containsKey("-debug");
+	public void addOutput(String output) {
+		if (collectHistory) {
+
+			// System.out.println("Adding output!!");
+			// history.add(new HistoryEntry(Direction.OUTPUT, output, testName));
+			historyColl.handleHistoryEntry(new HistoryEntry(Direction.OUTPUT, output, testName));
+		}
 	}
 
 	/**
@@ -101,17 +133,20 @@ public abstract class TestEmpty implements TestIfc {
 	 */
 	@Override
 	public String[] baseXMLNS() {
-    return BASE_XMLNS;
+		return BASE_XMLNS;
 	}
 
 	/**
-	 * Describe <code>implemented</code> method here.
+	 * Method description
 	 *
-	 * @return a <code>String[]</code> value
+	 *
+	 * @param msg
 	 */
-	@Override
-	public String[] implemented() {
-    return IMPLEMENTED;
+	public void debug(String msg) {
+		if (deb) {
+			System.out.print(msg);
+			System.out.flush();
+		}    // end of if (debug)
 	}
 
 	/**
@@ -121,17 +156,30 @@ public abstract class TestEmpty implements TestIfc {
 	 */
 	@Override
 	public String[] depends() {
-    return DEPENDS;
+		return DEPENDS;
+	}
+
+	//~--- get methods ----------------------------------------------------------
+
+	/**
+	 * Describe <code>getLastResult</code> method here.
+	 *
+	 * @return an <code>Element</code> value
+	 */
+	@Override
+	public Element getLastResult() {
+		return null;
 	}
 
 	/**
-	 * Describe <code>optional</code> method here.
+	 * Method description
 	 *
-	 * @return a <code>String[]</code> value
+	 *
+	 * @return
 	 */
 	@Override
-	public String[] optional() {
-    return OPTIONAL;
+	public String getName() {
+		return testName;
 	}
 
 	/**
@@ -154,63 +202,83 @@ public abstract class TestEmpty implements TestIfc {
 		return null;
 	}
 
+	//~--- methods --------------------------------------------------------------
+
 	/**
-	 * Describe <code>getLastResult</code> method here.
+	 * Describe <code>implemented</code> method here.
 	 *
-	 * @return an <code>Element</code> value
+	 * @return a <code>String[]</code> value
 	 */
 	@Override
-	public Element getLastResult() {
-		return null;
+	public String[] implemented() {
+		return IMPLEMENTED;
 	}
 
+	/**
+	 * Describe <code>init</code> method here.
+	 *
+	 * @param params a <code>Params</code> value
+	 * @param vars
+	 */
+	@Override
+	public void init(final Params params, Map<String, String> vars) {
+		collectHistory = params.get("-output-history", true)
+				&&!(params.containsKey("-daemon") || params.containsKey("-background"));
+
+//  if (collectHistory) {
+//    history = new LinkedList<HistoryEntry>();
+//  } // end of if (collectHistory)
+		deb = params.containsKey("-debug");
+	}
+
+	/**
+	 * Describe <code>optional</code> method here.
+	 *
+	 * @return a <code>String[]</code> value
+	 */
+	@Override
+	public String[] optional() {
+		return OPTIONAL;
+	}
+
+	// Implementation of tigase.test.TestIfc
+
+	/**
+	 * Describe <code>run</code> method here.
+	 *
+	 * @return a <code>boolean</code> value
+	 */
+	@Override
+	public boolean run() {
+		return false;
+	}
+
+	//~--- set methods ----------------------------------------------------------
+
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param histColl
+	 */
 	public void setHistoryCollector(HistoryCollectorIfc histColl) {
 		this.historyColl = histColl;
 	}
 
-  /**
-   * Describe <code>getHistory</code> method here.
-   *
-   * @return a <code>List</code> value
-   */
-//	@Override
-//  public List<HistoryEntry> getHistory() {
-//    return history;
-//  }
-
-  public void addInput(String input) {
-    if (collectHistory) {
-			//System.out.println("Adding input!!");
-      //history.add(new HistoryEntry(Direction.INPUT, input, getName()));
-			historyColl.handleHistoryEntry(new HistoryEntry(Direction.INPUT, input,
-							testName));
-    }
-  }
-
-  public void addOutput(String output) {
-    if (collectHistory) {
-			//System.out.println("Adding output!!");
-      //history.add(new HistoryEntry(Direction.OUTPUT, output, testName));
-			historyColl.handleHistoryEntry(new HistoryEntry(Direction.OUTPUT, output,
-							testName));
-    }
-  }
-
-	@Override
-	public String getName() {
-		return testName;
-	}
-
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param testName
+	 */
 	@Override
 	public void setName(String testName) {
 		this.testName = testName;
 	}
+}    // TestEmpty
 
-  public void debug(String msg) {
-    if (deb) {
-      System.out.print(msg);
-      System.out.flush();
-    } // end of if (debug)
-  }
 
-} // TestEmpty
+//~ Formatted in Sun Code Convention
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

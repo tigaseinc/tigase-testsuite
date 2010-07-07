@@ -30,16 +30,23 @@ expect: {
 </iq>
 }
 expect: {
-<iq id="dr-1" type="set">
+<iq id="@{roster-test-id}" type="set">
   <query xmlns="jabber:iq:roster">
     <item name="dynrost" subscription="both" jid="dynrost@test-d">
-      <group>test group</group>
+      <group>@{roster-test-group}</group>
     </item>
   </query>
 </iq>
 }
 
 send: {
+<iq type="result" id="@{roster-test-id}">
+  <query xmlns="jabber:iq:roster">
+    <item name="dynrost" subscription="both" jid="dynrost@test-d">
+      <group>@{roster-test-group}</group>
+    </item>
+  </query>
+</iq>
 <iq type="set" id="roster_2">
   <query xmlns="jabber:iq:roster">
     <item jid="santa.claus@north.pole" name="claus"/>

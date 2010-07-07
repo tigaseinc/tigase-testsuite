@@ -22,7 +22,29 @@
 
 package tigase.test.impl;
 
+//~--- non-JDK imports --------------------------------------------------------
+
+import tigase.test.ResultCode;
+import tigase.test.TestEmpty;
+import tigase.test.util.ElementUtil;
+import tigase.test.util.EqualError;
+import tigase.test.util.Params;
+import tigase.test.util.ScriptFileLoader;
+import tigase.test.util.ScriptFileLoader.StanzaEntry;
+import tigase.test.util.TestUtil;
+import tigase.test.util.XMLIO;
+
+import tigase.util.JIDUtils;
+
+import tigase.xml.DomBuilderHandler;
+import tigase.xml.Element;
+import tigase.xml.SimpleParser;
+import tigase.xml.SingletonFactory;
+
+//~--- JDK imports ------------------------------------------------------------
+
 import java.net.SocketTimeoutException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,26 +52,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import tigase.test.ResultCode;
-import tigase.test.TestEmpty;
-import tigase.test.util.ElementUtil;
-import tigase.test.util.EqualError;
-import tigase.test.util.Params;
-import tigase.test.util.ScriptFileLoader;
-import tigase.test.util.TestUtil;
-import tigase.test.util.XMLIO;
-import tigase.test.util.ScriptFileLoader.StanzaEntry;
-import tigase.util.JIDUtils;
-import tigase.xml.DomBuilderHandler;
-import tigase.xml.Element;
-import tigase.xml.SimpleParser;
-import tigase.xml.SingletonFactory;
+
+//~--- classes ----------------------------------------------------------------
 
 /**
- * Class TestCommon.java is responsible for 
+ * Class TestCommon.java is responsible for
  *
  * <p>
  * Created: Mon Apr 23 08:47:37 2007
@@ -57,50 +67,189 @@ import tigase.xml.SingletonFactory;
  * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version 1.0.0
  */
-
 public class TestCommon extends TestEmpty {
+	private static final Logger log = Logger.getLogger(TestCommon.class.getName());
+	private static final SimpleParser parser = SingletonFactory.getParserInstance();
 
-	private static final SimpleParser parser =
-		SingletonFactory.getParserInstance();
-  protected Params params = null;
-	protected Map<String, String> vars = null;
-  private String user_name = "test_user@localhost";
-  private String user_resr = "xmpp-test";
-  private String user_emil = "test_user@localhost";
-  private String hostname = "localhost";
-	private String source_file = "tests/data/sample-file.cot";
-  private String jid = null;
-  private String id = null;
-  private String to = "test_user@localhost";
+	//~--- fields ---------------------------------------------------------------
+
 	private String cdata = "";
-	protected boolean timeoutOk = false;
-	private boolean fullExceptionStack = false;
-	private boolean initial_presence = false;
-  protected ResultCode resultCode = ResultCode.TEST_OK;
-  protected Exception exception = null;
 	private String error_message = "";
-	private Queue<StanzaEntry> stanzas_buff = null;
-	private List<Element> all_results = new ArrayList<Element>();
+	protected Exception exception = null;
+	private String hostname = "localhost";
+	private String id = null;
+	private String jid = null;
+
+	// private Element lastReceived = null;
+//private long repeat_wait = 1;
+	protected Params params = null;
 	private long repeat = 0;
+	private String source_file = "tests/data/sample-file.cot";
+	private Queue<StanzaEntry> stanzas_buff = null;
+	private String to = "test_user@localhost";
+	private String user_emil = "test_user@localhost";
+	private String user_name = "test_user@localhost";
+	private String user_resr = "xmpp-test";
+	protected Map<String, String> vars = null;
+	protected boolean timeoutOk = false;
+	protected ResultCode resultCode = ResultCode.TEST_OK;
+	private Pattern p = Pattern.compile(".*@\\{([^}]+)\\}.*");
+	private boolean initial_presence = false;
+	private boolean fullExceptionStack = false;
+	private List<Element> all_results = new ArrayList<Element>();
 	private ScriptFileLoader scriptFileLoader;
-	private Element lastReceived = null;
-// 	private long repeat_wait = 1;
+
+	//~--- constructors ---------------------------------------------------------
 
 	/**
 	 * Creates a new <code>TestCommon</code> instance.
 	 *
 	 */
 	public TestCommon() {
-    super(
-      new String[] {"jabber:client"},
-      new String[] {"common"},
-      new String[] {"stream-open", "auth", "xmpp-bind"},
-      new String[] {"tls-init"}
-      );
+		super(new String[] { "jabber:client" }, new String[] { "common" },
+				new String[] { "stream-open",
+				"auth", "xmpp-bind" }, new String[] { "tls-init" });
 	}
 
+	/**
+	 * Constructs ...
+	 *
+	 *
+	 * @param ns
+	 * @param imp
+	 * @param depend
+	 * @param opt
+	 */
 	public TestCommon(String[] ns, String[] imp, String[] depend, String[] opt) {
-    super(ns, imp, depend, opt);
+		super(ns, imp, depend, opt);
+	}
+
+	//~--- methods --------------------------------------------------------------
+
+	private static Element[] parseXMLData(String data) {
+
+		// Replace a few "variables"
+		DomBuilderHandler domHandler = new DomBuilderHandler();
+
+		parser.parse(domHandler, data.toCharArray(), 0, data.length());
+
+		Queue<Element> elems = domHandler.getParsedElements();
+
+		if ((elems != null) && (elems.size() > 0)) {
+			return elems.toArray(new Element[elems.size()]);
+		}
+
+		return null;
+	}
+
+	//~--- get methods ----------------------------------------------------------
+
+	/**
+	 * Describe <code>getResultCode</code> method here.
+	 *
+	 * @return an <code>int</code> value
+	 */
+	@Override
+	public ResultCode getResultCode() {
+		return resultCode;
+	}
+
+	/**
+	 * Method description
+	 *
+	 *
+	 * @return
+	 */
+	@Override
+	public String getResultMessage() {
+		switch (resultCode) {
+			case PROCESSING_EXCEPTION :
+				if (fullExceptionStack) {
+					return getClass().getName() + ", " + resultCode.getMessage() + exception.toString()
+							+ "\n" + TestUtil.stack2String(exception) + error_message;
+				} else {
+					return getClass().getName() + ", " + exception.getMessage() + error_message;
+				}
+			default :
+				return resultCode.getMessage() + ", " + error_message;
+		}    // end of switch (resultCode)
+	}
+
+	//~--- methods --------------------------------------------------------------
+
+	/**
+	 * Method description
+	 *
+	 *
+	 * @param params
+	 * @param vars
+	 */
+	@Override
+	public void init(final Params params, Map<String, String> vars) {
+		super.init(params, vars);
+		this.params = params;
+		this.vars = vars;
+
+		// System.out.println(params.toString());
+		// System.out.println(vars.toString());
+		if (stanzas_buff == null) {
+			user_name = params.get("-user-name", user_name);
+			user_resr = params.get("-user-resr", user_resr);
+			user_emil = params.get("-user-emil", user_emil);
+			hostname = params.get("-host", hostname);
+			cdata = params.get("-cdata", cdata);
+			initial_presence = params.get("-initial-presence", initial_presence);
+
+			String name = JIDUtils.getNodeNick(user_name);
+
+			if ((name == null) || name.equals("")) {
+				jid = user_name + "@" + hostname + "/" + user_resr;
+				id = user_name + "@" + hostname;
+			} else {
+				jid = user_name + "/" + user_resr;
+				id = user_name;
+			}    // end of else
+
+			to = params.get("-to-jid", to);
+			timeoutOk = params.containsKey("-time-out-ok");
+			fullExceptionStack = params.containsKey("-full-stack-trace");
+			source_file = params.get("-source-file", source_file);
+			stanzas_buff = new LinkedList<StanzaEntry>();
+
+			String number = params.get("-number", "");
+			Map<String, String> replaces = new HashMap<String, String>();
+
+			replaces.put("$(from-jid)", jid);
+			replaces.put("$(from-id)", id);
+			replaces.put("$(to-jid)", to);
+			replaces.put("$(to-id)", JIDUtils.getNodeID(to));
+			replaces.put("$(to-hostname)", JIDUtils.getNodeHost(to));
+			replaces.put("$(hostname)", hostname);
+			replaces.put("$(number)", number);
+			replaces.put("$(cdata)", cdata);
+			this.scriptFileLoader = new ScriptFileLoader(source_file, stanzas_buff, replaces);
+			this.scriptFileLoader.loadSourceFile();
+
+			// loadSourceFile(source_file);
+			// repeat_max = params.get("-repeat-script", repeat_max);
+			// repeat_wait = params.get("-repeat-wait", repeat_wait);
+		}
+	}
+
+	/**
+	 * Method description
+	 *
+	 */
+	@Override
+	public void release() {
+		try {
+			XMLIO io = (XMLIO) params.get("socketxmlio");
+
+			io.close();
+		} catch (Exception e) {
+
+			// e.printStackTrace();
+		}
 	}
 
 	/**
@@ -110,241 +259,201 @@ public class TestCommon extends TestEmpty {
 	 */
 	@Override
 	public boolean run() {
-// 		for (int repeat = 0; repeat < repeat_max; repeat++) {
+
+//  for (int repeat = 0; repeat < repeat_max; repeat++) {
 		try {
-			if (repeat == 0 && initial_presence) {
+			if ((repeat == 0) && initial_presence) {
 				XMLIO io = (XMLIO) params.get("socketxmlio");
 				String toWrite = "<presence/>";
+
 				debug("\nSending: " + toWrite);
 				addOutput(toWrite);
 				io.write(toWrite);
 			}
+
 			++repeat;
+
 			Queue<StanzaEntry> stanzas = new LinkedList<StanzaEntry>(stanzas_buff);
 			StanzaEntry entry = null;
+
 			while ((entry = stanzas.poll()) != null) {
 				XMLIO io = (XMLIO) params.get("socketxmlio");
+
 				if (io == null) {
 					resultCode = ResultCode.SOCKET_NOT_INITALIZED;
+
 					return false;
-				} // end of if (sock == null)
+				}        // end of if (sock == null)
+
 				switch (entry.getAction()) {
-					case send:
+					case send :
 						for (Element elem : entry.getStanza()) {
 							if (elem.getAttribute("id") == null) {
 								elem.setAttribute("id", "" + repeat);
 							}
+
 							String toWrite = applyParams(elem.toString());
+
 							debug("\nSending: " + toWrite);
 							addOutput(toWrite);
 							io.write(toWrite);
-						} // end of for (Element elem: stanza)
+						}    // end of for (Element elem: stanza)
+
 						break;
-					case expect:
+
+					case expect :
 						boolean found = false;
 						Queue<Element> results = null;
-						error_message = "\n" + repeat + ": Expected: " +
-										Arrays.toString(entry.getStanza());
-						while (all_results.size() == 0 && (results == null ||
-										results.size() == 0)) {
+
+						error_message = "\n" + repeat + ": Expected: "
+								+ Arrays.toString(entry.getStanza());
+
+						while ((all_results.size() == 0) && ((results == null) || (results.size() == 0))) {
 							results = io.read();
-						} // end of while (!found)
+						}    // end of while (!found)
+
 						if (results != null) {
 							for (Element el : results) {
 								debug("\nReceived: " + el.toString());
 								addInput(el.toString());
 							}
+
 							all_results.addAll(results);
 							results.clear();
 						}
+
 						String eq_msg = "";
-						for (int exp = 0; exp < entry.getStanza().length && !found; ++exp) {
+
+						for (int exp = 0; (exp < entry.getStanza().length) &&!found; ++exp) {
 							for (int idx = 0; idx < all_results.size(); idx++) {
-								lastReceived = all_results.get(idx);
-								EqualError res =
-												ElementUtil.equalElemsDeep(entry.getStanza()[exp],
-												lastReceived);
+								Element lastReceived = all_results.get(idx);
+								EqualError res = ElementUtil.equalElemsDeep(entry.getStanza()[exp],
+									lastReceived, test_variables);
+
 								found = res.equals;
 								eq_msg += (found ? "" : res.message + "\n");
+
 								if (found) {
+
 									// System.out.println("FOUND: " + received.toString());
 									all_results.remove(idx);
+
 									break;
 								}
 							}
-						} // end of for (Element expected: entry.stanza)
-						if (!found) {
-							//System.out.println("\nFound: " + found + ", message: " + eq_msg);
+						}    // end of for (Element expected: entry.stanza)
+
+						if ( !found) {
+
+							// System.out.println("\nFound: " + found + ", message: " + eq_msg);
 							resultCode = ResultCode.RESULT_DOESNT_MATCH;
-							error_message = "\n" + repeat + ": Expected one of: " +
-											Arrays.toString(entry.getStanza()) + ", received: " +
-											Arrays.toString(all_results.toArray(new Element[0])) +
-											"\n equals error message: " + eq_msg;
+							error_message = "\n" + repeat + ": Expected one of: "
+									+ Arrays.toString(entry.getStanza()) + ", received: "
+										+ Arrays.toString(all_results.toArray(new Element[0]))
+											+ "\n equals error message: " + eq_msg;
+
 							return false;
-						} // end of if (!found)
+						}    // end of if (!found)
+
 						break;
-					default:
+
+					default :
 						break;
-				} // end of switch (entry.action)
-			} // end of while ((entry = stanzas.poll()) != null)
+				}        // end of switch (entry.action)
+			}          // end of while ((entry = stanzas.poll()) != null)
 		} catch (SocketTimeoutException e) {
 			if (timeoutOk) {
 				return true;
 			} else {
 				resultCode = ResultCode.PROCESSING_EXCEPTION;
 				exception = e;
-				addInput("" + repeat + ": " + getClass().getName() + ", " +
-								e.getMessage() + error_message);
+				addInput("" + repeat + ": " + getClass().getName() + ", " + e.getMessage()
+						+ error_message);
+
 				return false;
-			} // end of if (timeoutOk) else
+			}    // end of if (timeoutOk) else
 		} catch (Exception e) {
-			addInput("" + repeat + ": " + getClass().getName() + ", " + e + "\n" +
-							TestUtil.stack2String(e) + error_message);
+			addInput("" + repeat + ": " + getClass().getName() + ", " + e + "\n"
+					+ TestUtil.stack2String(e) + error_message);
 			resultCode = ResultCode.PROCESSING_EXCEPTION;
 			exception = e;
 			e.printStackTrace();
+
 			return false;
-		} // end of catch
-// 			try { Thread.sleep(repeat_wait);
-// 			} catch (InterruptedException e) { } // end of try-catch
-// 		}
+		}    // end of catch
+
+//  try { Thread.sleep(repeat_wait);
+//  } catch (InterruptedException e) { } // end of try-catch
+//    }
 		return true;
 	}
 
-	private Pattern p = Pattern.compile(".*@\\{([^}]+)\\}.*");
-
 	private String applyParams(String input) {
 		String result = input;
-    for (String key : vars.keySet()) {
-      //System.out.println("key: " + key);
+
+		for (String key : vars.keySet()) {
+
+			// System.out.println("key: " + key);
 			while (result.contains(key)) {
 				String newVal = vars.get(key);
-				if (newVal != null && newVal.startsWith("\"") && newVal.endsWith("\"")) {
+
+				if ((newVal != null) && newVal.startsWith("\"") && newVal.endsWith("\"")) {
 					newVal = newVal.substring(1, newVal.length() - 1);
 				}
-				//System.out.println("Replacing with: " + newVal);
-        result = result.replace(key, newVal);
-      } // end of while (result.contains(key))
-    } // end of for ()
-		if (lastReceived == null) {
-			return result;
-		}
-		//System.out.println("lastReceived: " + lastReceived.toString());
-		Map<String, String> attrs = lastReceived.getAttributes();
-		//System.out.println("Attributes: " + attrs.toString());
-		Matcher m = p.matcher(result);
-		while (m.matches()) {
-			String att = m.group(1);
-			String val = attrs.get(att);
-			//System.out.println("Found attribute to replace: " + att + ", value: " + val);
-			result = result.replaceAll("@\\{"+att+"\\}", val);
-			//System.out.println("Replaced string: " + result);
-			m = p.matcher(result);
-		}
+
+				// System.out.println("Replacing with: " + newVal);
+				result = result.replace(key, newVal);
+			}    // end of while (result.contains(key))
+		}      // end of for ()
+
+		for (String key : test_variables.keySet()) {
+
+			// System.out.println("key: " + key);
+			while (result.contains(key)) {
+
+				// System.out.println("result: " + result + ", contains key: " + key);
+				String newVal = test_variables.get(key);
+
+				if ((newVal != null) && newVal.startsWith("\"") && newVal.endsWith("\"")) {
+					newVal = newVal.substring(1, newVal.length() - 1);
+				}
+
+				if (newVal != null) {
+
+					// System.out.println("Replacing with: " + newVal);
+					result = result.replace(key, newVal);
+				} else {
+					break;
+				}
+			}    // end of while (result.contains(key))
+		}      // end of for ()
+
+		// if (lastReceived == null) {
+//  return result;
+//    }
+//
+//    // System.out.println("lastReceived: " + lastReceived.toString());
+//    Map<String, String> attrs = lastReceived.getAttributes();
+//
+//    // System.out.println("Attributes: " + attrs.toString());
+//    Matcher m = p.matcher(result);
+//
+//    while (m.matches()) {
+//  String att = m.group(1);
+//  String val = attrs.get(att);
+//
+//  // System.out.println("Found attribute to replace: " + att + ", value: " + val);
+//  result = result.replaceAll("@\\{" + att + "\\}", val);
+//
+//  // System.out.println("Replaced string: " + result);
+//  m = p.matcher(result);
+//    }
 		return result;
 	}
-
-	@Override
-	public void release() {
-		try {
-			XMLIO io = (XMLIO)params.get("socketxmlio");
-			io.close();
-		} catch (Exception e) {
-			//e.printStackTrace();
-		}
-	}
-
-  /**
-   * Describe <code>getResultCode</code> method here.
-   *
-   * @return an <code>int</code> value
-   */
-	@Override
-  public ResultCode getResultCode() {
-    return resultCode;
-  }
-
-	@Override
-  public String getResultMessage() {
-    switch (resultCode) {
-    case PROCESSING_EXCEPTION:
-			if (fullExceptionStack) {
-				return getClass().getName() + ", " +
-					resultCode.getMessage() + exception.toString() + "\n"
-					+ TestUtil.stack2String(exception)
-					+ error_message;
-			} else {
-				return getClass().getName() + ", " + exception.getMessage()
-					+ error_message;
-			}
-    default:
-      return resultCode.getMessage()
-				+ ", "
-				+ error_message;
-    } // end of switch (resultCode)
-  }
-
-	@Override
-  public void init(final Params params, Map<String, String> vars) {
-		super.init(params, vars);
-    this.params = params;
-		this.vars = vars;
-		//System.out.println(params.toString());
-		//System.out.println(vars.toString());
-		if (stanzas_buff == null) {
-			user_name = params.get("-user-name", user_name);
-			user_resr = params.get("-user-resr", user_resr);
-			user_emil = params.get("-user-emil", user_emil);
-			hostname = params.get("-host", hostname);
-			cdata = params.get("-cdata", cdata);
-			initial_presence = params.get("-initial-presence", initial_presence);
-			String name = JIDUtils.getNodeNick(user_name);
-			if (name == null || name.equals("")) {
-				jid = user_name + "@" + hostname + "/" + user_resr;
-				id = user_name + "@" + hostname;
-			} else {
-				jid = user_name + "/" + user_resr;
-				id = user_name;
-			} // end of else
-			to = params.get("-to-jid", to);
-			timeoutOk = params.containsKey("-time-out-ok");
-			fullExceptionStack = params.containsKey("-full-stack-trace");
-			source_file = params.get("-source-file", source_file);
-			stanzas_buff = new LinkedList<StanzaEntry>();
-			String number = params.get("-number", "");
-
-			Map<String, String> replaces = new HashMap<String, String>();
-			replaces.put("$(from-jid)", jid);
-			replaces.put("$(from-id)", id);
-			replaces.put("$(to-jid)", to);
-			replaces.put("$(to-id)", JIDUtils.getNodeID(to));
-			replaces.put("$(to-hostname)", JIDUtils.getNodeHost(to));
-			replaces.put("$(hostname)", hostname);
-			replaces.put("$(number)", number);
-			replaces.put("$(cdata)", cdata);
-
-			this.scriptFileLoader =
-        new ScriptFileLoader(source_file, stanzas_buff, replaces);
-			this.scriptFileLoader.loadSourceFile();
-		//	loadSourceFile(source_file);
-			// 		repeat_max = params.get("-repeat-script", repeat_max);
-			// 		repeat_wait = params.get("-repeat-wait", repeat_wait);
-		}
-  }
+}    // TestCommon
 
 
-	private static Element[] parseXMLData(String data) {
-
-		// Replace a few "variables"
-
-		DomBuilderHandler domHandler = new DomBuilderHandler();
-		parser.parse(domHandler, data.toCharArray(), 0, data.length());
-		Queue<Element> elems = domHandler.getParsedElements();
-		if (elems != null && elems.size() > 0) {
-			return elems.toArray(new Element[elems.size()]);
-		}
-		return null;
-	}
+//~ Formatted in Sun Code Convention
 
 
-}// TestCommon
+//~ Formatted by Jindent --- http://www.jindent.com
