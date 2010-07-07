@@ -48,13 +48,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class TestEmpty implements TestIfc {
 
 	/**
-	 * Test variables is data gathered from stanzas received from the server.
+	 * Stanza variables are gathered from stanzas received from the server.
 	 * In the 'expect' statement you mark location of such data with @{var-name}
 	 * it is stored then in this Map and all occurrences of @{var-name} in
 	 * 'send' and subsequent 'expect' stanzas gets replaced with information
 	 * received from the server.
 	 */
-	protected static final Map<String, String> test_variables = new ConcurrentHashMap<String,
+	protected static final Map<String, String> stanza_variables = new ConcurrentHashMap<String,
 		String>(10, 0.25f, 2);
 
 	//~--- fields ---------------------------------------------------------------

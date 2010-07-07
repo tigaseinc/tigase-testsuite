@@ -328,7 +328,7 @@ public class TestCommon extends TestEmpty {
 							for (int idx = 0; idx < all_results.size(); idx++) {
 								Element lastReceived = all_results.get(idx);
 								EqualError res = ElementUtil.equalElemsDeep(entry.getStanza()[exp],
-									lastReceived, test_variables);
+									lastReceived, stanza_variables);
 
 								found = res.equals;
 								eq_msg += (found ? "" : res.message + "\n");
@@ -406,13 +406,13 @@ public class TestCommon extends TestEmpty {
 			}    // end of while (result.contains(key))
 		}      // end of for ()
 
-		for (String key : test_variables.keySet()) {
+		for (String key : stanza_variables.keySet()) {
 
 			// System.out.println("key: " + key);
 			while (result.contains(key)) {
 
 				// System.out.println("result: " + result + ", contains key: " + key);
-				String newVal = test_variables.get(key);
+				String newVal = stanza_variables.get(key);
 
 				if ((newVal != null) && newVal.startsWith("\"") && newVal.endsWith("\"")) {
 					newVal = newVal.substring(1, newVal.length() - 1);

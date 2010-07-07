@@ -60,12 +60,12 @@ public abstract class ElementUtil {
 	 *
 	 * @param expected
 	 * @param received
-	 * @param test_vars
+	 * @param stanza_variables
 	 *
 	 * @return
 	 */
 	public static boolean checkTestVariable(String expected, String received,
-			Map<String, String> test_vars) {
+			Map<String, String> stanza_variables) {
 
 		// Maybe this is a test variable?
 		if (expected.startsWith("@{")) {
@@ -73,21 +73,21 @@ public abstract class ElementUtil {
 			// System.out.println("Found a test variable: " + expected);
 			// Yes, this is a test variable
 			// Do we have such a variable already?
-			String test_var = test_vars.get(expected);
+			String stanza_var = stanza_variables.get(expected);
 
-			if (test_var == null) {
+			if (stanza_var == null) {
 
 				// System.out.println("Test variable does not exist yet, adding: (" + expected + ", "
 				// + received + ")");
 				// No, it is not there yet, so we add a new one
-				test_vars.put(expected, received);
+				stanza_variables.put(expected, received);
 			} else {
 
 				// System.out.println("Test variable exist already, comparing: " + test_var + " and "
 				// + received);
 				// The variable is already set, then we have to check whether the
 				// received value matches it.
-				if ( !test_var.equals(received)) {
+				if ( !stanza_var.equals(received)) {
 					return false;
 				}
 			}
@@ -158,12 +158,12 @@ public abstract class ElementUtil {
 	 *
 	 * @param el1
 	 * @param el2
-	 * @param test_vars
+	 * @param stanza_variables
 	 *
 	 * @return
 	 */
 	public static EqualError equalElems(Element el1, Element el2,
-			Map<String, String> test_vars) {
+			Map<String, String> stanza_variables) {
 		if ( !el1.getName().equals(el2.getName())) {
 			return new EqualError(false,
 					"Element names are different: " + el1.getName() + " and " + el2.getName());
@@ -182,7 +182,7 @@ public abstract class ElementUtil {
 
 				String atval1 = attrs1.get(key1);
 
-				if ( !atval1.equals(atval2) &&!checkTestVariable(atval1, atval2, test_vars)) {
+				if ( !atval1.equals(atval2) &&!checkTestVariable(atval1, atval2, stanza_variables)) {
 					return new EqualError(false,
 							"Element: " + el2.getName() + " different value for attribute: " + key1 + ", "
 								+ attrs1.get(key1) + " != " + atval2);
@@ -206,7 +206,7 @@ public abstract class ElementUtil {
 
 			cdata2 = cdata2.trim();
 
-			if ( !cdata1.equals(cdata2) &&!checkTestVariable(cdata1, cdata2, test_vars)) {
+			if ( !cdata1.equals(cdata2) &&!checkTestVariable(cdata1, cdata2, stanza_variables)) {
 				return new EqualError(false,
 						"Different CData for element: " + el2.getName() + ", expected: " + cdata1
 							+ ", found: " + cdata2);
@@ -266,13 +266,13 @@ public abstract class ElementUtil {
 	 *
 	 * @param el1
 	 * @param el2
-	 * @param test_vars
+	 * @param stanza_variables
 	 *
 	 * @return
 	 */
 	public static EqualError equalElemsDeep(Element el1, Element el2,
-			Map<String, String> test_vars) {
-		EqualError result = equalElems(el1, el2, test_vars);
+			Map<String, String> stanza_variables) {
+		EqualError result = equalElems(el1, el2, stanza_variables);
 
 		if ( !result.equals) {
 			return result;
@@ -294,7 +294,7 @@ public abstract class ElementUtil {
 			boolean found_child = false;
 
 			for (Element child2 : children2) {
-				found_child |= equalElemsDeep(child1, child2, test_vars).equals;
+				found_child |= equalElemsDeep(child1, child2, stanza_variables).equals;
 			}    // end of for (Element child2: children2)
 
 			if ( !found_child) {
