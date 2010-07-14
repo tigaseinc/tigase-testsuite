@@ -229,6 +229,19 @@ public abstract class TestEmpty implements TestIfc {
 //    history = new LinkedList<HistoryEntry>();
 //  } // end of if (collectHistory)
 		deb = params.containsKey("-debug");
+
+		// Let's check the stanza variables and apply all of them wherever needed
+		for (Map.Entry<String, Object> param : params.entrySet()) {
+			for (Map.Entry<String, String> stanza_var : stanza_variables.entrySet()) {
+				if ((param.getValue() != null)
+						&& param.getValue().toString().contains(stanza_var.getKey())) {
+					String new_param_val = param.getValue().toString().replace(stanza_var.getKey(),
+						stanza_var.getValue());
+
+					param.setValue(new_param_val);
+				}
+			}
+		}
 	}
 
 	/**
