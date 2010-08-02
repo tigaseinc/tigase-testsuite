@@ -30,7 +30,7 @@ expect: {
     <item jid="$(to-id)" subscription="both"/>
   </query>
 </iq>
-<iq id="dr-1" type="set">
+<iq id="@{subscr-test-id11}" type="set">
   <query xmlns="jabber:iq:roster">
     <item name="dynrost" subscription="both" jid="dynrost@test-d">
       <group>test group</group>
@@ -44,7 +44,7 @@ expect: {
     <item jid="$(to-id)" subscription="both"/>
   </query>
 </iq>
-<iq id="dr-1" type="set">
+<iq id="@{subscr-test-id11}" type="set">
   <query xmlns="jabber:iq:roster">
     <item name="dynrost" subscription="both" jid="dynrost@test-d">
       <group>test group</group>
@@ -114,7 +114,7 @@ expect: {
 </iq>
 }
 expect: {
-<iq id="dr-1" type="set">
+<iq id="@{subscr-test-id12}" type="set">
   <query xmlns="jabber:iq:roster">
     <item name="dynrost" subscription="both" jid="dynrost@test-d">
       <group>test group</group>
