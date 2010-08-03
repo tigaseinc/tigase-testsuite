@@ -30,7 +30,6 @@ import tigase.xml.Element;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -229,6 +228,17 @@ public abstract class TestEmpty implements TestIfc {
 //    history = new LinkedList<HistoryEntry>();
 //  } // end of if (collectHistory)
 		deb = params.containsKey("-debug");
+
+		// We can reset stanza variables here:
+		String reset_stanza_vars = (String) params.get("-reset-stanza-vars");
+
+		if (reset_stanza_vars != null) {
+			String[] stanza_vars = reset_stanza_vars.split(",");
+
+			for (String var : stanza_vars) {
+				stanza_variables.remove(var);
+			}
+		}
 
 		// Let's check the stanza variables and apply all of them wherever needed
 		for (Map.Entry<String, Object> param : params.entrySet()) {

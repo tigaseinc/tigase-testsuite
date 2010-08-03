@@ -383,47 +383,47 @@ Global settings:
     -source-file = "tests/data/TesterMessage.cot"
   } >> Send a message to $(tester-user) user to check whether it responds. <<
 
-  Test 36@common: {
-#      -debug
-    $(number) = 10
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
-    -source-file = "tests/data/TesterGenTraffic.cot"
-  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+ Test 36@common: {
+   #     -debug
+   $(number) = 10
+   -to-jid = "$(tester-user)@srecv.$(server-host)"
+   -source-file = "tests/data/TesterGenTraffic.cot"
+ } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 37@common: {
-#      -debug
-    $(number) = 100
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
-    -source-file = "tests/data/TesterGenTraffic.cot"
-  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+ Test 37@common: {
+   #     -debug
+   $(number) = 100
+   -to-jid = "$(tester-user)@srecv.$(server-host)"
+   -source-file = "tests/data/TesterGenTraffic.cot"
+ } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 38@common: {
-#      -debug
-    $(number) = 1000
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
-    -source-file = "tests/data/TesterGenTraffic.cot"
-  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+ Test 38@common: {
+   #     -debug
+   $(number) = 1000
+   -to-jid = "$(tester-user)@srecv.$(server-host)"
+   -source-file = "tests/data/TesterGenTraffic.cot"
+ } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 39@common: {
-#      -debug
-    $(number) = 10000
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
-    -source-file = "tests/data/TesterGenTraffic.cot"
-    # We expect timeout here as a result of queue overfill, the point is to check whether
-    # the server continues to run after that correctly
-    -time-out-ok
-  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+ Test 39@common: {
+   #     -debug
+   $(number) = 10000
+   -to-jid = "$(tester-user)@srecv.$(server-host)"
+   -source-file = "tests/data/TesterGenTraffic.cot"
+   # We expect timeout here as a result of queue overfill, the point is to check whether
+   # the server continues to run after that correctly
+   -time-out-ok
+ } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
-  Test 40@common: {
-#      -debug
-    -socket-wait = 30000
-    $(number) = 100000
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
-    -source-file = "tests/data/TesterGenTraffic.cot"
-    # We expect timeout here to happen as a result of queues overfill, the point is to check whether
-    # the server continues to run after that
-    -time-out-ok
-  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
+ Test 40@common: {
+   #     -debug
+   -socket-wait = 30000
+   $(number) = 100000
+   -to-jid = "$(tester-user)@srecv.$(server-host)"
+   -source-file = "tests/data/TesterGenTraffic.cot"
+   # We expect timeout here to happen as a result of queues overfill, the point is to check whether
+   # the server continues to run after that
+   -time-out-ok
+ } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
   Test 41@common: Dynamic roster storage test {
     -source-file = "tests/data/DynamicRosterStorageTest.cot"
@@ -482,11 +482,11 @@ Admin commands Tests:
 {
   -loop = 1
 
-   RosterMan 1@common: Register user mgmt Ad-Hoc script {
-     -user-name = $(stats-user)
-     -user-pass = $(stats-pass)
-     -source-file = "tests/data/AdHocUsrMgmtRegister.cot"
-   } >> Registration of user script managing local users through Ad-Hoc <<
+#   RosterMan 1@common: Register user mgmt Ad-Hoc script {
+#     -user-name = $(stats-user)
+#     -user-pass = $(stats-pass)
+#     -source-file = "tests/data/AdHocUsrMgmtRegister.cot"
+#   } >> Registration of user script managing local users through Ad-Hoc <<
 
 #   RosterMan 2@common: Ad-Hoc user mgmt - Adding user {
 #     -user-name = $(stats-user)
@@ -509,17 +509,17 @@ Admin commands Tests:
 #     -source-file = "tests/data/AdHocUsrMgmtRemoveUser.cot"
 #   } >> Removing a user through Ad-Hoc user management <<
 
-   RosterMan 5@common: Ad-Hoc user mgmt - Check removed user {
-     -user-name = $(def-user)
-     -user-pass = $(def-user-pass)
-     -source-file = "tests/data/AdHocUsrMgmtRemoveUserCheck.cot"
-   } >> Checking if user was removed properly using Ad-Hoc <<
+#   RosterMan 5@common: Ad-Hoc user mgmt - Check removed user {
+#     -user-name = $(def-user)
+#     -user-pass = $(def-user-pass)
+#     -source-file = "tests/data/AdHocUsrMgmtRemoveUserCheck.cot"
+#   } >> Checking if user was removed properly using Ad-Hoc <<
 
-   RosterMan 6@common: Ad-Hoc user mgmt - Non existing user check {
-     -user-name = $(stats-user)
-     -user-pass = $(stats-pass)
-     -source-file = "tests/data/AdHocUsrMgmtNonExistingUser.cot"
-   } >> Managing non-existing user through Ad-Hoc user management <<
+#   RosterMan 6@common: Ad-Hoc user mgmt - Non existing user check {
+#     -user-name = $(stats-user)
+#     -user-pass = $(stats-pass)
+#     -source-file = "tests/data/AdHocUsrMgmtNonExistingUser.cot"
+#   } >> Managing non-existing user through Ad-Hoc user management <<
 
 # RosterMan 7: {
 #     -multi-thread
@@ -583,7 +583,7 @@ VHosts Tests:
     -user-pass = $(stats-pass)
     -cdata = $(vhost-1)
     -number = 3
-    -source-file = "tests/data/VHostUpdate.cot"
+    -source-file = "tests/data/VHostAdd.cot"
   } >> Adding VHost '$(vhost-1)' from admin account <<
 
   VHost 8@common: {
@@ -640,7 +640,7 @@ VHosts Tests:
     -user-name = $(stats-user)
     -user-pass = $(stats-pass)
     -cdata = "vhost-$(loop)"
-    -source-file = "tests/data/VHostRemoveSimple.cot"
+    -source-file = "tests/data/VHostRemove.cot"
   } >> Removing $(vhosts-number) VHosts from admin account <<
 
   VHost 16@common: {
@@ -694,7 +694,10 @@ Bosh Tests:
   { -user-name=$(stats-user) -user-pass=$(stats-pass) }
   >> XEP-0039 Statistics Gathering. <<
 
-  Bosh 12@common: { -source-file = "tests/data/RosterTest.cot" }
+  Bosh 12@common: { 
+    -source-file = "tests/data/RosterTest.cot" 
+    -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
+  }
   >> Roster management test <<
 
   Bosh 13@privacy-lists: >> Privacy lists management test <<
@@ -735,6 +738,7 @@ Bosh Tests:
   Bosh 21: {
     -multi-thread
     -delay = 250
+    -reset-stanza-vars="@{subscr-test-id1},@{subscr-test-id2},@{subscr-test-id3},@{subscr-test-id4}"
 
     Subscription receive@common: {
       -user-name   = $(def-user)
@@ -777,6 +781,7 @@ Bosh Tests:
   Bosh 23: {
     -multi-thread
     -delay = 250
+    -reset-stanza-vars="@{subscr-test-id7},@{subscr-test-id8},@{subscr-test-id9},@{subscr-test-id10}"
 
     Subscription receive@common: {
       -user-name   = $(def-user)
@@ -863,7 +868,10 @@ Bosh keep-alive Tests:
   { -user-name=$(stats-user) -user-pass=$(stats-pass) }
   >> XEP-0039 Statistics Gathering. <<
 
-  Bosh keep-alive 12@common: { -source-file = "tests/data/RosterTest.cot" }
+  Bosh keep-alive 12@common: { 
+    -source-file = "tests/data/RosterTest.cot" 
+    -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
+  }
   >> Roster management test <<
 
   Bosh keep-alive 13@privacy-lists: >> Privacy lists management test <<
@@ -904,6 +912,7 @@ Bosh keep-alive Tests:
   Bosh keep-alive 21: {
     -multi-thread
     -delay = 250
+    -reset-stanza-vars="@{subscr-test-id1},@{subscr-test-id2},@{subscr-test-id3},@{subscr-test-id4}"
 
     Subscription receive@common: {
       -user-name   = $(def-user)
@@ -925,6 +934,7 @@ Bosh keep-alive Tests:
   Bosh keep-alive 22: {
     -multi-thread
     -delay = 250
+    -reset-stanza-vars="@{subscr-test-id5},@{subscr-test-id6}"
 
     Subscription receive@common: {
       -user-name   = $(def-user)
@@ -946,6 +956,7 @@ Bosh keep-alive Tests:
   Bosh keep-alive 23: {
     -multi-thread
     -delay = 250
+    -reset-stanza-vars="@{subscr-test-id7},@{subscr-test-id8},@{subscr-test-id9},@{subscr-test-id10}"
 
     Subscription receive@common: {
       -user-name   = $(def-user)
@@ -1055,15 +1066,30 @@ Multi thread tests:
     -loop = 5
     -source-file = "tests/data/RosterTest.cot"
 
-    Roster@common: { -user-name = "multi-reg_1_$(loop)" }
+    Roster@common: {
+      -user-name = "multi-reg_1_$(loop)"
+      -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
+    }
     >> Roster management test <<
-    Roster@common: { -user-name = "multi-reg_2_$(loop)" }
+    Roster@common: { 
+      -user-name = "multi-reg_2_$(loop)"
+      -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
+    }
     >> Roster management test <<
-    Roster@common: { -user-name = "multi-reg_3_$(loop)" }
+    Roster@common: {
+      -user-name = "multi-reg_3_$(loop)"
+      -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
+    }
     >> Roster management test <<
-    Roster@common: { -user-name = "multi-reg_4_$(loop)" }
+    Roster@common: {
+      -user-name = "multi-reg_4_$(loop)"
+      -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
+    }
     >> Roster management test <<
-    Roster@common: { -user-name = "multi-reg_5_$(loop)" }
+    Roster@common: {
+      -user-name = "multi-reg_5_$(loop)"
+      -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
+    }
     >> Roster management test <<
   } >> Multi-thread test Roster management functions <<
 
