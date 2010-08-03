@@ -21,15 +21,15 @@
 ##
 send: {
 <iq type="set" to="vhost-man@$(hostname)" id="aacaa">
-	<command xmlns="http://jabber.org/protocol/commands" node="VHOSTS_REMOVE"/>
+	<command xmlns="http://jabber.org/protocol/commands" node="comp-repo-item-remove"/>
 </iq>
 }
 expect: {
 <iq from="vhost-man@$(hostname)" type="error" to="$(from-jid)" id="aacaa">
-	<command xmlns="http://jabber.org/protocol/commands" node="VHOSTS_REMOVE"/>
-	<error type="auth" code="401">
-		<not-authorized xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
-		<text xmlns="urn:ietf:params:xml:ns:xmpp-stanzas" xml:lang="en" >You are not authorized for this action.</text>
-	</error>
+	<command xmlns="http://jabber.org/protocol/commands" node="comp-repo-item-remove"/>
+  <error type="auth" code="403">
+    <forbidden xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
+    <text xmlns="urn:ietf:params:xml:ns:xmpp-stanzas" xml:lang="en">Only Administrator can call the command.</text>
+  </error>
 </iq>
 }

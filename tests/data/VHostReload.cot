@@ -21,16 +21,15 @@
 ##
 send: {
 <iq type="set" to="vhost-man@$(hostname)" id="aac8a" >
-		<command xmlns="http://jabber.org/protocol/commands" node="VHOSTS_RELOAD"/>
+		<command xmlns="http://jabber.org/protocol/commands" node="comp-repo-reload"/>
 </iq>
 }
 expect: {
 <iq from="vhost-man@$(hostname)" type="result" to="$(from-jid)" id="aac8a" >
-	<command xmlns="http://jabber.org/protocol/commands" status="completed" node="VHOSTS_RELOAD">
+	<command xmlns="http://jabber.org/protocol/commands" status="completed" node="comp-repo-reload">
 		<x xmlns="jabber:x:data" type="result">
-			 <field type="fixed" var="Note">
-			 				<value>Current number of VHosts: $(number)</value>
-			 </field>
+<field type="text-multi" var="Script result" >
+</field>
 		</x>
 	</command>
 </iq>
