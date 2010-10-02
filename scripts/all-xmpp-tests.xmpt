@@ -60,6 +60,7 @@ $(number) = 1
 
 #-debug
 -debug-on-error
+-stop-on-fail = true
 
 # Init 0@user-register: {
 # -user-name=$(stats-user) -user-pass=$(stats-pass) -no-record
@@ -101,6 +102,12 @@ Global settings:
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterMessage10.cot"
   } >> Send a message to $(tester-user) user to check whether it responds. <<
+
+  Test PO@common: Packet order test {
+    -to-jid = $(server-host)
+    -source-file = "tests/data/PacketOrderTest.cot"
+  } >> The test perform check on the packet order processing.
+       Depending on the processors thread pool used an error should be generated or success. <<
 
   Test 11@msg-send: { -to-jid = $(self) }
     >> Send a message to self user and don't wait for response <<
