@@ -1,0 +1,35 @@
+send: {
+<iq type="set" to="sess-man@$(to-hostname)" id="add-user-1" >
+  <command xmlns="http://jabber.org/protocol/commands" node="add-user">
+    <x xmlns="jabber:x:data" type="submit">
+      <field type="hidden" var="FORM_TYPE">
+        <value>http://jabber.org/protocol/admin</value>
+      </field>
+      <field type="jid-single" var="accountjid">
+        <value>test12345</value>
+      </field>
+      <field type="text-private" var="password">
+        <value>test12345</value>
+      </field>
+      <field type="text-private" var="password-verify">
+        <value>test12345</value>
+      </field>
+      <field type="text-single" var="email">
+      <value>test12345@test-d</value>
+      </field>
+    </x>
+  </command>
+</iq>
+}
+
+expect: {
+<iq type="result" id="add-user-1">
+  <command xmlns="http://jabber.org/protocol/commands" status="completed" node="add-user">
+    <x xmlns="jabber:x:data" type="result">
+      <field type="fixed" var="Note">
+        <value>Operation successful</value>
+      </field>
+    </x>
+  </command>
+</iq>
+}
