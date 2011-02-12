@@ -23,7 +23,7 @@ send: {
 <iq type="get" id="roster_1" >
   <query xmlns="jabber:iq:roster"/>
 </iq>
-<iq type="get" id="1">
+<iq type="get" id="vcard123">
   <vCard xmlns='vcard-temp'/>
 </iq>
 <iq to='$(to-hostname)' id='ping123' type='get'>
@@ -34,74 +34,74 @@ send: {
     <exodus xmlns="exodus:prefs"/>
   </query>
 </iq>
-<presence id="1" to="echo@devel.tigase.org"/>
-<iq type="get" id="21" to="echo@devel.tigase.org">
+<presence id="1" to="echo@$(to-hostname)"/>
+<iq type="get" id="21" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="2" to="echo@devel.tigase.org">
+<iq type="get" id="2" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
-<presence id="3" to="echo@devel.tigase.org"/>
-<iq type="get" id="22" to="echo@devel.tigase.org">
+<presence id="3" to="echo@$(to-hostname)"/>
+<iq type="get" id="22" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="4" to="echo@devel.tigase.org">
+<iq type="get" id="4" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
-<presence id="5" to="echo@devel.tigase.org"/>
-<iq type="get" id="23" to="echo@devel.tigase.org">
+<presence id="5" to="echo@$(to-hostname)"/>
+<iq type="get" id="23" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="6" to="echo@devel.tigase.org">
+<iq type="get" id="6" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
-<presence id="7" to="echo@devel.tigase.org"/>
-<iq type="get" id="24" to="echo@devel.tigase.org">
+<presence id="7" to="echo@$(to-hostname)"/>
+<iq type="get" id="24" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="8" to="echo@devel.tigase.org">
+<iq type="get" id="8" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
-<presence id="9" to="echo@devel.tigase.org"/>
-<iq type="get" id="25" to="echo@devel.tigase.org">
+<presence id="9" to="echo@$(to-hostname)"/>
+<iq type="get" id="25" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="10" to="echo@devel.tigase.org">
+<iq type="get" id="10" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
-<presence id="11" to="echo@devel.tigase.org"/>
-<iq type="get" id="26" to="echo@devel.tigase.org">
+<presence id="11" to="echo@$(to-hostname)"/>
+<iq type="get" id="26" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="12" to="echo@devel.tigase.org">
+<iq type="get" id="12" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
-<presence id="13" to="echo@devel.tigase.org"/>
-<iq type="get" id="27" to="echo@devel.tigase.org">
+<presence id="13" to="echo@$(to-hostname)"/>
+<iq type="get" id="27" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="14" to="echo@devel.tigase.org">
+<iq type="get" id="14" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
-<presence id="15" to="echo@devel.tigase.org"/>
-<iq type="get" id="28" to="echo@devel.tigase.org">
+<presence id="15" to="echo@$(to-hostname)"/>
+<iq type="get" id="28" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="16" to="echo@devel.tigase.org">
+<iq type="get" id="16" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
-<presence id="17" to="echo@devel.tigase.org"/>
-<iq type="get" id="29" to="echo@devel.tigase.org">
+<presence id="17" to="echo@$(to-hostname)"/>
+<iq type="get" id="29" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="18" to="echo@devel.tigase.org">
+<iq type="get" id="18" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
-<presence id="19" to="echo@devel.tigase.org"/>
-<iq type="get" id="30" to="echo@devel.tigase.org">
+<presence id="19" to="echo@$(to-hostname)"/>
+<iq type="get" id="30" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="20" to="echo@devel.tigase.org">
+<iq type="get" id="20" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
@@ -122,7 +122,7 @@ expect: {
 </iq>
 }
 expect: {
-<iq type="result" id="1">
+<iq type="result" id="vcard123">
   <vCard xmlns='vcard-temp'/>
 </iq>
 }
@@ -137,132 +137,132 @@ expect: {
 </iq>
 }
 expect: {
-<presence id="1" from="echo@devel.tigase.org"/>
+<presence id="1" from="echo@$(to-hostname)"/>
 }
 expect: {
-<iq type="get" id="21" from="echo@devel.tigase.org">
+<iq type="get" id="21" from="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
 }
 expect: {
-<iq type="get" id="2" from="echo@devel.tigase.org">
+<iq type="get" id="2" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
 expect: {
-<presence id="3" from="echo@devel.tigase.org"/>
+<presence id="3" from="echo@$(to-hostname)"/>
 }
 expect: {
-<iq type="get" id="22" from="echo@devel.tigase.org">
+<iq type="get" id="22" from="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/> 
 </iq> 
 }
 expect: {
-<iq type="get" id="4" from="echo@devel.tigase.org">
+<iq type="get" id="4" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
 expect: {
-<presence id="5" from="echo@devel.tigase.org"/>
+<presence id="5" from="echo@$(to-hostname)"/>
 }
 expect: {
-<iq type="get" id="23" from="echo@devel.tigase.org">
+<iq type="get" id="23" from="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/> 
 </iq> 
 }
 expect: {
-<iq type="get" id="6" from="echo@devel.tigase.org">
+<iq type="get" id="6" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
 expect: {
-<presence id="7" from="echo@devel.tigase.org"/>
+<presence id="7" from="echo@$(to-hostname)"/>
 }
 expect: {
-<iq type="get" id="24" from="echo@devel.tigase.org">
+<iq type="get" id="24" from="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/> 
 </iq> 
 }
 expect: {
-<iq type="get" id="8" from="echo@devel.tigase.org">
+<iq type="get" id="8" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
 expect: {
-<presence id="9" from="echo@devel.tigase.org"/>
+<presence id="9" from="echo@$(to-hostname)"/>
 }
 expect: {
-<iq type="get" id="25" from="echo@devel.tigase.org">
+<iq type="get" id="25" from="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/> 
 </iq> 
 }
 expect: {
-<iq type="get" id="10" from="echo@devel.tigase.org">
+<iq type="get" id="10" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
 expect: {
-<presence id="11" from="echo@devel.tigase.org"/>
+<presence id="11" from="echo@$(to-hostname)"/>
 }
 expect: {
-<iq type="get" id="26" from="echo@devel.tigase.org">
+<iq type="get" id="26" from="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/> 
 </iq> 
 }
 expect: {
-<iq type="get" id="12" from="echo@devel.tigase.org">
+<iq type="get" id="12" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
 expect: {
-<presence id="13" from="echo@devel.tigase.org"/>
+<presence id="13" from="echo@$(to-hostname)"/>
 }
 expect: {
-<iq type="get" id="27" from="echo@devel.tigase.org">
+<iq type="get" id="27" from="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/> 
 </iq> 
 }
 expect: {
-<iq type="get" id="14" from="echo@devel.tigase.org">
+<iq type="get" id="14" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
 expect: {
-<presence id="15" from="echo@devel.tigase.org"/>
+<presence id="15" from="echo@$(to-hostname)"/>
 }
 expect: {
-<iq type="get" id="28" from="echo@devel.tigase.org">
+<iq type="get" id="28" from="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/> 
 </iq> 
 }
 expect: {
-<iq type="get" id="16" from="echo@devel.tigase.org">
+<iq type="get" id="16" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
 expect: {
-<presence id="17" from="echo@devel.tigase.org"/>
+<presence id="17" from="echo@$(to-hostname)"/>
 }
 expect: {
-<iq type="get" id="29" from="echo@devel.tigase.org">
+<iq type="get" id="29" from="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/> 
 </iq> 
 }
 expect: {
-<iq type="get" id="18" from="echo@devel.tigase.org">
+<iq type="get" id="18" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
 expect: {
-<presence id="19" from="echo@devel.tigase.org"/>
+<presence id="19" from="echo@$(to-hostname)"/>
 }
 expect: {
-<iq type="get" id="30" from="echo@devel.tigase.org">
+<iq type="get" id="30" from="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/> 
 </iq> 
 }
 expect: {
-<iq type="get" id="20" from="echo@devel.tigase.org">
+<iq type="get" id="20" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }

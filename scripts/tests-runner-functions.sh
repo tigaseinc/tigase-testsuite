@@ -155,7 +155,7 @@ function run_test() {
 			local _extra_params="-source-file ${_extra_par}"
 			;;
 		other)
-			local _output_file="${_output_dir}/other-test.html"
+			local _output_file="${_output_dir}/"`basename -s .xmpt ${_extra_par}`".html"
 			local _script_file="${_extra_par}"
 			server_timeout=15
 			;;
@@ -175,6 +175,7 @@ function run_test() {
 	fs_prepare_files
 
 	if [ -z "${SKIP_DB_RELOAD}" ] ; then
+	  echo "Re-creating database: ${_database}"
 		case ${_database} in
 			mysql|mysql-auth|sm-mysql|mysql-custom)
 				db_reload_mysql

@@ -28,13 +28,13 @@
 
 ### Send ping to "this" server where the test user has got his account:
 send: {
-<iq to='$(to-hostname)' id='ping123' type='get'>
+<iq to='$(to-hostname)' id='ping321' type='get'>
   <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
 expect:
 {
-<iq from='$(to-hostname)' id='ping123' type='result'/>
+<iq from='$(to-hostname)' id='ping321' type='result'/>
 }
 
 ### Send a ping to virtual domain of the server. Assuming test environment
