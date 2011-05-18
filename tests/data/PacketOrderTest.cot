@@ -29,7 +29,7 @@ send: {
 <iq to='$(to-hostname)' id='ping123' type='get'>
   <ping xmlns='urn:xmpp:ping'/>
 </iq>
-<iq type="get" id="1">
+<iq type="get" id="exodus123">
   <query xmlns="jabber:iq:private">
     <exodus xmlns="exodus:prefs"/>
   </query>
@@ -38,7 +38,7 @@ send: {
 <iq type="get" id="21" to="echo@$(to-hostname)">
  <default-handler xmlns='tigase:tts'/>
 </iq>
-<iq type="get" id="2" to="echo@$(to-hostname)">
+<iq type="get" id="ping222" to="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 <presence id="3" to="echo@$(to-hostname)"/>
@@ -130,7 +130,7 @@ expect: {
 <iq from='$(to-hostname)' id='ping123' type='result'/>
 }
 expect: {
-<iq type="result" id="1">
+<iq type="result" id="exodus123">
   <query xmlns="jabber:iq:private">
     <exodus xmlns="exodus:prefs"/>
   </query>
@@ -145,7 +145,7 @@ expect: {
 </iq>
 }
 expect: {
-<iq type="get" id="2" from="echo@$(to-hostname)">
+<iq type="get" id="ping222" from="echo@$(to-hostname)">
  <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }

@@ -50,6 +50,9 @@ expect: {
 </iq>
 }
 expect: {
+<presence xmlns="jabber:client" from="$(to-id)" type="unsubscribed"/>
+}
+expect: {
 <iq type="set">
   <query xmlns="jabber:iq:roster">
     <item jid="$(to-id)" subscription="none"/>

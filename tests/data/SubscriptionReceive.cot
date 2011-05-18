@@ -70,12 +70,7 @@ expect: {
 </iq>
 }
 expect: {
-<iq type="set">
-  <query xmlns="jabber:iq:roster">
-    <item jid="$(to-id)" subscription="both"/>
-  </query>
-</iq>
-<presence from="$(to-jid)" type="available"/>
+<presence from="$(to-id)" type="subscribed"/>
 }
 expect: {
 <iq type="set">
@@ -83,6 +78,8 @@ expect: {
     <item jid="$(to-id)" subscription="both"/>
   </query>
 </iq>
+}
+expect: {
 <presence from="$(to-jid)" type="available"/>
 }
 

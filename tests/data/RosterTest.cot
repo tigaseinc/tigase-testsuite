@@ -40,16 +40,10 @@ expect: {
 }
 
 send: {
-<iq type="result" id="@{roster-test-id}">
-  <query xmlns="jabber:iq:roster">
-    <item name="dynrost" subscription="both" jid="dynrost@test-d">
-      <group>@{roster-test-group}</group>
-    </item>
-  </query>
-</iq>
+<iq type="result" id="@{roster-test-id}"/>
 <iq type="set" id="roster_2">
   <query xmlns="jabber:iq:roster">
-    <item jid="santa.claus@north.pole" name="claus"/>
+    <item jid="Santa.Claus@north.pole" name="claus"/>
   </query>
 </iq>
 }
@@ -57,7 +51,7 @@ expect: {
 <iq type="result" id="roster_2"/>
 <iq type="set">
   <query xmlns="jabber:iq:roster">
-    <item jid="santa.claus@north.pole" name="claus" subscription="none"/>
+    <item jid="Santa.Claus@north.pole" name="claus" subscription="none"/>
   </query>
 </iq>
 }
@@ -65,7 +59,7 @@ expect: {
 <iq type="result" id="roster_2"/>
 <iq type="set">
   <query xmlns="jabber:iq:roster">
-    <item jid="santa.claus@north.pole" name="claus" subscription="none"/>
+    <item jid="Santa.Claus@north.pole" name="claus" subscription="none"/>
   </query>
 </iq>
 }
@@ -78,7 +72,7 @@ send: {
 expect: {
 <iq type="result" id="roster_3">
   <query xmlns="jabber:iq:roster">
-    <item jid="santa.claus@north.pole" name="claus" subscription="none"/>
+    <item jid="Santa.Claus@north.pole" name="claus" subscription="none"/>
   </query>
 </iq>
 }
@@ -95,7 +89,7 @@ expect: {
 send: {
 <iq type="set" id="roster_4">
   <query xmlns="jabber:iq:roster">
-    <item jid="santa.claus@north.pole" name="claus">
+    <item jid="Santa.Claus@north.pole" name="claus">
 		  <group>guests</group>
 		</item>
   </query>
@@ -105,7 +99,7 @@ expect: {
 <iq type="result" id="roster_4"/>
 <iq type="set">
   <query xmlns="jabber:iq:roster">
-    <item jid="santa.claus@north.pole" name="claus" subscription="none">
+    <item jid="Santa.Claus@north.pole" name="claus" subscription="none">
 		  <group>guests</group>
 		</item>
   </query>
@@ -115,7 +109,7 @@ expect: {
 <iq type="result" id="roster_4"/>
 <iq type="set">
   <query xmlns="jabber:iq:roster">
-    <item jid="santa.claus@north.pole" name="claus" subscription="none">
+    <item jid="Santa.Claus@north.pole" name="claus" subscription="none">
 		  <group>guests</group>
 		</item>
   </query>
@@ -130,7 +124,7 @@ send: {
 expect: {
 <iq type="result" id="roster_5">
   <query xmlns="jabber:iq:roster">
-    <item jid="santa.claus@north.pole" name="claus" subscription="none">
+    <item jid="Santa.Claus@north.pole" name="claus" subscription="none">
 		  <group>guests</group>
 		</item>
   </query>

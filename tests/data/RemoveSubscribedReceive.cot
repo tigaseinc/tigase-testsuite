@@ -63,6 +63,11 @@ expect: {
 expect: {
 <presence from="$(to-jid)" type="unavailable"/>
 }
+
+expect: {
+<presence xmlns="jabber:client" from="$(to-id)" type="unsubscribe"/>
+}
+
 expect: {
 <iq type="set">
   <query xmlns="jabber:iq:roster">
@@ -70,6 +75,11 @@ expect: {
   </query>
 </iq>
 }
+
+expect: {
+<presence xmlns="jabber:client" from="$(to-id)" type="unsubscribed"/>
+}
+
 expect: {
 <iq type="set">
   <query xmlns="jabber:iq:roster">
