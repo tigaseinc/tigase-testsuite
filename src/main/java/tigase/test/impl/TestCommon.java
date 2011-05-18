@@ -406,6 +406,7 @@ public class TestCommon extends TestEmpty {
 			}    // end of while (result.contains(key))
 		}      // end of for ()
 
+		// System.out.println("stanza_variables: " + stanza_variables);
 		for (String key : stanza_variables.keySet()) {
 
 			// System.out.println("key: " + key);
