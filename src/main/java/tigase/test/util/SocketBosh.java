@@ -152,6 +152,7 @@ public class SocketBosh extends SocketXMLIO {
 
 	protected void initSocket(String data) throws IOException {
 		if (!keep_alive || !isConnected()) {
+			//System.out.println("Opening a new connection, keep-alive set to: " + keep_alive);
 			Socket client = new Socket();
 			client.setReuseAddress(true);
 			client.setSoTimeout(socket.getSoTimeout());
@@ -174,11 +175,18 @@ public class SocketBosh extends SocketXMLIO {
 					restart = false;
 				}
 				if (terminate) {
+					//System.out.println("terminating connection: " + sid);
 					body.setAttribute("type", "terminate");
 				}
 				super.write(body.toString());
 			}
 			if (terminate) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
 				super.close();
 			}
 		}
