@@ -122,6 +122,11 @@ public class TestScriptLoader implements HistoryCollectorIfc {
 							nodeName += " (" + append + ")";
 							child.setName(nodeName);
 						}
+						Map<String, String> nodePars = node.getNodePars();
+						// System.out.println(nodePars.toString());
+						nodePars.remove("-include-script");
+						child.addPars(nodePars);
+						// child.addVars(node.getVars());
 						node.addChild(child);
 					}
 				}
