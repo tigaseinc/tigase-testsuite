@@ -87,72 +87,67 @@ Global settings:
 
 #  Basic 1@socket: >> Plain socket connect. <<
   Basic 1@stream-open: >> Stream open to server. <<
-  Basic 2@ssl-init: { -port = 5223 -socket-wait = $(ssl-tls-wait) }
-  >> SSL socket connect. <<
-  Basic 3@user-register: {
+
+  Basic 2@user-register: {
     -user-name   = user-register-name
     -user-pass   = user-register-pass
   } >> XEP-0077 - In-Band Registration, register <<
-  Basic 4@user-unregister: {
+
+  Basic 3@user-unregister: {
     -user-name   = user-register-name
     -user-pass   = user-register-pass
   } >> XEP-0077 - In-Band Registration - user unregister <<
 
-  Basic 5@auth-plain: { -def-auth = auth-plain } >> XEP-0078 Non-SASL authorization with plain password. <<
-  Basic 6@auth-digest: { -def-auth = auth-plain } >> XEP-0078 Non-SASL authorization with digest password. <<
+  Basic 4@auth-plain: { -def-auth = auth-plain } >> XEP-0078 Non-SASL authorization with plain password. <<
+  Basic 5@auth-digest: { -def-auth = auth-plain } >> XEP-0078 Non-SASL authorization with digest password. <<
 
-  Basic 7@tls-init: { -socket-wait = $(ssl-tls-wait) } >> TLS connection open <<
-  Basic 8@tls-init;auth-sasl: { -socket-wait = $(ssl-tls-wait) }
-    >> SASL authorization <<
-  Basic 9@tls-init;auth-sasl;xmpp-bind: { -socket-wait = $(ssl-tls-wait) }
-    >> XMPP resource bind <<
-  Basic 10@tls-init;xmpp-session: { -socket-wait = $(ssl-tls-wait) }
-    >> Establish XMPP session <<
-  Basic 11@msg-send: { -to-jid = $(self) }
+  Basic 6@msg-send: { -to-jid = $(self) }
     >> Send a message to self user and don't wait for response <<
 
-  Basic 12@msg-send: Send a message to $(daemon-user) user
+  Basic 7@msg-send: Send a message to $(daemon-user) user
   { -to-jid = "$(daemon-user)@$(server-host)/xmpp-test" }
     >> Send a message to $(daemon-user)@$(server-host)/xmpp-test user
     and wait for message response <<
 
-  Basic 13@iq-version: >> XEP-0092 - get entity version <<
-  Basic 14@iq-stats: XEP-0039 Statistics Gathering
+  Basic 8@iq-version: >> XEP-0092 - get entity version <<
+  Basic 9@iq-stats: XEP-0039 Statistics Gathering
     { -user-name=$(stats-user) -user-pass=$(stats-pass) }
     >> XEP-0039 Statistics Gathering. <<
 
-  Basic 15@common: { -source-file = "tests/data/RosterTest.cot" }
-  >> Roster management test <<
+  Basic 10@common: { 
+    -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
+    -source-file = "tests/data/RosterTest.cot" 
+  } >> Roster management test <<
 
-  Basic 16@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
+  Basic 11@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
   >> XEP-0049: Private XML Storage <<
 
-  Basic 17@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
+  Basic 12@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
   >> Test for feature-not-implemented error which should be returned when client sends unsupported stanza <<
 
-  Basic 18@common: { -source-file = "tests/data/vcard-temp.cot" }
+  Basic 13@common: { -source-file = "tests/data/vcard-temp.cot" }
   >> XEP-0054: vcard-temp <<
 
-  Basic 19@common: {
+  Basic 14@common: {
     -to-jid = $(server-host)
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping to domain '$(server-host)' the user is logged in <<
 
-  Basic 20@common: {
+  Basic 15@common: {
     -to-jid = $(virtual-host)
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping to another, vrtual domain '$(virtual-host)' on the server <<
 
-  Basic 21@common: { 
+  Basic 16@common: { 
     -user-name = $(stats-user)
     -user-pass = $(stats-pass)
     -source-file = "tests/data/ServiceDiscovery.cot" 
   } >> XEP-0030: XMPP Service Discovery <<
 
-  Basic 22@auth-sasl;common-no-bind: {
+  Basic 17@auth-sasl;common-no-bind: {
     -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
     -source-file = "tests/data/MessageNoBind.cot"
   } >> Send a message without resource binding and expect an error response. <<
 
 }
->> Script generating large queues and network I/O traffic <<
+>> Script for basic XMPP functions <<

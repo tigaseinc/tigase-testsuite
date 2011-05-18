@@ -134,7 +134,7 @@ case "${1}" in
 esac
 
 ver=`grep Tigase-Version: ${server_dir}/MANIFEST.MF | tail -n 1 | sed -e "s/Tigase-Version: \(.*\)/\1/"`
-output_dir="files/static/tests/${ver}"
+output_dir="${ROOT_DIR}files/static/tests/${ver}"
 
 echo "Tigase server home directory: ${server_dir}"
 echo "Version: ${ver}"

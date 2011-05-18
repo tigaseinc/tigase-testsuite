@@ -23,7 +23,7 @@
 
 -output-format  = html
 -output-file    = "test-acc.html"
--output-history = yes
+-output-history = no
 -history-format = separate-file
 -output-cols    = 7
 -title          = "XMPP Server functional tests."

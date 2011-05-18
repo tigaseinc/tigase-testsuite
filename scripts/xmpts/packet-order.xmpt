@@ -74,6 +74,31 @@ Global settings:
   } >> The test perform check on the packet order processing.
        Depending on the processors thread pool used an error should be generated or success. <<
 
+  Packet Order 2@common: Packet order test {
+    -to-jid = $(server-host)
+    -source-file = "tests/data/PacketOrderTest.cot"
+  } >> The test perform check on the packet order processing.
+       Depending on the processors thread pool used an error should be generated or success. <<
+
+  Packet Order 3@common: Packet order test {
+    -to-jid = $(server-host)
+    -source-file = "tests/data/PacketOrderTest.cot"
+  } >> The test perform check on the packet order processing.
+       Depending on the processors thread pool used an error should be generated or success. <<
+
+  Packet Order 4@common: Packet order test {
+    -to-jid = $(server-host)
+    -source-file = "tests/data/PacketOrderTest.cot"
+  } >> The test perform check on the packet order processing.
+       Depending on the processors thread pool used an error should be generated or success. <<
+
+  Packet Order 5@common: Packet order test {
+    -to-jid = $(server-host)
+    -source-file = "tests/data/PacketOrderTest.cot"
+  } >> The test perform check on the packet order processing.
+       Depending on the processors thread pool used an error should be generated or success. <<
+
+
 }
 >> Script generating large queues and network I/O traffic <<
   

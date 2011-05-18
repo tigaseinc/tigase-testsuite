@@ -223,11 +223,11 @@ function run_test() {
 	fi
 	mkdir -p "${_output_dir}"
 	echo -e "\nRunning: ${ver}-${_database} test, IP ${_server_ip}..."
-	start_test=`gdate +%s`
+	start_test=`date +%s`
 	ts_start ${_script_file} ${_server_ip} ${_output_file} ${_extra_params}
-	end_test=`gdate +%s`
+	end_test=`date +%s`
 	total_time=$((end_test-start_test))
-	total_str=`gdate -u -d @$total_time +%H:%M:%S`
+	total_str=`date -u -r $total_time +%H:%M:%S`
 	echo "<td><a href=\"/${_output_file}\">${total_str}</a></td>" >> "${_test_type}-rep.html"
 	echo "Test finished after: ${total_str}"
 	sleep 1
