@@ -55,6 +55,7 @@ public class TestNode {
   private List<TestNode> children = null;
   private Map<String, String> vars = null;
   private Map<String, String> pars = null;
+  private Map<String, String> nodePars = null;
 
   /**
    * Creates a new <code>TestNode</code> instance.
@@ -64,6 +65,7 @@ public class TestNode {
     children = new LinkedList<TestNode>();
     vars = new TreeMap<String, String>();
     pars = new TreeMap<String, String>();
+    nodePars = new TreeMap<String, String>();
   }
 
   public void setVars(Map<String, String> vars) {
@@ -88,21 +90,29 @@ public class TestNode {
     Map<String, String> result = new TreeMap<String, String>();
     if (parent != null) {
       result.putAll(parent.getVars());
-    } // end of if (parrent != null)
+    } // end of if (parent != null)
     result.putAll(vars);
     return result;
   }
 
   public void setPars(Map<String, String> pars) {
     this.pars = new TreeMap<String, String>(pars);
+    this.nodePars = new TreeMap<String, String>(pars);
   }
 
   public void addPars(Map<String, String> pars) {
     this.pars.putAll(pars);
+    this.nodePars.putAll(pars);
   }
 
   public void addPar(String key, String val) {
     this.pars.put(key, val);
+    this.nodePars.put(key, val);
+  }
+  
+  public Map<String, String> getNodePars() {
+    Map<String, String> result = new TreeMap<String, String>(nodePars);
+    return result;
   }
 
   public void addGlobalPars(Map<String, String> pars) {
@@ -115,7 +125,7 @@ public class TestNode {
     Map<String, String> result = new TreeMap<String, String>();
     if (parent != null) {
       result.putAll(parent.getPurePars());
-    } // end of if (parrent != null)
+    } // end of if (parent != null)
     result.putAll(pars);
     return result;
   }
@@ -124,7 +134,7 @@ public class TestNode {
     Map<String, String> result = new TreeMap<String, String>();
     if (parent != null) {
       result.putAll(parent.getPurePars());
-    } // end of if (parrent != null)
+    } // end of if (parent != null)
     result.putAll(pars);
     for (String key : result.keySet()) {
       String newVal = replaceAll(result.get(key));
