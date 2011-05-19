@@ -213,7 +213,7 @@ public class TestReceiveMessage extends TestAbstract {
       addInput("" + e + "\n" + TestUtil.stack2String(e));
       resultCode = ResultCode.PROCESSING_EXCEPTION;
       exception = e;
-      e.printStackTrace();
+      //e.printStackTrace();
 			//System.out.println("Message listener FINISHED 4");
       return false;
     } // end of try-catch

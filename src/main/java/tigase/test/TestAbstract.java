@@ -395,7 +395,7 @@ public abstract class TestAbstract extends TestEmpty {
 			exception = e;
 			System.out.println(Arrays.toString(implemented()));
 			System.out.println(params.toString());
-			e.printStackTrace();
+			//e.printStackTrace();
 
 			return false;
 		}    // end of try-catch
