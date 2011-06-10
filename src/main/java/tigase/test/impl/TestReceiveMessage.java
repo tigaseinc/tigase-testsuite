@@ -46,178 +46,181 @@ import static tigase.util.JIDUtils.*;
  */
 public class TestReceiveMessage extends TestAbstract {
 
-  private String user_name = "test_user@localhost";
-  private String user_resr = "xmpp-test";
-  private String hostname = "localhost";
-  private String jid = null;
-  private String msg_1 = null;
-  private String msg_2 = null;
-	private long repeat = 0;
+    private String user_name = "test_user@localhost";
+    private String user_resr = "xmpp-test";
+    private String hostname = "localhost";
+    private String jid = null;
+    private String msg_1 = null;
+    private String msg_2 = null;
+    private long repeat = 0;
+    private String data = null;
+    private Attribute[] resp_attribs = null;
 
-  private String data = null;
-  private Attribute[] resp_attribs = null;
+    /**
+     * Creates a new <code>TestReceiveMessage</code> instance.
+     *
+     */
+    public TestReceiveMessage() {
+        super(
+                new String[]{"jabber:client"},
+                new String[]{"msg-listen"},
+                new String[]{"stream-open", "auth", "xmpp-bind"},
+                new String[]{"tls-init", "privacy-block-msg", "privacy-long-list"});
+    }
 
-  /**
-   * Creates a new <code>TestReceiveMessage</code> instance.
-   *
-   */
-  public TestReceiveMessage() {
-    super(
-      new String[] {"jabber:client"},
-      new String[] {"msg-listen"},
-      new String[] {"stream-open", "auth", "xmpp-bind"},
-      new String[] {"tls-init",	"privacy-block-msg", "privacy-long-list"}
-      );
-  }
+    // Implementation of tigase.test.TestAbstract
+    /**
+     * Describe <code>nextElementName</code> method here.
+     *
+     * @param element an <code>Element</code> value
+     * @return a <code>String</code> value
+     * @exception Exception if an error occurs
+     */
+    @Override
+    public String nextElementName(final Element element) throws Exception {
+        if (element == null ||
+                // ignore "service-unavailable" (error type="cancel" code="503") bounce-backs from unavailable peers
+                (element.getAttribute("type").equals("error") && element.getAttribute("code").equals("503"))) {
+            //      System.out.println("JIDUtils = " + jid);
+            TestUtil.addDaemonJID(jid, (Socket) params.get("socket"));
+            data = null;
+            return "";
+        } // end of if (element == null)
 
-  // Implementation of tigase.test.TestAbstract
+//    data = msg_1 + element.getAttribute("from") + msg_2;
 
-  /**
-   * Describe <code>nextElementName</code> method here.
-   *
-   * @param element an <code>Element</code> value
-   * @return a <code>String</code> value
-   * @exception Exception if an error occurs
-   */
-	@Override
-  public String nextElementName(final Element element) throws Exception {
-    if (element == null) {
-      //      System.out.println("JIDUtils = " + jid);
-      TestUtil.addDaemonJID(jid, (Socket)params.get("socket"));
-      data = null;
-      return "";
-    } // end of if (element == null)
-    data = msg_1 + element.getAttribute("from") + msg_2;
-    return "message";
-  }
+        data = "<message type='chat' from='" + jid + "' to='" + element.getAttribute("from") + "'>Message OK"
+                //+ " || original stanza: \n" + element.toString() + "\n\n"
+                + "</message>";
 
-  /**
-   * Describe <code>getElementData</code> method here.
-   *
-   * @param string a <code>String</code> value
-   * @return a <code>String</code> value
-   * @exception Exception if an error occurs
-   */
-	@Override
-  public String getElementData(final String string) throws Exception {
-    return data;
-  }
+        return "message";
+    }
 
-  /**
-   * Describe <code>getRespElementNames</code> method here.
-   *
-   * @param string a <code>String</code> value
-   * @return a <code>String[]</code> value
-   * @exception Exception if an error occurs
-   */
-	@Override
-  public String[] getRespElementNames(final String string) throws Exception {
-    return new String[] {"message"};
-  }
+    /**
+     * Describe <code>getElementData</code> method here.
+     *
+     * @param string a <code>String</code> value
+     * @return a <code>String</code> value
+     * @exception Exception if an error occurs
+     */
+    @Override
+    public String getElementData(final String string) throws Exception {
+        return data;
+    }
 
-  /**
-   * Describe <code>getRespOptionalNames</code> method here.
-   *
-   * @param string a <code>String</code> value
-   * @return a <code>String[]</code> value
-   * @exception Exception if an error occurs
-   */
-	@Override
-  public String[] getRespOptionalNames(final String string) throws Exception {
-    return null;
-  }
+    /**
+     * Describe <code>getRespElementNames</code> method here.
+     *
+     * @param string a <code>String</code> value
+     * @return a <code>String[]</code> value
+     * @exception Exception if an error occurs
+     */
+    @Override
+    public String[] getRespElementNames(final String string) throws Exception {
+        return new String[]{"message"};
+    }
 
-  /**
-   * Describe <code>getRespElementAttributes</code> method here.
-   *
-   * @param string a <code>String</code> value
-   * @return an <code>Attribute[]</code> value
-   * @exception Exception if an error occurs
-   */
-	@Override
-  public Attribute[] getRespElementAttributes(final String string)
-    throws Exception {
-    return resp_attribs;
-  }
+    /**
+     * Describe <code>getRespOptionalNames</code> method here.
+     *
+     * @param string a <code>String</code> value
+     * @return a <code>String[]</code> value
+     * @exception Exception if an error occurs
+     */
+    @Override
+    public String[] getRespOptionalNames(final String string) throws Exception {
+        return null;
+    }
 
-  // Implementation of tigase.test.TestIfc
+    /**
+     * Describe <code>getRespElementAttributes</code> method here.
+     *
+     * @param string a <code>String</code> value
+     * @return an <code>Attribute[]</code> value
+     * @exception Exception if an error occurs
+     */
+    @Override
+    public Attribute[] getRespElementAttributes(final String string)
+            throws Exception {
+        return resp_attribs;
+    }
 
-  /**
-   * Describe <code>init</code> method here.
-   *
-   * @param params a <code>Params</code> value
-   */
-	@Override
-  public void init(final Params params, Map<String, String> vars) {
-    super.init(params, vars);
-    user_name = params.get("-user-name", user_name);
-    hostname = params.get("-host", hostname);
-    user_resr = params.get("-user-resr", user_resr);
-		repeat = params.get("-messages", -1);
-    String name = getNodeNick(user_name);
-    if (name == null || name.equals("")) {
-      jid = user_name + "@" + hostname + "/" + user_resr;
-    } else {
-      jid = user_name + "/" + user_resr;
-    } // end of else
-    //    resp_attribs = new Attribute[] {new Attribute("to", jid)};
-    msg_1 = "<message type='chat' from='" + jid + "' to='";
-    msg_2 = "'>Message OK</message>";
-  }
+    // Implementation of tigase.test.TestIfc
+    /**
+     * Describe <code>init</code> method here.
+     *
+     * @param params a <code>Params</code> value
+     */
+    @Override
+    public void init(final Params params, Map<String, String> vars) {
+        super.init(params, vars);
+        user_name = params.get("-user-name", user_name);
+        hostname = params.get("-host", hostname);
+        user_resr = params.get("-user-resr", user_resr);
+        repeat = params.get("-messages", -1);
+        String name = getNodeNick(user_name);
+        if (name == null || name.equals("")) {
+            jid = user_name + "@" + hostname + "/" + user_resr;
+        } else {
+            jid = user_name + "/" + user_resr;
+        } // end of else
+        //    resp_attribs = new Attribute[] {new Attribute("to", jid)};
+        msg_1 = "<message type='chat' from='" + jid + "' to='";
+        msg_2 = "'>Message OK</message>";
+    }
 
-  /**
-   * Describe <code>run</code> method here.
-   *
-   * @return a <code>boolean</code> value
-   */
-	@Override
-  public boolean run() {
-    try {
-      String elem = null;
-      XMLIO io = (XMLIO)params.get("socketxmlio");
-      if (io == null) {
-				TestUtil.removeDaemonJID(jid);
-        resultCode = ResultCode.SOCKET_NOT_INITALIZED;
-				System.out.println("Message listener FINISHED 1");
-        return false;
-      } // end of if (sock == null)
-      elem = nextElementName(reply);
-      while ((elem != null) && ((repeat--) != 0)) {
-        debug("Processing element: " + elem + "\n");
-        Queue<Element> results = io.read();
-        Element rep = null;
-        while ((rep = results.poll()) != null) {
-          reply = rep;
-          debug("Received data: " + reply.toString() + "\n");
-          elem = nextElementName(reply);
-          String data = getElementData(elem);
-          if (data != null && !data.equals("")) {
-            io.write(data);
-            debug("Sent data: " + data + "\n");
-          } // end of if (data != null && !data.equals(""))
-        }
-      }
-			Thread.sleep(100);
-			TestUtil.removeDaemonJID(jid);
-			//System.out.println("Message listener FINISHED 2");
-      return true;
-    } catch (SocketTimeoutException e) {
-			TestUtil.removeDaemonJID(jid);
-      addInput("" + e + "\n" + TestUtil.stack2String(e));
-      resultCode = ResultCode.PROCESSING_EXCEPTION;
-      exception = e;
-			//System.out.println("Message listener FINISHED 3");
-      return false;
-    } catch (Exception e) {
-			TestUtil.removeDaemonJID(jid);
-      addInput("" + e + "\n" + TestUtil.stack2String(e));
-      resultCode = ResultCode.PROCESSING_EXCEPTION;
-      exception = e;
-      //e.printStackTrace();
-			//System.out.println("Message listener FINISHED 4");
-      return false;
-    } // end of try-catch
-		//		System.out.println("Message listener FINISHED 5");
-  }
-
+    /**
+     * Describe <code>run</code> method here.
+     *
+     * @return a <code>boolean</code> value
+     */
+    @Override
+    public boolean run() {
+        try {
+            String elem = null;
+            XMLIO io = (XMLIO) params.get("socketxmlio");
+            if (io == null) {
+                TestUtil.removeDaemonJID(jid);
+                resultCode = ResultCode.SOCKET_NOT_INITALIZED;
+                System.out.println("Message listener FINISHED 1");
+                return false;
+            } // end of if (sock == null)
+            elem = nextElementName(reply);
+            while ((elem != null) && ((repeat--) != 0)) {
+                debug("Processing element: " + elem + "\n");
+                Queue<Element> results = io.read();
+                Element rep = null;
+                while ((rep = results.poll()) != null) {
+                    reply = rep;
+                    debug("Received data: " + reply.toString() + "\n");
+                    elem = nextElementName(reply);
+                    String data = getElementData(elem);
+                    if (data != null && !data.equals("")) {
+                        io.write(data);
+                        debug("Sent data: " + data + "\n");
+                    } // end of if (data != null && !data.equals(""))
+                }
+            }
+            Thread.sleep(100);
+            TestUtil.removeDaemonJID(jid);
+            //System.out.println("Message listener FINISHED 2");
+            return true;
+        } catch (SocketTimeoutException e) {
+            TestUtil.removeDaemonJID(jid);
+            addInput("" + e + "\n" + TestUtil.stack2String(e));
+            resultCode = ResultCode.PROCESSING_EXCEPTION;
+            exception = e;
+            //System.out.println("Message listener FINISHED 3");
+            return false;
+        } catch (Exception e) {
+            TestUtil.removeDaemonJID(jid);
+            addInput("" + e + "\n" + TestUtil.stack2String(e));
+            resultCode = ResultCode.PROCESSING_EXCEPTION;
+            exception = e;
+            //e.printStackTrace();
+            //System.out.println("Message listener FINISHED 4");
+            return false;
+        } // end of try-catch
+        //		System.out.println("Message listener FINISHED 5");
+    }
 } // TestReceiveMessage
