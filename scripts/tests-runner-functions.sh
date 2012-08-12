@@ -37,26 +37,29 @@ function db_reload_mysql() {
 	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
 
 	mysqladmin -u root -p${_db_pass} -f drop ${_db_name}
-	mysqladmin -u root -p${_db_pass} create ${_db_name}
-        echo "GRANT ALL ON ${_db_name}.* TO ${_db_user}@'%' \
-                IDENTIFIED BY '${_db_pass}'; \
-                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-        echo "GRANT ALL ON ${_db_name}.* TO ${_db_user}@'localhost' \
-                IDENTIFIED BY '${_db_pass}'; \
-                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-        echo "GRANT ALL ON ${_db_name}.* TO ${_db_user} \
-                IDENTIFIED BY '${_db_pass}'; \
-                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-        echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}@'%'; \
-                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-        echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}@'localhost'; \
-                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-        echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}; \
-                FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-	mysql -N -u ${_db_user} -p${_db_pass} ${_db_name} \
-		< database/mysql-schema.sql
-	mysql -N -u ${_db_user} -p${_db_pass} ${_db_name} \
-		< database/mysql-schema-upgrade-to-4.sql
+	
+	${_src_dir}/scripts/db-create-mysql.sh -y ${_db_user} ${_db_pass} ${_db_name} root ${_db_pass} localhost
+	# All the stuff below is no longer needed. We have a nice Bash script creating database.....
+	#mysqladmin -u root -p${_db_pass} create ${_db_name}
+        #echo "GRANT ALL ON ${_db_name}.* TO ${_db_user}@'%' \
+        #        IDENTIFIED BY '${_db_pass}'; \
+        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+        #echo "GRANT ALL ON ${_db_name}.* TO ${_db_user}@'localhost' \
+        #        IDENTIFIED BY '${_db_pass}'; \
+        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+        #echo "GRANT ALL ON ${_db_name}.* TO ${_db_user} \
+        #        IDENTIFIED BY '${_db_pass}'; \
+        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+        #echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}@'%'; \
+        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+        #echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}@'localhost'; \
+        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+        #echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}; \
+        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
+	#mysql -N -u ${_db_user} -p${_db_pass} ${_db_name} \
+	#	< database/mysql-schema.sql
+	#mysql -N -u ${_db_user} -p${_db_pass} ${_db_name} \
+	#	< database/mysql-schema-upgrade-to-4.sql
 }
 
 function db_reload_pgsql() {
@@ -155,7 +158,7 @@ function run_test() {
 			local _extra_params="-source-file ${_extra_par}"
 			;;
 		other)
-			local _output_file="${_output_dir}/"`basename -s .xmpt ${_extra_par}`".html"
+			local _output_file="${_output_dir}/"`basename ${_extra_par} .xmpt`".html"
 			local _script_file="${_extra_par}"
 			server_timeout=15
 			;;
