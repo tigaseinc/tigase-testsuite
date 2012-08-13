@@ -101,7 +101,7 @@ public abstract class XMPPTestCase {
 	}
 
 	private static boolean equalsAll(Element[] expect, Set<String> params, Collection<Element> data) {
-		if (expect == null && data == null) {
+		if ((expect == null || expect.length == 0) && (data == null || data.size() == 0)) {
 			return true;
 		} else if (expect == null || data == null) {
 			return false;
@@ -154,7 +154,7 @@ public abstract class XMPPTestCase {
 	}
 
 	private static boolean equalsStrict(Element[] expect, Set<String> params, Collection<Element> data) {
-		if (expect == null && data == null) {
+		if ((expect == null || expect.length == 0) && (data == null || data.size() == 0)) {
 			return true;
 		} else if (expect == null || data == null) {
 			return false;
@@ -236,12 +236,16 @@ public abstract class XMPPTestCase {
 
 	}
 
+	public static void test(final String configFile, final JUnitXMLIO xmlio) {
+		test(configFile, xmlio, null);
+	}
+
 	/**
 	 * Method run test.
 	 * 
 	 * @param xmlio
 	 */
-	public static void test(final String configFile, final JUnitXMLIO xmlio) {
+	public static void test(final String configFile, final JUnitXMLIO xmlio, Long wait) {
 		try {
 			if (configFile == null) {
 				throw new RuntimeException("Script file must be specified.");
@@ -262,6 +266,8 @@ public abstract class XMPPTestCase {
 									+ (stanza.getAttribute("id") == null ? "" : " id='" + stanza.getAttribute("id") + "'")
 									+ ">" : " (" + scriptEntry.getDescription() + ")") + "...  ");
 					xmlio.write(stanza);
+					if (wait != null)
+						Thread.sleep(wait);
 					break;
 				case expect: {
 					Queue<Element> read = xmlio.read();
@@ -296,7 +302,8 @@ public abstract class XMPPTestCase {
 				}
 				case expect_strict: {
 					Queue<Element> read = xmlio.read();
-					System.out.print(" checking response... (" + read.size() + "/" + scriptEntry.getStanza().length + ") ");
+					System.out.print(" checking response... (" + read.size() + "/"
+							+ (scriptEntry.getStanza() == null ? 0 : scriptEntry.getStanza().length) + ") ");
 					ok = equalsStrict(scriptEntry.getStanza(), scriptEntry.getParams(), read);
 					System.out.println(ok ? "OK" : "FAIL");
 					if (!ok) {
@@ -333,7 +340,11 @@ public abstract class XMPPTestCase {
 	}
 
 	public void test(final JUnitXMLIO xmlio) {
-		test(this.configFile, xmlio);
+		test(xmlio, null);
+	}
+
+	public void test(final JUnitXMLIO xmlio, Long wait) {
+		test(this.configFile, xmlio, wait);
 	}
 
 }

@@ -153,7 +153,6 @@ public class ScriptFileLoader {
 					}
 					if (line.equals("}")) {
 						Element[] elems = parseXMLData(buff.toString());
-						if (elems != null) {
 							switch (state) {
 							case send_stanza:
 								stanzas_buff.offer(new StanzaEntry(Action.send, elems, description));
@@ -170,7 +169,6 @@ public class ScriptFileLoader {
 							default:
 								break;
 							}
-						}
 						state = ParserState.start;
 					}
 					break;
