@@ -71,6 +71,7 @@ function db_reload_pgsql() {
 	[[ -z ${1} ]] && local _src_dir="${server_dir}" || local _src_dir=${1}
 	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
 	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
+	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
 
 	dropdb -U ${_db_user} ${_db_name}
 
