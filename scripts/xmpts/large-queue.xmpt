@@ -73,7 +73,6 @@ Global settings:
 #    -delay = 500
     #-delay = 1000
     -on-one-socket
-    -on-one-socket
     -loop=10
     -to-jid = "$(tester-user)@srecv.$(server-host)"
     -source-file = "tests/data/TesterMessage10.cot"
@@ -128,7 +127,7 @@ Global settings:
  Load 100000@common: {
    #     -debug
 #   -socket-wait = 30000
-   #-delay = 5000
+   #-delay = 30000
    -on-one-socket
    $(number) = 100000
    -to-jid = "$(tester-user)@srecv.$(server-host)"

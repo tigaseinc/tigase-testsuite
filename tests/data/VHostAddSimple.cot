@@ -52,7 +52,7 @@ expect: {
 	<command xmlns="http://jabber.org/protocol/commands" status="completed" node="comp-repo-item-add">
 		<x xmlns="jabber:x:data" type="result">
 			<field type="fixed" var="Note">
-			 	<value>Operation successful</value>
+			 	<value>Operation successful.</value>
 			</field>
 		</x>
 	</command>

@@ -71,6 +71,9 @@ Global settings:
 
   MUC 1@common: {
 #    -user-resr   = res-2
+    # This delay is only needed because before MUC tests there is large queue tests running
+    # which overloads the server for a while
+    #-delay = 30000
     -source-file = "tests/data/MUCCreateRoom.cot"
    } >> Send room create presence request to MUC component. <<
 

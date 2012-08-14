@@ -20,12 +20,12 @@
 ##  $Date$
 ##
 send: {
-<iq type="get" id="roster_33">
+<iq type="get" id="sub-uns-send-1">
   <query xmlns="jabber:iq:roster"/>
 </iq>
 }
 expect: {
-<iq type="result" id="roster_33">
+<iq type="result" id="sub-uns-send-1">
   <query xmlns="jabber:iq:roster">
     <item jid="$(to-id)" subscription="to"/>
   </query>
@@ -42,7 +42,7 @@ expect: {
 }
 
 send: {
-<presence to="$(to-id)" type="unsubscribe"/>
+<presence id="sub-uns-send-2" to="$(to-id)" type="unsubscribe"/>
 }
 expect: {
 <iq type="set">
@@ -53,14 +53,14 @@ expect: {
 }
 
 send: {
-<iq type="set" id="roster-remove-123">
+<iq type="set" id="sub-uns-send-3">
   <query xmlns="jabber:iq:roster">
     <item jid="$(to-id)" subscription="remove"/>
   </query>
 </iq>
 }
 expect: {
-<iq type="result" id="roster-remove-123"/>
+<iq type="result" id="sub-uns-send-3"/>
 <iq type="set">
   <query xmlns="jabber:iq:roster">
     <item jid="$(to-id)" subscription="remove"/>
@@ -68,7 +68,7 @@ expect: {
 </iq>
 }
 expect: {
-<iq type="result" id="roster-remove-123"/>
+<iq type="result" id="sub-uns-send-3"/>
 <iq type="set">
   <query xmlns="jabber:iq:roster">
     <item jid="$(to-id)" subscription="remove"/>
@@ -77,12 +77,12 @@ expect: {
 }
 
 send: {
-<iq type="get" id="roster_777">
+<iq type="get" id="sub-uns-send-4">
   <query xmlns="jabber:iq:roster"/>
 </iq>
 }
 expect: {
-<iq type="result" id="roster_777">
+<iq type="result" id="sub-uns-send-4">
   <query xmlns="jabber:iq:roster"/>
 </iq>
 }

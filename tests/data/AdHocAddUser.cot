@@ -1,6 +1,6 @@
 send: {
 <iq type="set" to="sess-man@$(to-hostname)" id="add-user-1" >
-  <command xmlns="http://jabber.org/protocol/commands" node="add-user">
+  <command xmlns="http://jabber.org/protocol/commands" node="http://jabber.org/protocol/admin#add-user">
     <x xmlns="jabber:x:data" type="submit">
       <field type="hidden" var="FORM_TYPE">
         <value>http://jabber.org/protocol/admin</value>
@@ -24,7 +24,7 @@ send: {
 
 expect: {
 <iq type="result" id="add-user-1">
-  <command xmlns="http://jabber.org/protocol/commands" status="completed" node="add-user">
+  <command xmlns="http://jabber.org/protocol/commands" status="completed" node="http://jabber.org/protocol/admin#add-user">
     <x xmlns="jabber:x:data" type="result">
       <field type="fixed" var="Note">
         <value>Operation successful</value>
