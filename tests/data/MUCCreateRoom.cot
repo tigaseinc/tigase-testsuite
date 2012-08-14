@@ -37,7 +37,7 @@ expect: {
   <x xmlns="http://jabber.org/protocol/muc#user">
     <status code="110"/>
     <status code="201"/>
-    <item role="moderator" affiliation="owner" jid="$(from-jid)"/>
+    <item role="moderator" affiliation="owner" jid="$(from-id)"/>
   </x>
 </presence>
 }
