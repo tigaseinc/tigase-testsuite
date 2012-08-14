@@ -38,7 +38,11 @@ function db_reload_mysql() {
 
 	mysqladmin -u root -p${_db_pass} -f drop ${_db_name}
 	
-	${_src_dir}/scripts/db-create-mysql.sh -y ${_db_user} ${_db_pass} ${_db_name} root ${_db_pass} localhost
+	tts_dir=`pwd`
+	cd ${_src_dir}
+        ./scripts/db-create-mysql.sh -y ${_db_user} ${_db_pass} ${_db_name} root ${_db_pass} localhost
+	cd ${tts_dir}
+
 	# All the stuff below is no longer needed. We have a nice Bash script creating database.....
 	#mysqladmin -u root -p${_db_pass} create ${_db_name}
         #echo "GRANT ALL ON ${_db_name}.* TO ${_db_user}@'%' \
@@ -69,11 +73,29 @@ function db_reload_pgsql() {
 	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
 
 	dropdb -U ${_db_user} ${_db_name}
-	createdb -U ${_db_user} ${_db_name}
-	psql -q -U ${_db_user} -d ${_db_name} \
-		-f database/postgresql-schema.sql
-	psql -q -U ${_db_user} -d ${_db_name} \
-		-f database/postgresql-schema-upgrade-to-4.sql
+
+        tts_dir=`pwd`
+        cd ${_src_dir}
+	./scripts/db-create-postgresql.sh -y ${_db_user} ${_db_pass} ${_db_name} localhost
+        cd ${tts_dir}
+
+	#createdb -U ${_db_user} ${_db_name}
+	#psql -q -U ${_db_user} -d ${_db_name} \
+	#	-f database/postgresql-schema.sql
+	#psql -q -U ${_db_user} -d ${_db_name} \
+	#	-f database/postgresql-schema-upgrade-to-4.sql
+}
+
+function db_reload_derby() {
+
+        [[ -z ${1} ]] && local _src_dir="${server_dir}" || local _src_dir=${1}
+
+        rm -fr tigasetest/
+        tts_dir=`pwd`
+        cd ${_src_dir}
+	./scripts/db-create-derby.sh ${tts_dir}/tigasetest
+        cd ${tts_dir}
+
 }
 
 function fs_prepare_files() {
@@ -187,19 +209,7 @@ function run_test() {
 				db_reload_pgsql
 				;;
 			derby|derby-auth|derby-custom)
-				rm -fr tigasetest/
-				java -Dij.protocol=jdbc:derby: -Dij.database="tigasetest;create=true" \
-					-Dderby.system.home=`pwd` \
-					-cp libs/derby.jar:libs/derbytools.jar:${_server_dir}/jars/tigase-server.jar \
-					org.apache.derby.tools.ij database/derby-schema-4.sql > /dev/null
-				java -Dij.protocol=jdbc:derby: -Dij.database="tigasetest" \
-					-Dderby.system.home=`pwd` \
-					-cp libs/derby.jar:libs/derbytools.jar:${_server_dir}/jars/tigase-server.jar \
-					org.apache.derby.tools.ij database/derby-schema-4-sp.schema > /dev/null
-				java -Dij.protocol=jdbc:derby: -Dij.database="tigasetest" \
-					-Dderby.system.home=`pwd` \
-					-cp libs/derby.jar:libs/derbytools.jar:${_server_dir}/jars/tigase-server.jar \
-					org.apache.derby.tools.ij database/derby-schema-4-props.sql > /dev/null
+				db_reload_derby
 				;;
 			*)
 				echo "Not supported database: '${database}'"
