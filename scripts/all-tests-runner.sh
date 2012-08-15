@@ -27,7 +27,7 @@ SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
 [[ -f ${SETTINGS_FILE} ]] && source ${SETTINGS_FILE} \
   || {
 	echo "Can't find settings file: ${SETTINGS_FILE} using defaults"
-	server_dir="../server"
+	server_dir="../tigase-server"
 	database="derby"
 	server_ip="127.0.0.1"
 

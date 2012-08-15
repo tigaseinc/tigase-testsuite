@@ -15,47 +15,40 @@
 ##  along with this program. Look for COPYING file in the top folder.
 ##  If not, see http://www.gnu.org/licenses/.
 ##
-##  $Rev$
-##  Last modified by $Author$
-##  $Date$
+##  $Rev: $
+##  Last modified by $Author: $
+##  $Date: $
 ##
 
+
 send: {
-<iq id="add-user-1"
+<iq id="get-roster"
     from="$(from-jid)"
     to="$(to-jid)"
     type="set">
     <command xmlns="http://jabber.org/protocol/commands"
-             node="http://jabber.org/protocol/admin#add-user" />
+             node="http://jabber.org/protocol/admin#get-user-roster" />
 </iq>
 }
 
 
+
 expect: {
-<iq id="add-user-1"
+<iq id="get-roster"
     from="$(to-jid)"
     to="$(from-jid)"
     type="result">
     <command
         xmlns="http://jabber.org/protocol/commands"
-        node="http://jabber.org/protocol/admin#add-user"
+        node="http://jabber.org/protocol/admin#get-user-roster"
         status="executing">
         <x xmlns="jabber:x:data" type="form">
-            <title>Adding a User</title>
-            <instructions>Fill out this form to add a user.</instructions>
+            <title>Getting a User's Roster</title>
+            <instructions>Fill out this form to get a user's roster.</instructions>
             <field type="hidden" var="FORM_TYPE">
                 <value>http://jabber.org/protocol/admin</value>
             </field>
-            <field type="jid-single" label="The Jabber ID for the account to be added" var="accountjid">
-                <value/>
-            </field>
-            <field type="text-private" label="The password for this account" var="password">
-                <value/>
-            </field>
-            <field type="text-private" label="Retype password" var="password-verify">
-                <value/>
-            </field>
-            <field type="text-single" label="Email address" var="email">
+            <field type="jid-single"  var="accountjid">
                 <value/>
             </field>
         </x>
@@ -67,27 +60,17 @@ expect: {
 }
 
 send: {
-<iq id="add-user-1"
-    from="$(from-jid)"
+<iq id="get-roster"
     to="$(to-jid)"
     type="set">
     <command
         xmlns="http://jabber.org/protocol/commands"
-        node="http://jabber.org/protocol/admin#add-user">
+        node="http://jabber.org/protocol/admin#get-user-roster">
         <x xmlns="jabber:x:data" type="submit">
-            <field type="hidden" var="FORM_TYPE">
-                <value>http://jabber.org/protocol/admin</value>
-            </field>
+			<field type="hidden" var="FORM_TYPE">
+				<value>http://jabber.org/protocol/admin</value>
+			</field>
             <field type="jid-single" var="accountjid">
-                <value>$(cdata)</value>
-            </field>
-            <field type="text-private" var="password">
-                <value>pass</value>
-            </field>
-            <field type="text-private" var="password-verify">
-                <value>pass</value>
-            </field>
-            <field type="text-single" var="email">
                 <value>$(cdata)</value>
             </field>
         </x>
@@ -95,18 +78,21 @@ send: {
 </iq>
 }
 
+
+# Expecting error
+
 expect: {
-<iq id="add-user-1"
+<iq id="get-roster"
     from="$(to-jid)"
     to="$(from-jid)"
     type="result">
     <command xmlns="http://jabber.org/protocol/commands"
         status="completed"
-        node="http://jabber.org/protocol/admin#add-user">
+        node="http://jabber.org/protocol/admin#get-user-roster">
         <x xmlns="jabber:x:data" type="result">
-            <field type="fixed" var="Note">
-                <value>Operation successful</value>
-            </field>
+			   <field type="fixed" var="Error">
+				   <value>You do not have enough permissions to retrieve roster for user in this domain.</value>
+			   </field>
         </x>
     </command>
 </iq>

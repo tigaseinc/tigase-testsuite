@@ -15,10 +15,11 @@
 ##  along with this program. Look for COPYING file in the top folder.
 ##  If not, see http://www.gnu.org/licenses/.
 ##
-##  $Rev$
-##  Last modified by $Author$
-##  $Date$
+##  $Rev: $
+##  Last modified by $Author: $
+##  $Date: $
 ##
+
 
 send: {
 <iq id="add-user-1"
@@ -95,6 +96,8 @@ send: {
 </iq>
 }
 
+# Expecting error
+
 expect: {
 <iq id="add-user-1"
     from="$(to-jid)"
@@ -104,10 +107,11 @@ expect: {
         status="completed"
         node="http://jabber.org/protocol/admin#add-user">
         <x xmlns="jabber:x:data" type="result">
-            <field type="fixed" var="Note">
-                <value>Operation successful</value>
+            <field type="fixed" var="Error">
+                <value>You do not have enough permissions to create account for this domain.</value>
             </field>
         </x>
     </command>
 </iq>
 }
+
