@@ -24,7 +24,7 @@
 # This file contains functions definition used
 # in all other scripts.
 
-_classpath="jars/tigase-xmpp-testsuite.jar:libs/tigase-utils.jar:libs/tigase-xmltools.jar"
+_classpath="jars/tigase-testsuite.jar:libs/tigase-utils.jar:libs/tigase-xmltools.jar"
 _properties="-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dcom.sun.management.jmxremote"
 #_options=" -agentlib:yjpagent -server -Xmx400M"
 _options=" -server -Xmx600M"
@@ -37,7 +37,7 @@ function db_reload_mysql() {
 	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
 
 	mysqladmin -u root -p${_db_pass} -f drop ${_db_name}
-	
+
 	tts_dir=`pwd`
 	cd ${_src_dir}
         ./scripts/db-create-mysql.sh -y ${_db_user} ${_db_pass} ${_db_name} root ${_db_pass} localhost
@@ -181,9 +181,9 @@ function run_test() {
 			local _extra_params="-source-file ${_extra_par}"
 			;;
 		other)
+			local _output_dir="${_output_dir}/"`basename ${_extra_par} .xmpt`
 			local _output_file="${_output_dir}/"`basename ${_extra_par} .xmpt`".html"
 			local _script_file="${_extra_par}"
-			server_timeout=15
 			;;
 		*)
 			echo "Unsupported test type: '${_test_type}'"
