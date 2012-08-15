@@ -1,0 +1,3 @@
+            <th>PostgreSQL Default</th>
+            <th>PostgreSQL SP Auth</th>
+            <th>PostgreSQL Custom SQL</th>

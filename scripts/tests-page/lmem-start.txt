@@ -1,0 +1,2 @@
+<h2>Low memory tests</h2>
+<p>Basic tests to check if server works correctly with 10MB of RAM</p>
