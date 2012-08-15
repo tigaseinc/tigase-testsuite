@@ -102,11 +102,17 @@ public class HTMLContentFilter implements OutputFilter {
    */
   public void setColumnHeaders(final String ... hd) throws IOException {
     bw.write("  <p>\n");
-    bw.write("  <table width=\"800\" border='1'>\n");
+    bw.write("  <table border='1' style='min-width: 800px;'>\n");
+//    bw.write("  <table width=\"800\" border='1'>\n");
     bw.write("   <thead valign='middle'>\n");
     bw.write("    <tr>\n");
     for (String header : hd) {
-      bw.write("     <th>" + header + "</th>\n");
+        if (header.equals("Test name") || header.equals("History")) {
+            bw.write("     <th width='200px'>" + header + "</th>\n");
+        } else {
+            bw.write("     <th>" + header + "</th>\n");
+            
+        }
     } // end of for ()
     bw.write("    </tr>\n");
     bw.write("   </thead>\n");
