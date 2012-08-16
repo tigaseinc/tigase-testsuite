@@ -156,7 +156,7 @@ function run_test() {
 
 	local _output_dir="${output_dir}/${_test_type}/${_database}"
 
-	server_timeout=15
+	[[ -z ${server_timeout} ]] && server_timeout=15
 
 	case ${_test_type} in
 		func)
@@ -197,6 +197,7 @@ function run_test() {
 	echo "Server directory: ${_server_dir}"
 	echo "Server IP:        ${_server_ip}"
 	echo "Extra parameters: ${_extra_par}"
+
 
 	fs_prepare_files
 

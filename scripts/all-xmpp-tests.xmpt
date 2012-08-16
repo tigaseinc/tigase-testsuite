@@ -42,6 +42,10 @@ $(stats-pass) = stats
 $(tester-user) = tester_1
 $(number) = 1
 
+$(daemon-domain-user) = all-xmpp-test_1-domain
+$(domain-owner-user) = domain-owner
+$(domain-admin-user) = domain-admin
+-delay=250
 
 -serverip    = "127.0.0.1"
 -host        = $(server-host)
@@ -97,48 +101,48 @@ Global settings:
 
   } >> Basic setup <<
 
-  Basic Tests: { 
-    -include-script = "scripts/xmpts/basic-tests.xmpt" 
+  Basic Tests: {
+    -include-script = "scripts/xmpts/basic-tests.xmpt"
   } >> Basic XMPP Tests <<
-    
+
   SSL-TLS Tests: {
     -include-script = "scripts/xmpts/ssl-tls.xmpt"
   } >> SSL and TLS Tests <<
 
   Packet Order Tests: {
-    -include-script = "scripts/xmpts/packet-order.xmpt" 
+    -include-script = "scripts/xmpts/packet-order.xmpt"
   } >> Packets ordering tests <<
 
-  Privacy Lists Tests: { 
-    -include-script = "scripts/xmpts/privacy-lists.xmpt" 
+  Privacy Lists Tests: {
+    -include-script = "scripts/xmpts/privacy-lists.xmpt"
   } >> Privacy Lists XMPP Tests <<
-    
-  Presence Subscription Tests: { 
-    -include-script = "scripts/xmpts/presence-subscription.xmpt" 
+
+  Presence Subscription Tests: {
+    -include-script = "scripts/xmpts/presence-subscription.xmpt"
   } >> Presence Subscription XMPP Tests <<
-    
-  Extras Tests: { 
-    -include-script = "scripts/xmpts/extras.xmpt" 
-  } >> Basic XMPP Tests <<
-    
-  Large queue and IO: { 
-    -include-script = "scripts/xmpts/large-queue.xmpt" 
+
+  Extras Tests: {
+    -include-script = "scripts/xmpts/extras.xmpt"
   } >> Basic XMPP Tests <<
 
-  MUC Tests: { 
-    -include-script = "scripts/xmpts/muc-tests.xmpt" 
+  Large queue and IO: {
+    -include-script = "scripts/xmpts/large-queue.xmpt"
   } >> Basic XMPP Tests <<
 
-  PubSub Tests: { 
-    -include-script = "scripts/xmpts/pubsub-tests.xmpt" 
+  MUC Tests: {
+    -include-script = "scripts/xmpts/muc-tests.xmpt"
+  } >> Basic XMPP Tests <<
+
+  PubSub Tests: {
+    -include-script = "scripts/xmpts/pubsub-tests.xmpt"
   } >> Basic XMPP Tests <<
 
   Admin commands Tests: {
-    -include-script = "scripts/xmpts/admin-commands-tests.xmpt" 
+    -include-script = "scripts/xmpts/admin-commands-tests.xmpt"
   } >> Administration commands tests <<
 
   VHosts Tests: {
-    -include-script = "scripts/xmpts/vhosts-tests.xmpt" 
+    -include-script = "scripts/xmpts/vhosts-tests.xmpt"
   } >> Tests for Virtual Hosts implementation in the server <<
 
 }
@@ -152,33 +156,33 @@ Bosh Tests:
 
 #  Bosh 1@socket-bosh: >> Socket connect. <<
 
-  Basic Tests: { 
+  Basic Tests: {
     -port = 5280
     -def-stream  = stream-bosh
 #    -debug
 
-    -include-script = "scripts/xmpts/basic-tests.xmpt" 
+    -include-script = "scripts/xmpts/basic-tests.xmpt"
   } >> Basic XMPP Tests <<
- 
+
 #  I it impossible to have this test passed over non-keep-alive Bosh, even if it is possible
 #  it is inpractical
-#   
+#
 #  Packet Order Tests: {
 #    -port = 5280
-#    -def-stream  = stream-bosh  
+#    -def-stream  = stream-bosh
 #
-#    -include-script = "scripts/xmpts/packet-order.xmpt" 
+#    -include-script = "scripts/xmpts/packet-order.xmpt"
 #  } >> Packets ordering tests <<
 
 # In order to make it work in Bosh the presence subscription tests have to be modified in such
 # a way so each test cases uses different account. Otherwise there is too much interference
 # from previous tests to complete the test successfully
 #
-#  Presence Subscription Tests: { 
+#  Presence Subscription Tests: {
 #    -port = 5280
-#    -def-stream  = stream-bosh  
+#    -def-stream  = stream-bosh
 #
-#    -include-script = "scripts/xmpts/presence-subscription.xmpt" 
+#    -include-script = "scripts/xmpts/presence-subscription.xmpt"
 #  } >> Presence Subscription XMPP Tests <<
 
 }
@@ -191,34 +195,34 @@ Bosh keep-alive Tests:
 #  -delay=250
 
 #  Bosh keep-alive 1@socket-bosh: >> Socket connect. <<
- 
-  Basic Tests: { 
+
+  Basic Tests: {
     -port = 5280
-    -def-stream  = stream-bosh  
+    -def-stream  = stream-bosh
     -keep-alive = yes
 
-    -include-script = "scripts/xmpts/basic-tests.xmpt" 
+    -include-script = "scripts/xmpts/basic-tests.xmpt"
   } >> Basic XMPP Tests <<
-    
+
   Packet Order Tests: {
     -port = 5280
-    -def-stream  = stream-bosh    
+    -def-stream  = stream-bosh
     -keep-alive = yes
-    
-    -include-script = "scripts/xmpts/packet-order.xmpt" 
+
+    -include-script = "scripts/xmpts/packet-order.xmpt"
   } >> Packets ordering tests <<
 
 # In order to make it work in Bosh the presence subscription tests have to be modified in such
 # a way so each test cases uses different account. Otherwise there is too much interference
 # from previous tests to complete the test successfully
 #
-#  Presence Subscription Tests: { 
+#  Presence Subscription Tests: {
 #    -port = 5280
-#    -def-stream  = stream-bosh    
+#    -def-stream  = stream-bosh
 #    -keep-alive = yes
 #    -delay = 3000
-#    
-#    -include-script = "scripts/xmpts/presence-subscription.xmpt" 
+#
+#    -include-script = "scripts/xmpts/presence-subscription.xmpt"
 #  } >> Presence Subscription XMPP Tests <<
 
 }
@@ -228,8 +232,8 @@ Bosh keep-alive Tests:
 Multi thread tests:
 {
 
-  Multi-User Tests: { 
-    -include-script = "scripts/xmpts/multi-thread-tests.xmpt" 
+  Multi-User Tests: {
+    -include-script = "scripts/xmpts/multi-thread-tests.xmpt"
   } >> Presence Subscription XMPP Tests <<
 
 

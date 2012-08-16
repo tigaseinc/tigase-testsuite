@@ -30,6 +30,7 @@ SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
 	server_dir="../tigase-server"
 	database="derby"
 	server_ip="127.0.0.1"
+	server_timeout=15
 
 	MS_MEM=100
 	MX_MEM=1000
