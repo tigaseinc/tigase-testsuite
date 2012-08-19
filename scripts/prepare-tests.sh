@@ -57,6 +57,9 @@ for p in $SRV_PACKAGES ; do
   cd ..
 done
 
+# Copy over admin scripts
+cp -f server/src/main/groovy/tigase/admin/*.groovy server/scripts/admin/
+
 echo "Updating TTS"
 
 cd testsuite

@@ -21,64 +21,36 @@
 ##
 
 send: {
-<iq id="get-online-users-list-1"
-    from="$(from-jid)"
-    to="$(to-jid)"
-    type="set">
-    <command xmlns="http://jabber.org/protocol/commands"
-             node="http://jabber.org/protocol/admin#get-online-users-list" />
+<iq id="get-online-users-list-1" from="$(from-jid)" to="$(to-jid)" type="set">
+  <command xmlns="http://jabber.org/protocol/commands"
+           node="http://jabber.org/protocol/admin#get-online-users-list" />
 </iq>
 }
 
 expect: {
-<iq id="get-online-users-list-1"
-    from="$(to-jid)"
-    to="$(from-jid)"
-	type="result">
-	<command status="executing"
-			xmlns="http://jabber.org/protocol/commands"
-            node="http://jabber.org/protocol/admin#get-online-users-list">
-		<x xmlns="jabber:x:data" type="form">
-			<title>Requesting List of Online Users</title>
-				<field type="hidden" var="FORM_TYPE">
-					<value>http://jabber.org/protocol/admin</value>
-				</field>
-				<field type="list-single" var="domainjid" label="The domain for the list of online users">
-					<value/>
-				</field>
-				<field type="list-single" var="max_items" label="Maximum number of items to show">
-					<value/>
-					<option label="25">
-						<value>25</value>
-					</option>
-					<option label="50">
-						<value>50</value>
-					</option>
-					<option label="75">
-						<value>75</value>
-					</option>
-					<option label="100">
-						<value>100</value>
-					</option>
-					<option label="150">
-						<value>150</value>
-					</option>
-					<option label="200">
-						<value>200</value>
-					</option>
-					<option label="None">
-						<value>None</value>
-					</option>
-				</field>
-			</x>
-			<actions execute="complete">
-				<complete/>
-			</actions>
-		</command>
-	</iq>
-
-
-
+<iq id="get-online-users-list-1" from="$(to-jid)" to="$(from-jid)" type="result">
+  <command status="executing" xmlns="http://jabber.org/protocol/commands"
+           node="http://jabber.org/protocol/admin#get-online-users-list">
+    <x xmlns="jabber:x:data" type="form">
+      <title>Requesting List of Online Users</title>
+      <field type="hidden" var="FORM_TYPE">
+        <value>http://jabber.org/protocol/admin</value>
+      </field>
+      <field type="list-single" var="domainjid" label="The domain for the list of online users"><value/></field>
+      <field type="list-single" var="max_items" label="Maximum number of items to show">
+        <value/>
+        <option label="25"><value>25</value></option>
+        <option label="50"><value>50</value></option>
+        <option label="75"><value>75</value></option>
+        <option label="100"><value>100</value></option>
+        <option label="150"><value>150</value></option>
+        <option label="200"><value>200</value></option>
+        <option label="None"><value>None</value></option>
+      </field>
+    </x>
+    <actions execute="complete"><complete/></actions>
+  </command>
+</iq>
 }
 
 

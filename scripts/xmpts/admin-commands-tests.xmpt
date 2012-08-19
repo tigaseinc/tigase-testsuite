@@ -67,7 +67,7 @@ $(number) = 1
 -trusts-file          = "certs/client_truststore"
 
 #to_remove
--delay = 250
+#-delay = 250
 
 #-debug
 -debug-on-error
@@ -76,32 +76,36 @@ $(new-user) = "$(def-user)@$(virtual-host)"
 
 Global settings:
 {
-    -loop = 1
+  -loop = 1
+
+  Prepare: {
+
+        Prep 1@user-register: {
+            -no-record
+            -user-name = $(def-user)
+        } >> Create a regular server account <<
+
+  } >> Basic setup <<
 
         #-delay = 500
 
         # Admin AdHoc script specific preps
-        Prep 1@user-register: {
+        Prep 2@user-register: {
             -no-record
             -user-name = $(domain-owner-user)
         } >> Create domain owner account <<
 
-        Prep 2@user-register: {
+        Prep 3@user-register: {
             -no-record
             -user-name = $(domain-admin-user)
             -host = $(virtual-host)
         } >> Create a domain admin account <<
 
-        Prep 3@user-register: {
+        Prep 4@user-register: {
             -no-record
             -user-name = $(def-user)
             -host = $(virtual-host)
         } >> Create a regular VHost account <<
-
-        Prep 4@user-register: {
-            -no-record
-            -user-name = $(def-user)
-        } >> Create a regular server account <<
 
         Prep 5@common: {
             -no-record
@@ -109,7 +113,7 @@ Global settings:
             -user-pass = $(stats-pass)
             -to-jid = "$(def-user)@$(server-host)"
             -source-file = "tests/data/VHostUpdateAdHocAdminScripts.cot"
-            -delay       = 15000
+#            -delay       = 15000
         } >> Configuring VHost in regard of different rights for different users <<
 
         Prep 6@common: {

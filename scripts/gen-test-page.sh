@@ -79,9 +79,10 @@ for tt in ${TEST_TYPES} ; do
             if grep "FAILURE" ${INDEX_DIR}/${mf} > /dev/null ; then
               bgcolor="FF9090"
             fi
+            SUCCESS=`grep -c success ${INDEX_DIR}/${mf}`
 
             ttime=`gettesttime ${INDEX_DIR}/${mf}`
-            echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${mf}\">${ttime}</a></td>"
+            echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${mf}\">${SUCCESS}xSuccess ${ttime}</a></td>"
           else
             echoindex "<td class=\"rtecenter\"> --- </td>"
           fi

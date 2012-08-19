@@ -32,13 +32,20 @@ send: {
   <ping xmlns='urn:xmpp:ping'/>
 </iq>
 }
-expect:
-{
+expect: {
+<iq to="$(from-jid)" type="error" from="$(to-hostname)" id="ping123">
+  <ping xmlns="urn:xmpp:ping"/>
+  <error type="cancel" code="404">
+    <remote-server-not-found xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
+    <text xml:lang="en" xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">S2S - destination host not found</text>
+  </error>
+</iq>
+
 <iq from="$(to-hostname)" type="error" id="ping123" to="$(from-jid)" >
-	<ping xmlns="urn:xmpp:ping"/>
-	<error type="cancel" code="503" >
-		<service-unavailable xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
-		<text xmlns="urn:ietf:params:xml:ns:xmpp-stanzas" xml:lang="en" >There is no service found to process your request.</text>
-	</error>
+  <ping xmlns="urn:xmpp:ping"/>
+  <error type="cancel" code="503" >
+    <service-unavailable xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
+    <text xmlns="urn:ietf:params:xml:ns:xmpp-stanzas" xml:lang="en" >There is no service found to process your request.</text>
+  </error>
 </iq>
 }

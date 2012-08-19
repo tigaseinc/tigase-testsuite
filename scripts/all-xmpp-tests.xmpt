@@ -64,7 +64,7 @@ $(domain-admin-user) = domain-admin
 
 #-debug
 -debug-on-error
--stop-on-fail = true
+#-stop-on-fail = true
 
 # Init 0@user-register: {
 # -user-name=$(stats-user) -user-pass=$(stats-pass) -no-record
@@ -137,13 +137,13 @@ Global settings:
     -include-script = "scripts/xmpts/pubsub-tests.xmpt"
   } >> Basic XMPP Tests <<
 
-  Admin commands Tests: {
-    -include-script = "scripts/xmpts/admin-commands-tests.xmpt"
-  } >> Administration commands tests <<
-
   VHosts Tests: {
     -include-script = "scripts/xmpts/vhosts-tests.xmpt"
   } >> Tests for Virtual Hosts implementation in the server <<
+
+#  Admin commands Tests: {
+#    -include-script = "scripts/xmpts/admin-commands-tests.xmpt"
+#  } >> Administration commands tests <<
 
 }
 >> Script with functional tests for all basic XMPP/Jabber features <<
@@ -231,6 +231,7 @@ Bosh keep-alive Tests:
 
 Multi thread tests:
 {
+  -name-append=c2s
 
   Multi-User Tests: {
     -include-script = "scripts/xmpts/multi-thread-tests.xmpt"
@@ -238,3 +239,14 @@ Multi thread tests:
 
 
 } >> Multi-threaded tests for various XMPP functions <<
+
+
+Admin ad-hoc commands tests: {
+  -name-append=c2s
+
+  Admin commands Tests: {
+    -include-script = "scripts/xmpts/admin-commands-tests.xmpt"
+  } >> Administration commands tests <<
+
+}
+>> Script with functional tests for Administrator ad-hoc commands <<

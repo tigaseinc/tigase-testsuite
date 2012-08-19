@@ -25,8 +25,18 @@ send: {
 </iq>
 }
 expect: {
+<iq type="result" from="vhost-man@$(hostname)" to="$(from-jid)" id="aacaa">
+  <command xmlns="http://jabber.org/protocol/commands" status="completed" node="comp-repo-item-update">
+    <x type="result" xmlns="jabber:x:data">
+      <field type="fixed" var="Error">
+        <value>There are no items on the list</value>
+      </field>
+    </x>
+  </command>
+</iq>
+
 <iq from="vhost-man@$(hostname)" type="error" to="$(from-jid)" id="aacaa">
-	<command xmlns="http://jabber.org/protocol/commands" node="comp-repo-item-update"/>
+  <command xmlns="http://jabber.org/protocol/commands" node="comp-repo-item-update"/>
   <error type="auth" code="403">
     <forbidden xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
     <text xmlns="urn:ietf:params:xml:ns:xmpp-stanzas" xml:lang="en">Only Administrator can call the command.</text>

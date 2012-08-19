@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Describe class HTMLContentFilter here.
@@ -81,12 +82,11 @@ public class HTMLContentFilter implements OutputFilter {
     bw.write("  </p>\n");
     bw.write("  <p>Test end time: <b>" +
       DateFormat.getDateTimeInstance().format(new Date()) + "</b></p>\n");
-    Calendar cal = Calendar.getInstance();
+    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     cal.setTimeInMillis(System.currentTimeMillis() - start);
     //cal.computeFields();
     bw.write("  <p>Total test time:");
-		bw.write(" " + (cal.get(Calendar.HOUR_OF_DAY)-1) + " hours");
-    //bw.write(" " + cal.get(Calendar.HOUR_OF_DAY) + " hours");
+    bw.write(" " + cal.get(Calendar.HOUR_OF_DAY) + " hours");
     bw.write(", " + cal.get(Calendar.MINUTE) + " minutes");
     bw.write(", " + cal.get(Calendar.SECOND) + " seconds");
     bw.write(", " + cal.get(Calendar.MILLISECOND) + " ms.</p>");
