@@ -1,15 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd ">
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>tigase</groupId>
 	<artifactId>tigase-testsuite</artifactId>
 	<packaging>jar</packaging>
 	<name>Tigase Test Suite</name>
-	<description>
-		Tigase Test Suite - automated testing framework for Tigase
-		Jabber/XMPP Server.
-	</description>
 	<version>2.2.0-SNAPSHOT</version>
+	<description>Tigase Test Suite - automated testing framework for Tigase Jabber/XMPP Server.</description>
 	<url>http://www.tigase.org</url>
+	<issueManagement>
+		<system>Redmine</system>
+		<url>https://projects.tigase.org/projects/tigase-testsuite</url>
+	</issueManagement>
 	<inceptionYear>2005</inceptionYear>
 	<developers>
 		<developer>
@@ -37,9 +41,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:https://svn.tigase.org/reps/tigase-testsuite/trunk</connection>
-		<developerConnection>scm:svn:https://svn.tigase.org/reps/tigase-testsuite/trunk</developerConnection>
-		<url>https://svn.tigase.org/reps/tigase-testsuite</url>
+		<connection>scm:git:https://svn.tigase.org/git/tigase-testsuite.git</connection>
+		<developerConnection>scm:git:https://svn.tigase.org/git/tigase-testsuite.git</developerConnection>
+		<url>https://projects.tigase.org/projects/tigase-testsuite/repository</url>
 	</scm>
 	<organization>
 		<name>Tigase</name>
@@ -51,11 +55,46 @@
 		<finalName>${artifactId}</finalName>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.1</version>
+				<configuration>
+					<timestampFormat>{0,date} {0,time}</timestampFormat>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					 <shortRevisionLength>8</shortRevisionLength>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Version>${project.version} build ${buildNumber} (${timestamp})</Implementation-Version>
+							<Implementation-Build>${buildNumber} (${timestamp})</Implementation-Build>
+						</manifestEntries>
+					</archive>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -72,6 +111,7 @@
 							<outputDirectory>${basedir}/libs</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
+							<stripVersion>true</stripVersion>
 						</configuration>
 					</execution>
 				</executions>
@@ -81,6 +121,11 @@
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh-external</artifactId>
+				<version>2.2</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
 				<version>2.2</version>
 			</extension>
 		</extensions>
@@ -97,32 +142,29 @@
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>tigase-utils</artifactId>
-			<version>3.3.11</version>
+			<version>3.4.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>tigase-xmltools</artifactId>
-			<version>3.3.6</version>
+			<version>3.4.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.3</version>
+			<version>4.10</version>
 		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>
 			<id>tigase</id>
-			<name>Tigase Repo</name>
-			<url>scpexe://maven.tigase.org:/home/webapp/maven-repository</url>
+			<name>Tigase repository</name>
+			<url>scp://maven.tigase.org:/home/webapp/maven-repository</url>
 		</repository>
 		<snapshotRepository>
 			<id>tigase</id>
-			<name>Tigase Repo</name>
-			<url>scpexe://maven.tigase.org:/home/webapp/maven-repository</url>
+			<name>Tigase snapshot repository</name>
+			<url>scp://maven.tigase.org:/home/webapp/maven-repository</url>
 		</snapshotRepository>
 	</distributionManagement>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 </project>
