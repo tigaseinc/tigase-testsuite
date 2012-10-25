@@ -44,6 +44,7 @@ import static tigase.util.JIDUtils.*;
  */
 public class TestPrivacyLongList extends TestAbstract {
 
+	private static final String packet_id = "privacy-long-list";
   private String user_name = "test_user@localhost";
   private String user_resr = "xmpp-test";
   private String user_emil = "test_user@localhost";
@@ -68,7 +69,7 @@ public class TestPrivacyLongList extends TestAbstract {
 	public TestPrivacyLongList() {
     super(
       new String[] {"jabber:client"},
-      new String[] {"privacy-long-list"},
+      new String[] {packet_id},
       new String[] {"stream-open", "auth", "xmpp-bind"},
       new String[] {"tls-init"}
       );
@@ -129,7 +130,7 @@ public class TestPrivacyLongList extends TestAbstract {
   public String getElementData(final String string) throws Exception {
     result = new Attribute[] {
       new Attribute("type", "result"),
-      new Attribute("id", "privacy_" + counter),
+      new Attribute("id", packet_id + counter),
       new Attribute("to", jid),
     };
     res_cnt = 0;
@@ -137,10 +138,10 @@ public class TestPrivacyLongList extends TestAbstract {
     case 1:
 			expected_result = new Element("iq",
 				new String[] {"type", "id"},
-				new String[] {"result", "privacy_" + counter});
+				new String[] {"result", packet_id + counter});
       resp_name = new String[] {"iq"};
       String list =
-        "<iq type=\"set\" id=\"privacy_" + counter + "\" from=\"" + jid + "\">"
+        "<iq type=\"set\" id=\"" + packet_id + counter + "\" from=\"" + jid + "\">"
         + "<query xmlns=\"" + xmlns + "\">"
 				+ "<list name='long-list'>";
 			for (int i = 1; i < 100; i++) {
@@ -154,10 +155,10 @@ public class TestPrivacyLongList extends TestAbstract {
     case 2:
 			expected_result = new Element("iq",
 				new String[] {"type", "id"},
-				new String[] {"result", "privacy_" + counter});
+				new String[] {"result", packet_id + counter});
       resp_name = new String[] {"iq"};
       return
-        "<iq type=\"set\" id=\"privacy_" + counter + "\" from=\"" + jid + "\">"
+        "<iq type=\"set\" id=\"" + packet_id + counter + "\" from=\"" + jid + "\">"
         + "<query xmlns=\"" + xmlns + "\">"
 				+ "<active name=\"long-list\"/>"
 				+ "</query>"
@@ -165,10 +166,10 @@ public class TestPrivacyLongList extends TestAbstract {
     case 3:
 			expected_result = new Element("iq",
 				new String[] {"type", "id"},
-				new String[] {"result", "privacy_" + counter});
+				new String[] {"result", packet_id + counter});
       resp_name = new String[] {"iq"};
       return
-        "<iq type=\"set\" id=\"privacy_" + counter + "\" from=\"" + jid + "\">"
+        "<iq type=\"set\" id=\"" + packet_id + counter + "\" from=\"" + jid + "\">"
         + "<query xmlns=\"" + xmlns + "\">"
 				+ "<default name=\"long-list\"/>"
 				+ "</query>"

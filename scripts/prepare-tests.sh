@@ -19,7 +19,7 @@ function build_utils() {
 }
 
 function build_server() {
-  ant clean jar-dist &> ${TMP_DIR}/xmltools-build.txt
+  ant clean jar-dist &> ${TMP_DIR}/server-build.txt
   echo ""
 }
 
@@ -48,7 +48,8 @@ cd ${PROJECTS_DIR}
 for p in $SRV_PACKAGES ; do
   echo "Building package: $p"
   cd $p
-  svn up
+  mkdir -p libs jars
+  git pull
   JAR=`build_$p`
   echo "jar file: $JAR"
   if [ ! -z "${JAR}" ] ; then
@@ -58,12 +59,16 @@ for p in $SRV_PACKAGES ; do
 done
 
 # Copy over admin scripts
+mkdir -p server/scripts/admin/
 cp -f server/src/main/groovy/tigase/admin/*.groovy server/scripts/admin/
 
 echo "Updating TTS"
 
 cd testsuite
-svn up
+mkdir -p libs jars
+cp ../xmltools/jars/tigase-xmltools.jar libs/
+cp ../utils/jars/tigase-utils.jar libs/
+git pull
 ant clean jar &> ../testsuite-build.txt
 cd ..
 
