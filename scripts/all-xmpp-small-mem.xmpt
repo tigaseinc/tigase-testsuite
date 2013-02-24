@@ -109,6 +109,10 @@ Global settings:
     -include-script = "scripts/xmpts/ssl-tls.xmpt"
   } >> SSL and TLS Tests <<
 
+  TLS Required Tests: {
+    -include-script = "scripts/xmpts/tls-required.xmpt"
+  } >> TLS Required Tests <<
+
   Packet Order Tests: {
     -include-script = "scripts/xmpts/packet-order.xmpt"
   } >> Packets ordering tests <<

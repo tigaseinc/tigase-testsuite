@@ -96,6 +96,7 @@ Global settings:
   Basic 3@user-unregister: {
     -user-name   = user-register-name
     -user-pass   = user-register-pass
+    -disconnect-ok = true
   } >> XEP-0077 - In-Band Registration - user unregister <<
 
   Basic 4@auth-plain: { -def-auth = auth-plain } >> XEP-0078 Non-SASL authorization with plain password. <<
@@ -114,9 +115,9 @@ Global settings:
     { -user-name=$(stats-user) -user-pass=$(stats-pass) }
     >> XEP-0039 Statistics Gathering. <<
 
-  Basic 10@common: { 
+  Basic 10@common: {
     -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
-    -source-file = "tests/data/RosterTest.cot" 
+    -source-file = "tests/data/RosterTest.cot"
   } >> Roster management test <<
 
   Basic 11@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
@@ -138,10 +139,10 @@ Global settings:
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping to another, vrtual domain '$(virtual-host)' on the server <<
 
-  Basic 16@common: { 
+  Basic 16@common: {
     -user-name = $(stats-user)
     -user-pass = $(stats-pass)
-    -source-file = "tests/data/ServiceDiscovery.cot" 
+    -source-file = "tests/data/ServiceDiscovery.cot"
   } >> XEP-0030: XMPP Service Discovery <<
 
   Basic 17@auth-sasl;common-no-bind: {

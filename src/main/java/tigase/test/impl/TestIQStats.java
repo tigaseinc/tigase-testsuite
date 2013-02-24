@@ -1,24 +1,26 @@
 /*
- * Tigase XMPP/Jabber Test Suite
- * Copyright (C) 2004-2009 "Artur Hefczyc" <artur.hefczyc@tigase.org>
+ * TestIQStats.java
+ *
+ * Tigase Jabber/XMPP Server
+ * Copyright (C) 2004-2012 "Artur Hefczyc" <artur.hefczyc@tigase.org>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License.
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program. Look for COPYING file in the top folder.
  * If not, see http://www.gnu.org/licenses/.
  *
- * $Rev$
- * Last modified by $Author$
- * $Date$
  */
+
+
 
 package tigase.test.impl;
 
@@ -40,8 +42,6 @@ import java.util.Map;
 
 import javax.management.Attribute;
 
-//~--- classes ----------------------------------------------------------------
-
 /**
  * Describe class TestIQStats here.
  *
@@ -51,10 +51,11 @@ import javax.management.Attribute;
  * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
-public class TestIQStats extends TestAbstract {
-	private int counter = 0;
-	private String[] elems = { "iq" };
-	private String from = null;
+public class TestIQStats
+				extends TestAbstract {
+	private int counter     = 0;
+	private String[] elems  = { "iq" };
+	private String from     = null;
 	private String hostname = "localhost";
 
 	//~--- constructors ---------------------------------------------------------
@@ -64,10 +65,9 @@ public class TestIQStats extends TestAbstract {
 	 *
 	 */
 	public TestIQStats() {
-		super(new String[] { "jabber:client" },
-					new String[] { "iq-stats" },
-					new String[] { "stream-open", "auth", "xmpp-bind" },
-					new String[] { "tls-init" });
+		super(new String[] { "jabber:client" }, new String[] { "iq-stats" },
+					new String[] { "stream-open",
+												 "auth", "xmpp-bind" }, new String[] { "tls-init" });
 	}
 
 	//~--- get methods ----------------------------------------------------------
@@ -81,15 +81,15 @@ public class TestIQStats extends TestAbstract {
 	 */
 	public String getElementData(final String string) throws Exception {
 		switch (counter) {
-			case 1 :
-				return "<iq type='set' id='stats_1' to='stats@" + hostname + "'>"
-							 + "<command xmlns='http://jabber.org/protocol/commands' node='stats'>"
-							 + "<x xmlns='jabber:x:data' type='submit'>"
-							 + "<field type='list-single' var='Stats level' >" + "<value>FINER</value>"
-							 + "</field>" + "</x>" + "</command>" + "</iq>";
+		case 1 :
+			return "<iq type='set' id='stats_1' to='stats@" + hostname + "'>" +
+						 "<command xmlns='http://jabber.org/protocol/commands' node='stats'>" +
+						 "<x xmlns='jabber:x:data' type='submit'>" +
+						 "<field type='list-single' var='Stats level' >" + "<value>FINER</value>" +
+						 "</field>" + "</x>" + "</command>" + "</iq>";
 
-			default :
-				return null;
+		default :
+			return null;
 		}    // end of switch (counter)
 	}
 
@@ -102,12 +102,12 @@ public class TestIQStats extends TestAbstract {
 	 */
 	public Attribute[] getRespElementAttributes(final String string) throws Exception {
 		switch (counter) {
-			case 1 :
-				return new Attribute[] { new Attribute("type",
-								"result"), new Attribute("id", "stats_1") };
+		case 1 :
+			return new Attribute[] { new Attribute("type", "result"),
+															 new Attribute("id", "stats_1") };
 
-			default :
-				return null;
+		default :
+			return null;
 		}    // end of switch (counter)
 	}
 
@@ -149,7 +149,7 @@ public class TestIQStats extends TestAbstract {
 
 		String user_name = params.get("-user-name", "test_user@localhost");
 		String user_resr = params.get("-user-resr", "xmpp-test");
-		String name = getNodeNick(user_name);
+		String name      = getNodeNick(user_name);
 
 		if ((name == null) || name.equals("")) {
 			from = user_name + "@" + hostname + "/" + user_resr;
@@ -173,11 +173,11 @@ public class TestIQStats extends TestAbstract {
 		}    // end of if (counter < elems.length)
 
 		List<StatItem> stats = new LinkedList<StatItem>();
-		List<Element> items = element.getChildren("/iq/command/x");
+		List<Element> items  = element.getChildrenStaticStr(IQ_COMMAND_X_PATH);
 
 		for (Element item : items) {
-			String name = item.getAttribute("var");
-			int idx = name.indexOf("/");
+			String name = item.getAttributeStaticStr("var");
+			int idx     = name.indexOf("/");
 			String comp = "unknown";
 			String stat = name;
 
@@ -185,10 +185,9 @@ public class TestIQStats extends TestAbstract {
 				comp = name.substring(0, idx);
 				stat = name.substring(idx + 1);
 			}
-
-			stats.add(new StatItem(comp, item.getCData("/field/value"), "none", stat));
+			stats.add(new StatItem(comp, item.getCDataStaticStr(FIELD_VALUE_PATH), "none",
+														 stat));
 		}    // end of for (Element item: items)
-
 		params.put("Statistics", stats);
 
 		return null;
@@ -196,7 +195,4 @@ public class TestIQStats extends TestAbstract {
 }    // TestIQStats
 
 
-//~ Formatted in Sun Code Convention
-
-
-//~ Formatted by Jindent --- http://www.jindent.com
+//~ Formatted in Tigase Code Convention on 13/02/20

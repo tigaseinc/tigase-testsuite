@@ -1,24 +1,26 @@
 /*
- * Tigase XMPP/Jabber Test Suite
- * Copyright (C) 2004-2009 "Artur Hefczyc" <artur.hefczyc@tigase.org>
+ * TestIQCommandGetConfig.java
+ *
+ * Tigase Jabber/XMPP Server
+ * Copyright (C) 2004-2012 "Artur Hefczyc" <artur.hefczyc@tigase.org>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License.
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program. Look for COPYING file in the top folder.
  * If not, see http://www.gnu.org/licenses/.
  *
- * $Rev$
- * Last modified by $Author$
- * $Date$
  */
+
+
 
 package tigase.test.impl;
 
@@ -42,8 +44,6 @@ import java.util.Map;
 
 import javax.management.Attribute;
 
-//~--- classes ----------------------------------------------------------------
-
 /**
  * Describe class TestIQCommandGetConfig here.
  *
@@ -53,19 +53,21 @@ import javax.management.Attribute;
  * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
-public class TestIQCommandGetConfig extends TestAbstract {
-	private int counter = 0;
-	private String[] elems = { "iq" };
-	private Element expected_result, optional_result = null;
-	private String hostname = "localhost";
-	private String id = null;
-	private String jid = null;
-	private String[] resp_name = null;
-	private Attribute[] result = null;
-	private String user_emil = "test_user@localhost";
-	private String user_name = "test_user@localhost";
-	private String user_resr = "xmpp-test";
-	private String xmlns = "http://jabber.org/protocol/commands";
+public class TestIQCommandGetConfig
+				extends TestAbstract {
+	private int counter             = 0;
+	private String[] elems          = { "iq" };
+	private Element expected_result,
+									optional_result = null;
+	private String hostname         = "localhost";
+	private String id               = null;
+	private String jid              = null;
+	private String[] resp_name      = null;
+	private Attribute[] result      = null;
+	private String user_emil        = "test_user@localhost";
+	private String user_name        = "test_user@localhost";
+	private String user_resr        = "xmpp-test";
+	private String xmlns            = "http://jabber.org/protocol/commands";
 
 	//~--- constructors ---------------------------------------------------------
 
@@ -74,10 +76,9 @@ public class TestIQCommandGetConfig extends TestAbstract {
 	 *
 	 */
 	public TestIQCommandGetConfig() {
-		super(new String[] { "jabber:client" },
-					new String[] { "command-get-config" },
-					new String[] { "stream-open", "auth", "xmpp-bind" },
-					new String[] { "tls-init" });
+		super(new String[] { "jabber:client" }, new String[] { "command-get-config" },
+					new String[] { "stream-open",
+												 "auth", "xmpp-bind" }, new String[] { "tls-init" });
 	}
 
 	//~--- get methods ----------------------------------------------------------
@@ -91,34 +92,35 @@ public class TestIQCommandGetConfig extends TestAbstract {
 	 */
 	@Override
 	public String getElementData(final String string) throws Exception {
-		result = new Attribute[] { new Attribute("type",
-						"result"), new Attribute("id", "config-get"), new Attribute("to", jid), };
-
+		result = new Attribute[] { new Attribute("type", "result"),
+															 new Attribute("id", "config-get"),
+															 new Attribute("to", jid), };
 		switch (counter) {
-			case 1 :
-				expected_result = new Element("iq",
-																			new Element[] { new Element("command",
-								new Element[] { new Element("x",
-								new String[] { "xmlns", "type" },
-								new String[] { "jabber:x:data", "result" }) },
-								new String[] { "xmlns", "status", "node" },
-								new String[] { xmlns, "completed", "config-list" }) },
-																			new String[] { "type", "id", "from" },
-																			new String[] { "result", "config-get",
-								"basic-conf@" + hostname });
-				resp_name = new String[] { "iq" };
+		case 1 :
+			expected_result = new Element("iq",
+																		new Element[] {
+																			new Element("command",
+																				new Element[] {
+																					new Element("x", new String[] { "xmlns",
+							"type" }, new String[] { "jabber:x:data", "result" }) }, new String[] {
+								"xmlns",
+								"status", "node" }, new String[] { xmlns, "completed",
+								"config-list" }) }, new String[] { "type",
+							"id", "from" }, new String[] { "result", "config-get",
+							"basic-conf@" + hostname });
+			resp_name = new String[] { "iq" };
 
-				return "<iq type=\"set\" to=\"basic-conf@" + hostname + "\""
-							 + " id=\"config-get\">" + "<command xmlns=\"" + xmlns + "\""
-							 + " node=\"config-list\">" + "<x xmlns=\"jabber:x:data\" type=\"submit\">"
-							 + "<field type=\"list-single\" var=\"comp-name\">"
-							 + "<value>sess-man</value></field></x></command></iq>";
+			return "<iq type=\"set\" to=\"basic-conf@" + hostname + "\"" +
+						 " id=\"config-get\">" + "<command xmlns=\"" + xmlns + "\"" +
+						 " node=\"config-list\">" + "<x xmlns=\"jabber:x:data\" type=\"submit\">" +
+						 "<field type=\"list-single\" var=\"comp-name\">" +
+						 "<value>sess-man</value></field></x></command></iq>";
 
-//    "<iq type=\"set\" to=\"basic-conf@" + hostname + "\" id=\"command_1\" >"
-//    + "<command xmlns=\"http://jabber.org/protocol/commands\""
-//    + "node=\"config/list/sess-man\" /></iq>";
-			default :
-				return null;
+//  "<iq type=\"set\" to=\"basic-conf@" + hostname + "\" id=\"command_1\" >"
+//  + "<command xmlns=\"http://jabber.org/protocol/commands\""
+//  + "node=\"config/list/sess-man\" /></iq>";
+		default :
+			return null;
 		}    // end of switch (counter)
 	}
 
@@ -174,7 +176,7 @@ public class TestIQCommandGetConfig extends TestAbstract {
 		user_name = params.get("-user-name", user_name);
 		user_resr = params.get("-user-resr", user_resr);
 		user_emil = params.get("-user-emil", user_emil);
-		hostname = params.get("-host", hostname);
+		hostname  = params.get("-host", hostname);
 
 		String name = getNodeNick(user_name);
 
@@ -183,15 +185,12 @@ public class TestIQCommandGetConfig extends TestAbstract {
 		} else {
 			jid = user_name + "/" + user_resr;
 		}    // end of else
-
 		if ((name == null) || name.equals("")) {
 			id = user_name + "@" + hostname;
 		} else {
 			id = user_name;
 		}    // end of else
 	}
-
-	// Implementation of tigase.test.TestAbstract
 
 	/**
 	 * Describe <code>nextElementName</code> method here.
@@ -202,35 +201,33 @@ public class TestIQCommandGetConfig extends TestAbstract {
 	 */
 	@Override
 	public String nextElementName(final Element element) throws Exception {
-		boolean error = true;
+		boolean error  = true;
 		String message = null;
 
 		if (element != null) {
-			List<Element> items = element.getChildren("/iq/command/x");
+			List<Element> items = element.getChildrenStaticStr(IQ_COMMAND_X_PATH);
 
 			if (items != null) {
 				error = false;
 
 				List<StatItem> stats = new LinkedList<StatItem>();
-				String comp = "unknown";
+				String comp          = "unknown";
 
 				for (Element item : items) {
-					String name = item.getAttribute("var");
-					String cdata = item.getChildCData("/field/value");
+					String name  = item.getAttributeStaticStr("var");
+					String cdata = item.getChildCDataStaticStr(FIELD_VALUE_PATH);
 
 					if ("comp-name".equals(name)) {
 						comp = cdata;
 					} else {
-						if (!"hidden".equals(item.getAttribute("type"))) {
+						if (!"hidden".equals(item.getAttributeStaticStr("type"))) {
 							if (cdata == null) {
 								cdata = "";
 							}
-
 							stats.add(new StatItem(comp, XMLUtils.unescape(cdata), "&nbsp;", name));
 						}
 					}
 				}    // end of for (Element item: items)
-
 				params.put("Configuration", stats);
 			} else {
 				message = "Not a configuration packet";
@@ -240,12 +237,10 @@ public class TestIQCommandGetConfig extends TestAbstract {
 				error = false;
 			}      // end of if (expected_result == null)
 		}        // end of else
-
 		if (error) {
-			throw new ResultsDontMatchException("Expected: " + expected_result + ", Received: "
-							+ element + "'" + ", equals error: " + message);
+			throw new ResultsDontMatchException("Expected: " + expected_result +
+							", Received: " + element + "'" + ", equals error: " + message);
 		}    // end of if (error)
-
 		if (counter < elems.length) {
 			return elems[counter++];
 		}    // end of if (counter < elems.length)
@@ -255,7 +250,4 @@ public class TestIQCommandGetConfig extends TestAbstract {
 }
 
 
-//~ Formatted in Sun Code Convention
-
-
-//~ Formatted by Jindent --- http://www.jindent.com
+//~ Formatted in Tigase Code Convention on 13/02/20

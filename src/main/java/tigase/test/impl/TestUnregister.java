@@ -1,24 +1,25 @@
 /*
- * Tigase XMPP/Jabber Test Suite
- * Copyright (C) 2004-2009 "Artur Hefczyc" <artur.hefczyc@tigase.org>
+ * TestUnregister.java
+ *
+ * Tigase Jabber/XMPP Server
+ * Copyright (C) 2004-2012 "Artur Hefczyc" <artur.hefczyc@tigase.org>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program. Look for COPYING file in the top folder.
  * If not, see http://www.gnu.org/licenses/.
  *
- * $Rev$
- * Last modified by $Author$
- * $Date$
  */
+
+
 
 package tigase.test.impl;
 
@@ -38,8 +39,6 @@ import java.util.Map;
 
 import javax.management.Attribute;
 
-//~--- classes ----------------------------------------------------------------
-
 /**
  * Describe class TestUnregister here.
  *
@@ -49,11 +48,12 @@ import javax.management.Attribute;
  * @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
  * @version $Rev$
  */
-public class TestUnregister extends TestAbstract {
-	private int counter = 0;
-	private String[] elems = { "iq" };
-	private String hostname = "localhost";
-	private String jid = null;
+public class TestUnregister
+				extends TestAbstract {
+	private int counter      = 0;
+	private String[] elems   = { "iq" };
+	private String hostname  = "localhost";
+	private String jid       = null;
 	private String user_emil = "test_user@localhost";
 	private String user_name = "test_user@localhost";
 	private String user_resr = "xmpp-test";
@@ -66,8 +66,9 @@ public class TestUnregister extends TestAbstract {
 	 */
 	public TestUnregister() {
 		super(new String[] { "jabber:client" }, new String[] { "user-unregister" },
-				new String[] { "stream-open",
-				"auth", "xmpp-bind" }, new String[] { "user-register", "tls-init" });
+					new String[] { "stream-open",
+												 "auth", "xmpp-bind" }, new String[] { "user-register",
+												 "tls-init" });
 	}
 
 	//~--- get methods ----------------------------------------------------------
@@ -84,12 +85,12 @@ public class TestUnregister extends TestAbstract {
 	 */
 	public String getElementData(final String element) throws Exception {
 		switch (counter) {
-			case 1 :
-				return "<iq type='set' id='unreg1' from='" + jid + "'>"
-						+ "<query xmlns='jabber:iq:register'>" + "<remove/>" + "</query>" + "</iq>";
+		case 1 :
+			return "<iq type='set' id='unreg1' from='" + jid + "'>" +
+						 "<query xmlns='jabber:iq:register'>" + "<remove/>" + "</query>" + "</iq>";
 
-			default :
-				return null;
+		default :
+			return null;
 		}    // end of switch (counter)
 	}
 
@@ -101,16 +102,26 @@ public class TestUnregister extends TestAbstract {
 	 *
 	 * @return
 	 */
+	@Override
 	public Attribute[] getRespElementAttributes(final String element) {
+		Attribute[] result = null;
+
 		if (element.equals("iq")) {
-			return new Attribute[] {
+			result = new Attribute[] {
 				new Attribute("type", "result"), new Attribute("id", "unreg1")
 
 				// , new Attribute("to", jid)
 			};
 		}
+		if (element.equals("error")) {
+			result = new Attribute[] {
+				new Attribute("type", "cancel"), new Attribute("code", "404")
 
-		return null;
+				// , new Attribute("to", jid)
+			};
+		}
+
+		return result;
 	}
 
 	/**
@@ -121,8 +132,9 @@ public class TestUnregister extends TestAbstract {
 	 *
 	 * @return
 	 */
+	@Override
 	public String[] getRespElementNames(final String element) {
-		return new String[] { "iq" };
+		return elems;
 	}
 
 	/**
@@ -133,8 +145,9 @@ public class TestUnregister extends TestAbstract {
 	 *
 	 * @return
 	 */
+	@Override
 	public String[] getRespOptionalNames(final String element) {
-		return new String[] { "stream:features", "stream:stream" };
+		return new String[] { "stream:features", "stream:stream", "error" };
 	}
 
 	//~--- methods --------------------------------------------------------------
@@ -147,12 +160,13 @@ public class TestUnregister extends TestAbstract {
 	 * @param params a <code>Params</code> value
 	 * @param vars
 	 */
+	@Override
 	public void init(final Params params, Map<String, String> vars) {
 		super.init(params, vars);
 		user_name = params.get("-user-name", user_name);
 		user_resr = params.get("-user-resr", user_resr);
 		user_emil = params.get("-user-emil", user_emil);
-		hostname = params.get("-host", hostname);
+		hostname  = params.get("-host", hostname);
 
 		String name = getNodeNick(user_name);
 
@@ -171,6 +185,7 @@ public class TestUnregister extends TestAbstract {
 	 *
 	 * @return
 	 */
+	@Override
 	public String nextElementName(final Element reply) {
 		if (counter < elems.length) {
 			return elems[counter++];
@@ -181,7 +196,4 @@ public class TestUnregister extends TestAbstract {
 }    // TestUnregister
 
 
-//~ Formatted in Sun Code Convention
-
-
-//~ Formatted by Jindent --- http://www.jindent.com
+//~ Formatted in Tigase Code Convention on 13/02/16

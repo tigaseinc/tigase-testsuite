@@ -1,24 +1,26 @@
 /*
- * Tigase XMPP/Jabber Test Suite
- * Copyright (C) 2004-2009 "Artur Hefczyc" <artur.hefczyc@tigase.org>
+ * ElementUtil.java
+ *
+ * Tigase Jabber/XMPP Server
+ * Copyright (C) 2004-2012 "Artur Hefczyc" <artur.hefczyc@tigase.org>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License.
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program. Look for COPYING file in the top folder.
  * If not, see http://www.gnu.org/licenses/.
  *
- * $Rev$
- * Last modified by $Author$
- * $Date$
  */
+
+
 
 package tigase.test.util;
 
@@ -33,8 +35,6 @@ import java.util.Map;
 
 import javax.management.Attribute;
 
-//~--- classes ----------------------------------------------------------------
-
 /**
  * Describe class ElementUtil here.
  *
@@ -45,7 +45,6 @@ import javax.management.Attribute;
  * @version $Rev$
  */
 public abstract class ElementUtil {
-
 	/**
 	 * Creates a new <code>ElementUtil</code> instance.
 	 *
@@ -65,7 +64,7 @@ public abstract class ElementUtil {
 	 * @return
 	 */
 	public static boolean checkTestVariable(String expected, String received,
-			Map<String, String> stanza_variables) {
+					Map<String, String> stanza_variables) {
 
 		// Maybe this is a test variable?
 		if (expected.startsWith("@{")) {
@@ -87,7 +86,7 @@ public abstract class ElementUtil {
 				// + received);
 				// The variable is already set, then we have to check whether the
 				// received value matches it.
-				if ( !stanza_var.equals(received)) {
+				if (!stanza_var.equals(received)) {
 					return false;
 				}
 			}
@@ -108,26 +107,28 @@ public abstract class ElementUtil {
 	 * @return
 	 */
 	public static EqualError equalElems(Element el1, Element el2) {
-		if ( !el1.getName().equals(el2.getName())) {
+		if (!el1.getName().equals(el2.getName())) {
 			return new EqualError(false,
-					"Element names are different: " + el1.getName() + " and " + el2.getName());
+														"Element names are different: " + el1.getName() + " and " +
+														el2.getName());
 		}    // end of if (!el1.getName().equals(el2.getName()))
 
 		Map<String, String> attrs = el1.getAttributes();
 
 		if (attrs != null) {
 			for (String key : attrs.keySet()) {
-				String atval2 = el2.getAttribute(key);
+				String atval2 = el2.getAttributeStaticStr(key);
 
 				if (atval2 == null) {
 					return new EqualError(false,
-							"Element: " + el2.getName() + " missing attribute: " + key);
+																"Element: " + el2.getName() + " missing attribute: " +
+																key);
 				}    // end of if (at2 == null)
-
-				if ( !attrs.get(key).equals(atval2)) {
+				if (!attrs.get(key).equals(atval2)) {
 					return new EqualError(false,
-							"Element: " + el2.getName() + " different value for attribute: " + key + ", "
-								+ attrs.get(key) + " != " + atval2);
+																"Element: " + el2.getName() +
+																" different value for attribute: " + key + ", " +
+																attrs.get(key) + " != " + atval2);
 				}    // end of if (!attrs.get(key).equals(atval2))
 			}      // end of for (String key: attrs.keySet())
 		}        // end of if (attrs != null)
@@ -139,13 +140,13 @@ public abstract class ElementUtil {
 
 			if (cdata2 == null) {
 				return new EqualError(false,
-						"Missing CData for element: " + el2.getName() + ", expected: " + cdata1);
+															"Missing CData for element: " + el2.getName() +
+															", expected: " + cdata1);
 			}    // end of if (cdata2 == null)
-
-			if ( !cdata1.trim().equals(cdata2.trim())) {
+			if (!cdata1.trim().equals(cdata2.trim())) {
 				return new EqualError(false,
-						"Different CData for element: " + el2.getName() + ", expected: " + cdata1
-							+ ", found: " + cdata2);
+															"Different CData for element: " + el2.getName() +
+															", expected: " + cdata1 + ", found: " + cdata2);
 			}    // end of if (!cdata1.equals(cdata2))
 		}      // end of if (cdata1 != null)
 
@@ -163,29 +164,33 @@ public abstract class ElementUtil {
 	 * @return
 	 */
 	public static EqualError equalElems(Element el1, Element el2,
-			Map<String, String> stanza_variables) {
-		if ( !el1.getName().equals(el2.getName())) {
+					Map<String, String> stanza_variables) {
+		if (!el1.getName().equals(el2.getName())) {
 			return new EqualError(false,
-					"Element names are different: " + el1.getName() + " and " + el2.getName());
+														"Element names are different: " + el1.getName() + " and " +
+														el2.getName());
 		}    // end of if (!el1.getName().equals(el2.getName()))
 
 		Map<String, String> attrs1 = el1.getAttributes();
 
 		if (attrs1 != null) {
 			for (String key1 : attrs1.keySet()) {
-				String atval2 = el2.getAttribute(key1);
+				String atval2 = el2.getAttributeStaticStr(key1);
 
 				if (atval2 == null) {
 					return new EqualError(false,
-							"Element: " + el2.getName() + " missing attribute: " + key1);
+																"Element: " + el2.getName() + " missing attribute: " +
+																key1);
 				}    // end of if (at2 == null)
 
 				String atval1 = attrs1.get(key1);
 
-				if ( !atval1.equals(atval2) &&!checkTestVariable(atval1, atval2, stanza_variables)) {
+				if (!atval1.equals(atval2) &&
+						!checkTestVariable(atval1, atval2, stanza_variables)) {
 					return new EqualError(false,
-							"Element: " + el2.getName() + " different value for attribute: " + key1 + ", "
-								+ attrs1.get(key1) + " != " + atval2);
+																"Element: " + el2.getName() +
+																" different value for attribute: " + key1 + ", " +
+																attrs1.get(key1) + " != " + atval2);
 				}    // end of if (!attrs.get(key).equals(atval2))
 			}      // end of for (String key: attrs.keySet())
 		}        // end of if (attrs != null)
@@ -195,21 +200,19 @@ public abstract class ElementUtil {
 		if (cdata1 != null) {
 			cdata1 = cdata1.trim();
 		}
-
 		if ((cdata1 != null) &&!cdata1.isEmpty()) {
 			String cdata2 = el2.getCData();
 
 			if (cdata2 == null) {
 				return new EqualError(false,
-						"Missing CData for element: " + el2.getName() + ", expected: " + cdata1);
+															"Missing CData for element: " + el2.getName() +
+															", expected: " + cdata1);
 			}    // end of if (cdata2 == null)
-
 			cdata2 = cdata2.trim();
-
-			if ( !cdata1.equals(cdata2) &&!checkTestVariable(cdata1, cdata2, stanza_variables)) {
+			if (!cdata1.equals(cdata2) &&!checkTestVariable(cdata1, cdata2, stanza_variables)) {
 				return new EqualError(false,
-						"Different CData for element: " + el2.getName() + ", expected: " + cdata1
-							+ ", found: " + cdata2);
+															"Different CData for element: " + el2.getName() +
+															", expected: " + cdata1 + ", found: " + cdata2);
 			}    // end of if (!cdata1.equals(cdata2))
 		}      // end of if (cdata1 != null)
 
@@ -228,7 +231,7 @@ public abstract class ElementUtil {
 	public static EqualError equalElemsDeep(Element el1, Element el2) {
 		EqualError result = equalElems(el1, el2);
 
-		if ( !result.equals) {
+		if (!result.equals) {
 			return result;
 		}    // end of if (!res)
 
@@ -237,7 +240,6 @@ public abstract class ElementUtil {
 		if (children == null) {
 			return result;
 		}    // end of if (children == null)
-
 		for (Element child1 : children) {
 			List<Element> children2 = el2.getChildren();
 
@@ -250,10 +252,10 @@ public abstract class ElementUtil {
 			for (Element child2 : children2) {
 				found_child |= equalElemsDeep(child1, child2).equals;
 			}    // end of for (Element child2: children2)
-
-			if ( !found_child) {
+			if (!found_child) {
 				return new EqualError(false,
-						"Element: " + el2.getName() + ", missing child: " + child1.toString());
+															"Element: " + el2.getName() + ", missing child: " +
+															child1.toString());
 			}    // end of if (!res)
 		}      // end of for (Element child: children)
 
@@ -271,10 +273,10 @@ public abstract class ElementUtil {
 	 * @return
 	 */
 	public static EqualError equalElemsDeep(Element el1, Element el2,
-			Map<String, String> stanza_variables) {
+					Map<String, String> stanza_variables) {
 		EqualError result = equalElems(el1, el2, stanza_variables);
 
-		if ( !result.equals) {
+		if (!result.equals) {
 			return result;
 		}    // end of if (!res)
 
@@ -283,7 +285,6 @@ public abstract class ElementUtil {
 		if (children1 == null) {
 			return result;
 		}    // end of if (children == null)
-
 		for (Element child1 : children1) {
 			List<Element> children2 = el2.getChildren();
 
@@ -296,10 +297,10 @@ public abstract class ElementUtil {
 			for (Element child2 : children2) {
 				found_child |= equalElemsDeep(child1, child2, stanza_variables).equals;
 			}    // end of for (Element child2: children2)
-
-			if ( !found_child) {
+			if (!found_child) {
 				return new EqualError(false,
-						"Element: " + el2.getName() + ", missing child: " + child1.toString());
+															"Element: " + el2.getName() + ", missing child: " +
+															child1.toString());
 			}    // end of if (!res)
 		}      // end of for (Element child: children)
 
@@ -319,13 +320,13 @@ public abstract class ElementUtil {
 	 */
 	public static boolean hasAttributes(Element elem, Attribute[] attrs) {
 		for (Attribute attr : attrs) {
-			String val = elem.getAttribute(attr.getName());
+			String val = elem.getAttributeStaticStr(attr.getName());
 
 			if (val == null) {
 				return false;
 			}      // end of if (val == null)
-					else {
-				if ( !val.equals(attr.getValue())) {
+							else {
+				if (!val.equals(attr.getValue())) {
 					return false;
 				}    // end of if (!val.equals(attr.getValue()))
 			}      // end of if (val == null) else
@@ -345,15 +346,15 @@ public abstract class ElementUtil {
 	 * @return
 	 */
 	public static boolean hasAttributes(Element elem, Attribute[] attrs,
-			Map<String, String> test_vars) {
+					Map<String, String> test_vars) {
 		for (Attribute attr : attrs) {
-			String val = elem.getAttribute(attr.getName());
+			String val = elem.getAttributeStaticStr(attr.getName());
 
 			if (val == null) {
 				return false;
 			}      // end of if (val == null)
-					else {
-				if ( !val.equals(attr.getValue())) {
+							else {
+				if (!val.equals(attr.getValue())) {
 					return false;
 				}    // end of if (!val.equals(attr.getValue()))
 			}      // end of if (val == null) else
@@ -364,7 +365,4 @@ public abstract class ElementUtil {
 }    // ElementUtil
 
 
-//~ Formatted in Sun Code Convention
-
-
-//~ Formatted by Jindent --- http://www.jindent.com
+//~ Formatted in Tigase Code Convention on 13/02/20

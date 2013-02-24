@@ -2,7 +2,9 @@
 
 #set -x
 
-PROJECTS_DIR="/home/tigase/projects"
+if [ "${PROJECTS_DIR}" == "" ] ; then
+  PROJECTS_DIR="/home/tigase/projects"
+fi
 TMP_DIR="/tmp"
 
 SRV_PACKAGES="xmltools utils extras muc pubsub server"

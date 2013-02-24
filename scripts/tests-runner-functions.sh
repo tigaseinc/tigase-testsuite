@@ -101,7 +101,7 @@ function db_reload_derby() {
 
 function fs_prepare_files() {
 	rm -f etc/*.xml
-	cp -f ${server_dir}/database/* database/
+	#cp -f ${server_dir}/database/* database/
 }
 
 function tig_start_server() {
