@@ -2,7 +2,7 @@
  * TestReceiveMessage.java
  *
  * Tigase Jabber/XMPP Server
- * Copyright (C) 2004-2012 "Artur Hefczyc" <artur.hefczyc@tigase.org>
+ * Copyright (C) 2004-2013 "Tigase, Inc." <office@tigase.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -96,7 +96,8 @@ public class TestReceiveMessage
 	public String nextElementName(final Element element) throws Exception {
 		if ((element == null) ||
 
-		// ignore "service-unavailable" (error type="cancel" code="503") bounce-backs from unavailable peers
+		// ignore "service-unavailable" (error type="cancel" code="503")
+		// bounce-backs from unavailable peers
 		(element.getAttributeStaticStr("type").equals("error") &&
 						element.getAttributeStaticStr("code").equals("503"))) {
 
@@ -109,7 +110,7 @@ public class TestReceiveMessage
 
 //  data = msg_1 + element.getAttribute("from") + msg_2;
 		data = "<message type='chat' from='" + jid + "' to='" +
-					 element.getAttributeStaticStr("from") + "'>Message OK"
+					 element.getAttributeStaticStr("from") + "'><body>Message OK</body>"
 
 		// + " || original stanza: \n" + element.toString() + "\n\n"
 		+ "</message>";
@@ -195,7 +196,7 @@ public class TestReceiveMessage
 
 		// resp_attribs = new Attribute[] {new Attribute("to", jid)};
 		msg_1 = "<message type='chat' from='" + jid + "' to='";
-		msg_2 = "'>Message OK</message>";
+		msg_2 = "'><body>Message OK</body></message>";
 	}
 
 	/**
@@ -265,4 +266,4 @@ public class TestReceiveMessage
 }    // TestReceiveMessage
 
 
-//~ Formatted in Tigase Code Convention on 13/02/20
+//~ Formatted in Tigase Code Convention on 13/02/28

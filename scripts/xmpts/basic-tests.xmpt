@@ -105,50 +105,70 @@ Global settings:
   Basic 6@msg-send: { -to-jid = $(self) }
     >> Send a message to self user and don't wait for response <<
 
-  Basic 7@msg-send: Send a message to $(daemon-user) user
-  { -to-jid = "$(daemon-user)@$(server-host)/xmpp-test" }
-    >> Send a message to $(daemon-user)@$(server-host)/xmpp-test user
-    and wait for message response <<
+  Basic 7@common: {
+    -to-jid = "$(daemon-user)@$(server-host)/def-user-resource"
+    -source-file = "tests/data/MessageSendFullJidOK.cot"
+  } >> Message send to correct/available full JID: $(daemon-user)@$(server-host)/def-user-resource, expecting response <<
 
-  Basic 8@iq-version: >> XEP-0092 - get entity version <<
-  Basic 9@iq-stats: XEP-0039 Statistics Gathering
+  Basic 8@common: {
+    -to-jid = "$(daemon-user)@$(server-host)/def-user-resource"
+    -source-file = "tests/data/MessageSendBareJidOK.cot"
+  } >> Message send to correct/available bare JID: $(daemon-user)@$(server-host), expecting response <<
+
+  Basic 9@common: {
+    -to-jid = "$(daemon-user)@$(server-host)/xmpp-test"
+    -source-file = "tests/data/MessageSendUnavailableError.cot"
+  } >> Message send to incorrect/unavailable full JID: $(daemon-user)@$(server-host)/xmpp-test, expecting error response <<
+
+  Basic 10@iq-version: >> XEP-0092 - get entity version <<
+  Basic 11@iq-stats: XEP-0039 Statistics Gathering
     { -user-name=$(stats-user) -user-pass=$(stats-pass) }
     >> XEP-0039 Statistics Gathering. <<
 
-  Basic 10@common: {
+  Basic 12@common: {
     -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
     -source-file = "tests/data/RosterTest.cot"
   } >> Roster management test <<
 
-  Basic 11@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
+  Basic 13@common: {
+    -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
+    -source-file = "tests/data/RosterUppercaseTest.cot"
+  } >> Roster with uppercase characters test, this tests verifies if the roster item removed in previous test is really removed from DB and empty on user relogin. <<
+
+  Basic 14@common: { -source-file = "tests/data/JabberIqPrivate.cot" }
   >> XEP-0049: Private XML Storage <<
 
-  Basic 12@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
+  Basic 15@common: { -source-file = "tests/data/FeatureNotImplemented.cot" }
   >> Test for feature-not-implemented error which should be returned when client sends unsupported stanza <<
 
-  Basic 13@common: { -source-file = "tests/data/vcard-temp.cot" }
+  Basic 16@common: { -source-file = "tests/data/vcard-temp.cot" }
   >> XEP-0054: vcard-temp <<
 
-  Basic 14@common: {
+  Basic 17@common: {
     -to-jid = $(server-host)
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping to domain '$(server-host)' the user is logged in <<
 
-  Basic 15@common: {
+  Basic 18@common: {
     -to-jid = $(virtual-host)
     -source-file = "tests/data/UrnXmppPing.cot"
   } >> XEP-0199: XMPP Ping to another, vrtual domain '$(virtual-host)' on the server <<
 
-  Basic 16@common: {
+  Basic 19@common: {
     -user-name = $(stats-user)
     -user-pass = $(stats-pass)
     -source-file = "tests/data/ServiceDiscovery.cot"
   } >> XEP-0030: XMPP Service Discovery <<
 
-  Basic 17@auth-sasl;common-no-bind: {
+  Basic 20@auth-sasl;common-no-bind: {
     -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
     -source-file = "tests/data/MessageNoBind.cot"
   } >> Send a message without resource binding and expect an error response. <<
+
+  Basic 21@common: {
+    -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
+    -source-file = "tests/data/XMLUtilEncodingBug431Test.cot"
+  } >> Bug #431 - XMLUtil encoding problem: https://projects.tigase.org/issues/431 <<
 
 }
 >> Script for basic XMPP functions <<

@@ -153,7 +153,7 @@ Global settings:
       -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
     }
     >> Roster management test <<
-    Roster@common: { 
+    Roster@common: {
       -user-name = "multi-reg_2_$(loop)"
       -reset-stanza-vars = "@{roster-test-id},@{roster-test-group},@{roster-test-id1},@{roster-test-id2},@{roster-test-id3}"
     }
@@ -178,7 +178,7 @@ Global settings:
   Multi 5: {
     -multi-thread
     -loop   = 5
-    -to-jid = "$(daemon-user)@$(server-host)/xmpp-test"
+    -to-jid = "$(daemon-user)@$(server-host)/def-user-resource"
 
     Message send@msg-send: { -user-name = "multi-reg_1_$(loop)" }
     >> Send a message to daemon user <<
@@ -231,7 +231,7 @@ Global settings:
   Multi 8: {
     -multi-thread
     -loop   = 5
-    -to-jid = "$(long-list-user)@$(server-host)/xmpp-test"
+    -to-jid = "$(long-list-user)@$(server-host)/def-user-resource"
 
     Message send@msg-send: { -user-name = "multi-reg_1_$(loop)" }
     >> Send a message to daemon user <<
@@ -263,4 +263,3 @@ Global settings:
 
 }
 >> Script generating large queues and network I/O traffic <<
-  

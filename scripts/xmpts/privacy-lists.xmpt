@@ -107,11 +107,10 @@ Global settings:
 
   Privacy 3@msg-send: Send a message to $(long-list-user) user
   {
-    -to-jid = "$(long-list-user)@$(server-host)/xmpp-test"
+    -to-jid = "$(long-list-user)@$(server-host)/def-user-resource"
     -socket-wait = 10000
-  } >> Send a message to $(long-list-user)@$(server-host)/xmpp-test user
+  } >> Send a message to $(long-list-user)@$(server-host)/def-user-resource user
   with very long privacy list and wait for message response <<
 
 }
 >> Script generating large queues and network I/O traffic <<
-  

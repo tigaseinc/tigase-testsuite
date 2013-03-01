@@ -20,31 +20,19 @@
 ##  $Date: $
 ##
 
-# Test for XMPP Ping - XEP-0199: XMPP protocol extension for sending pings
-# over XML streams.
-# http://www.xmpp.org/extensions/xep-0199.html
+# Test Message send and expecting a message in response
 # @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
 # @version $Rev: $
 
-### Send ping to "this" server where the test user has got his account:
+### Send a message to given full JID
 send: {
-<iq to='$(to-hostname)' id='ping321' type='get'>
-  <ping xmlns='urn:xmpp:ping'/>
-</iq>
+<message to="$(to-id)" type="chat">
+  <body>Test message no. 1, from: all-xmpp-test@test-d/def-user-resource.</body>
+</message>
 }
 expect:
 {
-<iq from='$(to-hostname)' id='ping321' type='result'/>
+<message type="chat" from="$(to-jid)" to="$(from-jid)">
+  <body>Message OK</body>
+</message>
 }
-
-### Send a ping to virtual domain of the server. Assuming test environment
-### includes also support for 'test-domain'
-# send: {
-# <iq to='test-domain' id='ping1234' type='get'>
-#   <ping xmlns='urn:xmpp:ping'/>
-# </iq>
-# }
-# expect:
-# {
-# <iq from='test-domain' id='ping1234' type='result'/>
-# }
