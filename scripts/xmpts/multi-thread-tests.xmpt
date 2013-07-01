@@ -211,7 +211,7 @@ Global settings:
   Multi 7: {
     -multi-thread
     -loop   = 5
-    -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
+    -to-jid = "$(blocking-user)@$(server-host)/def-user-resource"
     -socket-wait = 1000
     -expect-type = error
 #    -time-out-ok

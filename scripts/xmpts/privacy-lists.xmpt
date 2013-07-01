@@ -85,7 +85,7 @@ Global settings:
 
   Privacy 2@msg-send: Privacy lists - send a message to $(blocking-user) user
   {
-    -to-jid = "$(blocking-user)@$(server-host)/xmpp-test"
+    -to-jid = "$(blocking-user)@$(server-host)/def-user-resource"
     -expect-type = error
 #    -socket-wait = 1000
 #    -time-out-ok
