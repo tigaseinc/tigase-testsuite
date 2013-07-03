@@ -103,10 +103,9 @@ Global settings:
   Basic 5@auth-digest: { -def-auth = auth-plain } >> XEP-0078 Non-SASL authorization with digest password. <<
 
   Basic 6@msg-send: {
-  	-to-jid = $(self)
-  	-delay       = 500
-  	}
-    >> Send a message to self user and don't wait for response <<
+    -to-jid = $(self)
+    -delay       = 500
+  } >> Send a message to self user and don't wait for response <<
 
   Basic 7@common: {
     -to-jid = "$(daemon-user)@$(server-host)/def-user-resource"
