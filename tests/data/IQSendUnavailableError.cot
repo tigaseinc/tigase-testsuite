@@ -25,18 +25,20 @@
 # @author <a href="mailto:artur.hefczyc@tigase.org">Artur Hefczyc</a>
 # @version $Rev: $
 
-### Send a message to given full JID
+### Send a test ping IQ to given full JID
 send: {
-<message to="$(to-jid)" type="chat">
-  <body>Test message no. 1.</body>
-</message>
+
+<iq from="$(from-jid)" to="$(to-jid)" type='get'  id='iq-test'>
+  <query xmlns="custom"/>
+</iq>
+
 }
 expect: {
-<message from="$(to-jid)" to="$(from-jid)" type="error">
-  <body>Test message no. 1.</body>
-  <error type="wait" code="404">
-    <recipient-unavailable xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
-    <text xml:lang="en" xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">The recipient is no longer available.</text>
+<iq from="$(to-jid)" to="$(from-jid)" type="error">
+  <query xmlns="custom"/>
+  <error code="503" type="cancel">
+    <service-unavailable xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
+    <text xmlns="urn:ietf:params:xml:ns:xmpp-stanzas" xml:lang="en">Service not available.</text>
   </error>
 </message>
 }
