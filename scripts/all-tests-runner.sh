@@ -134,7 +134,8 @@ case "${1}" in
 		;;
 esac
 
-ver=`grep Tigase-Version: ${server_dir}/MANIFEST.MF | tail -n 1 | sed -e "s/Tigase-Version: \(.*\)/\1/"`
+unzip -o ${server_dir}/jars/tigase-server.jar -d ${server_dir}/jars/tigase-server
+ver=`grep -m 1 "Tigase-Version:" ${server_dir}/jars/tigase-server/META-INF/MANIFEST.MF | sed -e "s/Tigase-Version: \(.*\)/\\1/" | sed 's/[[:space:]]//'`
 output_dir="${ROOT_DIR}files/static/tests/${ver}"
 
 echo "Tigase server home directory: ${server_dir}"
