@@ -1,0 +1,7 @@
+<html>
+
+<body>
+
+<h1>Tigase XMPP Server automated tests reports - Nightlies</h1>
+
+<p>This is a page with reports for the automatic tests we run for each nightly release</p>

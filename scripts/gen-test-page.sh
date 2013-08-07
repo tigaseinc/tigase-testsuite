@@ -23,7 +23,7 @@ if [ -z "${INDEX_DIR}" ]; then
 	INDEX_DIR="/home/tigase/public_html"
 fi
 
-if [[ ${INDEX_DIR} = *nightly* ]]
+if [[ ${INDEX_DIR} = *night* ]]
 then
 	INDEX_START="index-start-nightly.txt"
 else
