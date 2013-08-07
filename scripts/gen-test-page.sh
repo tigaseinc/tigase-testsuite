@@ -18,11 +18,20 @@ function gettesttime() {
 
 }
 
-INDEX_START="index-start.txt"
-INDEX_END="index-end.txt"
 SRC_DIR="scripts/tests-page"
-INDEX_DIR="/home/tigase/public_html"
+if [ -z "${INDEX_DIR}" ]; then
+	INDEX_DIR="/home/tigase/public_html"
+fi
+
+if [[ ${INDEX_DIR} = *nightly* ]]
+then
+	INDEX_START="index-start-nightly.txt"
+else
+    INDEX_START="index-start.txt"
+fi
+INDEX_END="index-end.txt"
 REPORTS_LOC="files/static/tests"
+
 
 ALL_REPORTS_DIRS=`ls -1 ${INDEX_DIR}/${REPORTS_LOC} | sort -r`
 
