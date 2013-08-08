@@ -32,12 +32,15 @@ fi
 INDEX_END="index-end.txt"
 REPORTS_LOC="files/static/tests"
 
+FAILED=false
+FAIL_CNT=0
 
 ALL_REPORTS_DIRS=`ls -1 ${INDEX_DIR}/${REPORTS_LOC} | sort -r`
 
 cat ${SRC_DIR}/${INDEX_START} > ${INDEX_DIR}/index.html
 
 for tt in ${TEST_TYPES} ; do
+FIRST=true
 
   cat ${SRC_DIR}/${tt}-start.txt >> ${INDEX_DIR}/index.html
 
@@ -77,7 +80,7 @@ for tt in ${TEST_TYPES} ; do
 
         MFILE1="${REPORTS_LOC}/${ard}/${tt}/${tr}/"${MAIN_FILE[${tt}]}
         MFILE2="${REPORTS_LOC}/${ard}/${tt}/${tr}-auth/"${MAIN_FILE[${tt}]}
-	MFILE3="${REPORTS_LOC}/${ard}/${tt}/${tr}-custom/"${MAIN_FILE[${tt}]}
+		MFILE3="${REPORTS_LOC}/${ard}/${tt}/${tr}-custom/"${MAIN_FILE[${tt}]}
 
         MFILES="${MFILE1} ${MFILE2} ${MFILE3}"
 
@@ -89,16 +92,28 @@ for tt in ${TEST_TYPES} ; do
               bgcolor="FF9090"
             fi
             SUCCESS=`grep -c success ${INDEX_DIR}/${mf}`
+            FAILURE=`grep -ic failure ${INDEX_DIR}/${mf} || true`
+            FAIL_CNT=$((${FAIL_CNT}+${FAILURE})) || true
 
             ttime=`gettesttime ${INDEX_DIR}/${mf}`
-            echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${mf}\">${SUCCESS}xSuccess ${ttime}</a></td>"
+            echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${mf}\">${SUCCESS} x Success, ${FAILURE} x Failure (${SUCCESS} + ${FAILURE}) ${ttime}</a></td>"
           else
             echoindex "<td class=\"rtecenter\"> --- </td>"
           fi
 
-        done
 
+        done
+        
       done
+
+	#check only latest version
+	if ${FIRST} ; then
+	  if [[ ${FAIL_CNT} > 0 ]] || ${FAILED}  ; then 
+		FAILED=true
+	  fi
+	  echo ${FAIL_CNT}
+		FIRST=false
+	fi
 
       echoindex "</tr>"
 
@@ -107,7 +122,14 @@ for tt in ${TEST_TYPES} ; do
   done
 
   cat ${SRC_DIR}/table-end.txt >> ${INDEX_DIR}/index.html
-
+  
 done
 
 cat ${SRC_DIR}/${INDEX_END} >> ${INDEX_DIR}/index.html
+
+if  ${FAILED} ; then
+	echo "ERROR: BUILD FAILED"
+	exit 1
+else
+	echo "BUILD SUCCEEDED"
+fi
