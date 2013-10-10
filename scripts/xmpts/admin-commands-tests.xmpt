@@ -820,7 +820,7 @@ Global settings:
 
 ## Monitor/LoadErrors
     # executing script as admin
-    AdminAdHoc x_1_1@common: {
+    AdminAdHoc Monitor_1_1@common: {
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
         #-to-jid = "$(server-host)" # specs!
@@ -829,7 +829,7 @@ Global settings:
     } >> Execute script monitor/LoadErrors as (server-admin) <<
 
     # # executing script as domain-admin
-    AdminAdHoc x_1_2@common: {
+    AdminAdHoc Monitor_1_2@common: {
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
         -to-jid = "monitor@$(virtual-host)"
@@ -840,7 +840,7 @@ Global settings:
 
 ## BasicConf/ListConfiguration
     # executing script as admin
-    AdminAdHoc x_2_1@common: {
+    AdminAdHoc BasicConf_1_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -850,7 +850,7 @@ Global settings:
     } >> Execute script basic-conf/ListConfiguration as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_2_2@common: {
+    AdminAdHoc BasicConf_1_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -863,7 +863,7 @@ Global settings:
 
 ## BasicConf/UpdateConfiguration
     # executing script as admin
-    AdminAdHoc x_3_1@common: {
+    AdminAdHoc BasicConf_2_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -873,7 +873,7 @@ Global settings:
     } >> Execute script basic-conf/UpdateConfiguration as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_3_2@common: {
+    AdminAdHoc BasicConf_2_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -886,7 +886,7 @@ Global settings:
 
 ## BasicConf/GetAnyFile
     # executing script as admin
-    AdminAdHoc x_4_1@common: {
+    AdminAdHoc BasicConf_3_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -896,7 +896,7 @@ Global settings:
     } >> Execute script basic-conf/GetAnyFile as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_4_2@common: {
+    AdminAdHoc BasicConf_3_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -909,7 +909,7 @@ Global settings:
 
 ## BasicConf/GetConfigurationFile
     # executing script as admin
-    AdminAdHoc x_5_1@common: {
+    AdminAdHoc BasicConf_4_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -919,7 +919,7 @@ Global settings:
     } >> Execute script basic-conf/GetConfigurationFile as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_5_2@common: {
+    AdminAdHoc BasicConf_4_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -932,7 +932,7 @@ Global settings:
 
 ## BasicConf/Get_init.properties_configuration
     # executing script as admin
-    AdminAdHoc x_6_1@common: {
+    AdminAdHoc BasicConf_5_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -942,7 +942,7 @@ Global settings:
     } >> Execute script basic-conf/Get_init.properties_configuration as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_6_2@common: {
+    AdminAdHoc BasicConf_5_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -954,9 +954,99 @@ Global settings:
 
 
 
+## BasicConf/Manage active server components - List
+    # executing script as admin
+    AdminAdHoc BasicConf_6_1@common: {
+        #-debug
+        -user-name = $(stats-user)
+        -user-pass = $(stats-pass)
+        #-to-jid = "$(server-host)" # specs!
+        -to-jid = "basic-conf@$(server-host)"
+        -source-file = "tests/data/AdHocBasicConfManageComponentList.cot"
+    } >> Execute script basic-conf/Manage active server components: List as (server-admin) <<
+
+    # executing script as domain-admin
+    AdminAdHoc BasicConf_6_2@common: {
+        #-debug
+        -user-name = $(domain-admin-user)
+        #-to-jid = "$(virtual-host)" # specs!
+        -to-jid = "basic-conf@$(virtual-host)"
+        -host = $(virtual-host)
+        #-expect-type = error
+        -source-file = "tests/data/AdHocBasicConfManageComponentListError.cot"
+    } >> Execute script basic-conf/Manage active server components: List as (domain-admin) [expecting error] <<
+
+## BasicConf/Manage active server components - Edit
+    # executing script as admin
+    AdminAdHoc BasicConf_7_1@common: {
+        #-debug
+        -user-name = $(stats-user)
+        -user-pass = $(stats-pass)
+        #-to-jid = "$(server-host)" # specs!
+        -to-jid = "basic-conf@$(server-host)"
+        -source-file = "tests/data/AdHocBasicConfManageComponentEdit.cot"
+    } >> Execute script basic-conf/Manage active server components: Edit as (server-admin) <<
+
+    # executing script as domain-admin
+    AdminAdHoc BasicConf_7_2@common: {
+        #-debug
+        -user-name = $(domain-admin-user)
+        #-to-jid = "$(virtual-host)" # specs!
+        -to-jid = "basic-conf@$(virtual-host)"
+        -host = $(virtual-host)
+        #-expect-type = error
+        -source-file = "tests/data/AdHocBasicConfManageComponentEditError.cot"
+    } >> Execute script basic-conf/Manage active server components: Edit as (domain-admin) [expecting error] <<
+
+## BasicConf/Manage active server components - Remove
+    # executing script as admin
+    AdminAdHoc BasicConf_8_1@common: {
+        #-debug
+        -user-name = $(stats-user)
+        -user-pass = $(stats-pass)
+        #-to-jid = "$(server-host)" # specs!
+        -to-jid = "basic-conf@$(server-host)"
+        -source-file = "tests/data/AdHocBasicConfManageComponentRemove.cot"
+    } >> Execute script basic-conf/Manage active server components: Remove as (server-admin) <<
+
+    # executing script as domain-admin
+    AdminAdHoc BasicConf_8_2@common: {
+        #-debug
+        -user-name = $(domain-admin-user)
+        #-to-jid = "$(virtual-host)" # specs!
+        -to-jid = "basic-conf@$(virtual-host)"
+        -host = $(virtual-host)
+        #-expect-type = error
+        -source-file = "tests/data/AdHocBasicConfManageComponentRemoveError.cot"
+    } >> Execute script basic-conf/Manage active server components: Remove as (domain-admin) [expecting error] <<
+
+
+## BasicConf/Manage active server components - Add
+    # executing script as admin
+    AdminAdHoc BasicConf_9_1@common: {
+        #-debug
+        -user-name = $(stats-user)
+        -user-pass = $(stats-pass)
+        #-to-jid = "$(server-host)" # specs!
+        -to-jid = "basic-conf@$(server-host)"
+        -source-file = "tests/data/AdHocBasicConfManageComponentAdd.cot"
+    } >> Execute script basic-conf/Manage active server components: Add as (server-admin) <<
+
+    # executing script as domain-admin
+    AdminAdHoc BasicConf_9_2@common: {
+        #-debug
+        -user-name = $(domain-admin-user)
+        #-to-jid = "$(virtual-host)" # specs!
+        -to-jid = "basic-conf@$(virtual-host)"
+        -host = $(virtual-host)
+        #-expect-type = error
+        -source-file = "tests/data/AdHocBasicConfManageComponentAddError.cot"
+    } >> Execute script basic-conf/Manage active server components: Add as (domain-admin) [expecting error] <<
+
+
 ## s2s/Bad State Connections
     # executing script as admin
-    AdminAdHoc x_7_1@common: {
+    AdminAdHoc s2s_1_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -966,7 +1056,7 @@ Global settings:
     } >> Execute script s2s/Bad State Connections as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_7_2@common: {
+    AdminAdHoc s2s_1_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -978,7 +1068,7 @@ Global settings:
 
 ## s2s/Reset Bad State Connections
     # executing script as admin
-    AdminAdHoc x_8_1@common: {
+    AdminAdHoc s2s_2_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -988,7 +1078,7 @@ Global settings:
     } >> Execute script s2s/Reset Bad State Connections as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_8_2@common: {
+    AdminAdHoc s2s_2_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1000,7 +1090,7 @@ Global settings:
 
 ## s2s/S2S get CID connection state
     # executing script as admin
-    AdminAdHoc x_9_1@common: {
+    AdminAdHoc s2s_3_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1011,7 +1101,7 @@ Global settings:
     } >> Execute script s2s/Get CID connection state as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_9_2@common: {
+    AdminAdHoc s2s_3_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1024,7 +1114,7 @@ Global settings:
 
 ## Stats/Server Statistics
     # executing script as admin
-    AdminAdHoc x_10_1@common: {
+    AdminAdHoc Stats_1_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1034,7 +1124,7 @@ Global settings:
     } >> Execute script Stats/Server Statistics as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_10_2@common: {
+    AdminAdHoc Stats_1_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1049,7 +1139,7 @@ Global settings:
 
 ## cl-comp/List Service Keys
     # executing script as admin
-    AdminAdHoc x_11_1@common: {
+    AdminAdHoc cl-comp_1_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1059,7 +1149,7 @@ Global settings:
     } >> Execute script cl-comp/List Service Keys as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_11_2@common: {
+    AdminAdHoc cl-comp_1_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1072,7 +1162,7 @@ Global settings:
 
 ## cl-comp/Force stop service
     # executing script as admin
-    AdminAdHoc x_12_1@common: {
+    AdminAdHoc cl-comp_2_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1082,7 +1172,7 @@ Global settings:
     } >> Execute script cl-comp/Force stop service as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_12_2@common: {
+    AdminAdHoc cl-comp_2_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1095,7 +1185,7 @@ Global settings:
 
 ## cl-comp/Simulate serviceStopped method call
     # executing script as admin
-    AdminAdHoc x_13_1@common: {
+    AdminAdHoc cl-comp_3_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1105,7 +1195,7 @@ Global settings:
     } >> Execute script cl-comp/Simulate serviceStopped method call as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_13_2@common: {
+    AdminAdHoc cl-comp_3_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1117,7 +1207,7 @@ Global settings:
 
 ## sess-man/Activate log tracker for a user
     # executing script as admin
-    AdminAdHoc x_14_1@common: {
+    AdminAdHoc sess-man_1_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1128,7 +1218,7 @@ Global settings:
     } >> Execute script sess-man/Activate log tracker for a user as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_14_2@common: {
+    AdminAdHoc sess-man_1_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1141,7 +1231,7 @@ Global settings:
 
 ## sess-man/Remove log tracker for a user
     # executing script as admin
-    AdminAdHoc x_15_1@common: {
+    AdminAdHoc sess-man_2_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1152,7 +1242,7 @@ Global settings:
     } >> Execute script sess-man/Remove log tracker for a user as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_15_2@common: {
+    AdminAdHoc sess-man_2_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1167,7 +1257,7 @@ Global settings:
 
 ## sess-man/Update user roster entry
     # executing script as admin to main domain
-    AdminAdHoc x_16_1@common: {
+    AdminAdHoc sess-man_3_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1178,7 +1268,7 @@ Global settings:
     } >> Execute script sess-man/Update user roster entry :: (server-user) as (server-admin) <<
 
     # executing script as admin to VHost
-    AdminAdHoc x_16_2@common: {
+    AdminAdHoc sess-man_3_2@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1189,7 +1279,7 @@ Global settings:
     } >> Execute script sess-man/Update user roster entry :: (domain-user) as (server-admin) <<
 
     # executing script as domain-admin to main domain
-    AdminAdHoc x_16_3@common: {
+    AdminAdHoc sess-man_3_3@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1201,7 +1291,7 @@ Global settings:
     } >> Execute script sess-man/Update user roster entry :: (server-user) as (domain-admin) (expecting error) [expecting error] <<
 
     # executing script as domain-admin to VHost
-    AdminAdHoc x_16_4@common: {
+    AdminAdHoc sess-man_3_4@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1215,7 +1305,7 @@ Global settings:
 
 ## sess-man/Update user roster entry, extended version.
     # executing script as admin to main domain
-    AdminAdHoc x_17_1@common: {
+    AdminAdHoc sess-man_4_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1226,7 +1316,7 @@ Global settings:
     } >> Execute script sess-man/Update user roster entry, extended version. :: (server-user) as (server-admin) <<
 
     # executing script as admin to VHost
-    AdminAdHoc x_17_2@common: {
+    AdminAdHoc sess-man_4_2@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1237,7 +1327,7 @@ Global settings:
     } >> Execute script sess-man/Update user roster entry, extended version. :: (domain-user) as (server-admin) <<
 
     # executing script as domain-admin to main domain
-    AdminAdHoc x_17_3@common: {
+    AdminAdHoc sess-man_4_3@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1249,7 +1339,7 @@ Global settings:
     } >> Execute script sess-man/Update user roster entry, extended version. :: (server-user) as (domain-admin) (expecting error) [expecting error] <<
 
     # executing script as domain-admin to VHost
-    AdminAdHoc x_17_4@common: {
+    AdminAdHoc sess-man_4_4@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1262,7 +1352,7 @@ Global settings:
 
 ## sess-man/Fixes user's roster
     # executing script as admin
-    AdminAdHoc x_18_1@common: {
+    AdminAdHoc sess-man_5_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1273,7 +1363,7 @@ Global settings:
     } >> Execute script sess-man/Fixes user's roster as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_18_2@common: {
+    AdminAdHoc sess-man_5_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1286,7 +1376,7 @@ Global settings:
 
 ## sess-man/Fixes user's roster on Tigase cluster
     # executing script as admin
-    AdminAdHoc x_19_1@common: {
+    AdminAdHoc sess-man_6_1@common: {
         #-debug
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
@@ -1297,7 +1387,7 @@ Global settings:
     } >> Execute script sess-man/Fixes user's roster on Tigase cluster as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_19_2@common: {
+    AdminAdHoc sess-man_6_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         #-to-jid = "$(virtual-host)" # specs!
@@ -1312,7 +1402,7 @@ Global settings:
 
 ## sess-man/ConnectionTime
     # executing script as admin
-    AdminAdHoc x_20_1@common: {
+    AdminAdHoc sess-man_7_1@common: {
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
         -to-jid = "sess-man@$(server-host)"
@@ -1321,7 +1411,7 @@ Global settings:
     } >> Execute script sess-man/ConnectionTime as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_20_2@common: {
+    AdminAdHoc sess-man_7_2@common: {
         -user-name = $(domain-admin-user)
         -to-jid = "sess-man@$(virtual-host)"
         -host = $(virtual-host)
@@ -1333,7 +1423,7 @@ Global settings:
 
 ## sess-man/Change user inter-domain communication permission
     # executing script as admin
-    AdminAdHoc x_21_1@common: {
+    AdminAdHoc sess-man_8_1@common: {
         -user-name = $(stats-user)
         -user-pass = $(stats-pass)
         -to-jid = "sess-man@$(server-host)"
@@ -1342,7 +1432,7 @@ Global settings:
     } >> Execute script sess-man/Change user inter-domain communication permission as (server-admin) <<
 
     # executing script as domain-admin
-    AdminAdHoc x_21_2@common: {
+    AdminAdHoc sess-man_8_2@common: {
         #-debug
         -user-name = $(domain-admin-user)
         -to-jid = "sess-man@$(virtual-host)"
