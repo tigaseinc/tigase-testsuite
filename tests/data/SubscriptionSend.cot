@@ -45,7 +45,7 @@ send: {
 }
 
 expect: {
-<presence from="$(from-jid)" to="$(from-id)" type="available"/>
+<presence id="sub-send-2" from="$(from-jid)" to="$(from-id)" type="available"/>
 }
 
 send: {
@@ -59,7 +59,7 @@ expect: {
 </iq>
 }
 expect: {
-<presence type="subscribed" from="$(to-id)"/>
+<presence id="sub-rec-3" type="subscribed" from="$(to-id)"/>
 }
 expect: {
 <iq type="set">
@@ -72,7 +72,7 @@ expect: {
 <presence type="available" from="$(to-jid)"/>
 }
 expect: {
-<presence type="subscribe" from="$(to-id)"/>
+<presence id="sub-rec-4" type="subscribe" from="$(to-id)"/>
 }
 
 send: {
@@ -100,7 +100,7 @@ expect: {
 <presence type="unavailable"/>
 }
 expect: {
-<iq id="@{subscr-test-id4}" type="set">
+<iq type="set">
   <query xmlns="jabber:iq:roster">
     <item name="dynrost" subscription="both" jid="dynrost@test-d">
       <group>test group</group>

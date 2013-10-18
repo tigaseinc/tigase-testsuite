@@ -54,15 +54,15 @@ expect: {
 }
 
 send: {
-<presence type="available" id="rem-sub-send-2"/>
+<presence id="rem-sub-send-2" type="available"/>
 }
 
 expect: {
-<presence from="$(from-jid)" to="$(from-id)" type="available"/>
+<presence id="rem-sub-send-2" from="$(from-jid)" to="$(from-id)" type="available"/>
 }
 
 expect: {
-<presence from="$(to-jid)" type="available"/>
+<presence id="rem-sub-rec-2" from="$(to-jid)" type="available"/>
 }
 
 send: {

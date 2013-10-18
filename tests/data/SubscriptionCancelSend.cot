@@ -42,7 +42,7 @@ expect: {
 }
 
 send: {
-<presence to="$(to-id)" type="unsubscribed"/>
+<presence to="$(to-id)" type="unsubscribed" id="pres-sub-cancel-send-1"/>
 }
 expect: {
 <iq type="set">

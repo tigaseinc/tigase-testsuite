@@ -49,7 +49,8 @@ expect: {
 </iq>
 <presence xmlns="jabber:client" 
   from="$(to-id)"
-  type="unsubscribed"/>
+  type="unsubscribed"
+  id="pres-sub-cancel-send-1"/>
 }
 
 expect: {
@@ -60,5 +61,6 @@ expect: {
 </iq>
 <presence xmlns="jabber:client" 
   from="$(to-id)"
-  type="unsubscribed"/>
+  type="unsubscribed"
+  id="pres-sub-cancel-rec-1"/>
 }

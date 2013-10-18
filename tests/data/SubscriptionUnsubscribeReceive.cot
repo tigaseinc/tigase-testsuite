@@ -43,7 +43,9 @@ expect: {
 
 expect: {
 <presence xmlns="jabber:client"
-	 type="unsubscribe" from="$(to-id)"/>
+	 type="unsubscribe"
+	 from="$(to-id)"
+	 id="sub-uns-send-2"/>
 }
 
 expect: {

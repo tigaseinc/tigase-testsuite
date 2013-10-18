@@ -45,11 +45,11 @@ send: {
 }
 
 expect: {
-<presence from="$(from-jid)" to="$(from-id)" type="available"/>
+<presence id="sub-rec-2" from="$(from-jid)" to="$(from-id)" type="available"/>
 }
 
 expect: {
-<presence type="subscribe" from="$(to-id)"/>
+<presence id="sub-send-3" type="subscribe" from="$(to-id)"/>
 }
 
 send: {
@@ -74,7 +74,7 @@ expect: {
 </iq>
 }
 expect: {
-<presence from="$(to-id)" type="subscribed"/>
+<presence id="sub-send-4" from="$(to-id)" type="subscribed"/>
 }
 expect: {
 <iq type="set">
