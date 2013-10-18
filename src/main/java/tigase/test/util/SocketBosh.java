@@ -112,6 +112,8 @@ public class SocketBosh
 		if ((data != null) && data.startsWith("<stream:stream")) {
 			restart = true;
 			initSocket(null);
+		} else if ((data != null) && data.startsWith( "</stream:stream>" ) ) {
+			// ignore stream closing
 		} else {
 			initSocket(data);
 		}

@@ -113,6 +113,7 @@ public class SocketXMLIO
 	@Override
 	public void close() {
 		try {
+			write( "</stream:stream>" );
 			socket.close();
 		} catch (Exception e) {}
 	}
