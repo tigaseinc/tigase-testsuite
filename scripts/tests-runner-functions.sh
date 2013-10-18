@@ -216,7 +216,11 @@ function run_test() {
 	ts_start ${_script_file} ${_server_ip} ${_output_file} ${_extra_params}
 	end_test=`date +%s`
 	total_time=$((end_test-start_test))
-	total_str=`date -u -d @$total_time +%H:%M:%S`
+	if [[ "$(uname -s)" == "Darwin" ]] ; then
+		total_str=`date -u -r $total_time +%H:%M:%S`
+	else
+	        total_str=`date -u -d @$total_time +%H:%M:%S`
+	fi
 	echo "<td><a href=\"/${_output_file}\">${total_str}</a></td>" >> "${_test_type}-rep.html"
 	echo "Test finished after: ${total_str}"
 	sleep 1
