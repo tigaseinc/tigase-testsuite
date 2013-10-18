@@ -43,27 +43,6 @@ function db_reload_mysql() {
         ./scripts/db-create-mysql.sh -y ${_db_user} ${_db_pass} ${_db_name} root ${_db_pass} localhost
 	cd ${tts_dir}
 
-	# All the stuff below is no longer needed. We have a nice Bash script creating database.....
-	#mysqladmin -u root -p${_db_pass} create ${_db_name}
-        #echo "GRANT ALL ON ${_db_name}.* TO ${_db_user}@'%' \
-        #        IDENTIFIED BY '${_db_pass}'; \
-        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-        #echo "GRANT ALL ON ${_db_name}.* TO ${_db_user}@'localhost' \
-        #        IDENTIFIED BY '${_db_pass}'; \
-        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-        #echo "GRANT ALL ON ${_db_name}.* TO ${_db_user} \
-        #        IDENTIFIED BY '${_db_pass}'; \
-        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-        #echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}@'%'; \
-        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-        #echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}@'localhost'; \
-        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-        #echo "GRANT SELECT, INSERT, UPDATE ON mysql.proc TO ${_db_user}; \
-        #        FLUSH PRIVILEGES;" | mysql -u root -p${_db_pass} mysql
-	#mysql -N -u ${_db_user} -p${_db_pass} ${_db_name} \
-	#	< database/mysql-schema.sql
-	#mysql -N -u ${_db_user} -p${_db_pass} ${_db_name} \
-	#	< database/mysql-schema-upgrade-to-4.sql
 }
 
 function db_reload_pgsql() {
@@ -80,11 +59,6 @@ function db_reload_pgsql() {
 	./scripts/db-create-postgresql.sh -y ${_db_user} ${_db_pass} ${_db_name} localhost
         cd ${tts_dir}
 
-	#createdb -U ${_db_user} ${_db_name}
-	#psql -q -U ${_db_user} -d ${_db_name} \
-	#	-f database/postgresql-schema.sql
-	#psql -q -U ${_db_user} -d ${_db_name} \
-	#	-f database/postgresql-schema-upgrade-to-4.sql
 }
 
 function db_reload_derby() {

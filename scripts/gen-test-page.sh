@@ -96,7 +96,7 @@ FIRST=true
             FAIL_CNT=$((${FAIL_CNT}+${FAILURE})) || true
 
             ttime=`gettesttime ${INDEX_DIR}/${mf}`
-            echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${mf}\">${SUCCESS} x Success, ${FAILURE} x Failure (${SUCCESS} + ${FAILURE}) ${ttime}</a></td>"
+            echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${mf}\">${SUCCESS} x Pass, ${FAILURE} x Fail, $((${SUCCESS} + ${FAILURE})) x Total in ${ttime}</a></td>"
           else
             echoindex "<td class=\"rtecenter\"> --- </td>"
           fi

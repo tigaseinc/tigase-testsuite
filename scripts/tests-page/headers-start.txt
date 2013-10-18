@@ -1,4 +1,4 @@
-<table width="1200" border="1" cellpadding="1" cellspacing="1" summary="Tigase XMPP Server tests results for different databases">
+<table width="100%" border="1" cellpadding="1" cellspacing="1" summary="Tigase XMPP Server tests results for different databases">
     <caption>Test results</caption>
     <tbody>
         <tr>
