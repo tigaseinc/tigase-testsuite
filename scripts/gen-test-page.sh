@@ -93,7 +93,7 @@ FIRST=true
             fi
             SUCCESS=`grep -c success ${INDEX_DIR}/${mf}`
             FAILURE=`grep -ic failure ${INDEX_DIR}/${mf} || true`
-			FAILURE_LIST=`egrep -o  "(?i)<tr.*fail.*" ${INDEX_DIR}/${mf} | perl -pe "s|.*?<td>(.*?)</td.*|\1,|"`
+            FAILURE_LIST=`egrep -iE ".*FAILURE.*" ${INDEX_DIR}/${mf} | perl -pe "s|.*?<td>(.*?)</td.*|\1,|"`
             
             if ${FIRST} ; then
             	FAIL_CNT=$((${FAIL_CNT}+${FAILURE})) || true
