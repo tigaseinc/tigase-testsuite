@@ -134,15 +134,15 @@ public class HTMLFilter implements OutputFilter {
    * @param cols a <code>String[]</code> value
    */
   public void addRow(final String ... cols) throws IOException {
-    bw.write("   <tr valign=\"top\">\n");
+    bw.write("   <tr valign=\"top\">");
     for (String col : cols) {
 			if (col.equals("<b>success</b>")) {
-				bw.write("    <td bgcolor=\"#90FF90\">" + col + "</td>\n");
+				bw.write("    <td bgcolor=\"#90FF90\">" + col + "</td>");
 			} else {
 				if (col.equals("<b>FAILURE</b>")) {
-					bw.write("    <td bgcolor=\"#FF9090\">" + col + "</td>\n");
+					bw.write("    <td bgcolor=\"#FF9090\">" + col + "</td>");
 				} else {
-					bw.write("    <td>" + col + "</td>\n");
+					bw.write("    <td>" + col + "</td>");
 				}
 			}
     } // end of for ()

@@ -93,7 +93,13 @@ FIRST=true
             fi
             SUCCESS=`grep -c success ${INDEX_DIR}/${mf}`
             FAILURE=`grep -ic failure ${INDEX_DIR}/${mf} || true`
-            FAIL_CNT=$((${FAIL_CNT}+${FAILURE})) || true
+			FAILURE_LIST=`egrep -o  "(?i)<tr.*fail.*" ${INDEX_DIR}/${mf} | perl -pe "s|.*?<td>(.*?)</td.*|\1,|"`
+            
+            if ${FIRST} ; then
+            	FAIL_CNT=$((${FAIL_CNT}+${FAILURE})) || true
+            	echo "${mf}: ${FAILURE}"
+            	echo "${FAILURE_LIST}"
+            fi
 
             ttime=`gettesttime ${INDEX_DIR}/${mf}`
             echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${mf}\">${SUCCESS} x Pass, ${FAILURE} x Fail, $((${SUCCESS} + ${FAILURE})) x Total in ${ttime}</a></td>"
