@@ -52,15 +52,3 @@ expect: {
   type="unsubscribed"
   id="pres-sub-cancel-send-1"/>
 }
-
-expect: {
-<iq type="set">
-  <query xmlns="jabber:iq:roster">
-    <item jid="$(to-id)" subscription="from"/>
-  </query>
-</iq>
-<presence xmlns="jabber:client" 
-  from="$(to-id)"
-  type="unsubscribed"
-  id="pres-sub-cancel-rec-1"/>
-}
