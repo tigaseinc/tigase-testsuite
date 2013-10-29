@@ -23,6 +23,10 @@ if [ -z "${INDEX_DIR}" ]; then
 	INDEX_DIR="/home/tigase/public_html"
 fi
 
+if [ -z "${BASE_PATH}" ]; then
+	BASE_PATH="http://build.tigase.org/nightlies/tests/"
+fi
+
 if [[ ${INDEX_DIR} = *night* ]]
 then
 	INDEX_START="index-start-nightly.txt"
@@ -97,7 +101,7 @@ FIRST=true
             
             if ${FIRST} ; then
             	FAIL_CNT=$((${FAIL_CNT}+${FAILURE})) || true
-            	echo "${mf}: ${FAILURE}"
+            	echo "${BASE_PATH}/${mf}: ${FAILURE}"
             	echo "${FAILURE_LIST}"
             fi
 
