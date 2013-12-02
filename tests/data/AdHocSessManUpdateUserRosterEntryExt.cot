@@ -48,13 +48,16 @@ expect: {
 			<field type="text-single" label="Roster owner name" var="roster-owner-name">
 				<value/>
 			</field>
+			<field type="text-single" var="roster-owner-groups" label="Comma separated list of owner groups">
+				<value/>
+			</field>
 			<field type="jid-single" label="Roster item JID" var="roster-item-jid">
 				<value/>
 			</field>
 			<field type="text-single" label="Roster item name" var="roster-item-name">
 				<value/>
 			</field>
-			<field type="text-single" label="Comma separated list of groups" var="roster-item-groups">
+			<field type="text-single" label="Comma separated list of item groups" var="roster-item-groups">
 				<value/>
 			</field>
 			<field type="list-single" label="Roster item Subscription" var="roster-item-subscr">
@@ -86,14 +89,17 @@ send: {
 			<field type="text-single" var="roster-owner-name">
 				<value>admin</value>
 			</field>
+			<field type="text-single" var="roster-owner-groups">
+				<value>group-admin</value>
+			</field>
 			<field type="jid-single" var="roster-item-jid">
-				<value>$(cdata)</value>
+				<value>admin@test-d</value>
 			</field>
 			<field type="text-single" var="roster-item-name">
 				<value>test-d</value>
 			</field>
 			<field type="text-single" var="roster-item-groups">
-				<value>group1</value>
+				<value>user-group</value>
 			</field>
 			<field type="list-single" var="roster-item-subscr">
 				<value>both</value>
