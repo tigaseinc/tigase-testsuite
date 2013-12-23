@@ -2,3 +2,4 @@ libs
 jars
 tigasetest
 files
+tests-runner-settings.sh
