@@ -35,8 +35,8 @@ function db_reload_mysql() {
 	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
 	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
 	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
-	[[ -z ${root_user} ]] && local _root_user="${root_user}" || local _root_user=${3}
-	[[ -z ${root_pass} ]] && local _root_pass="${root_pass}" || local _root_pass=${4}
+	[[ ! -z ${root_user} ]] && local _root_user="${root_user}" || local _root_user=${3}
+	[[ ! -z ${root_pass} ]] && local _root_pass="${root_pass}" || local _root_pass=${4}
 
 	mysqladmin -u ${_root_user} -p${_root_pass} -f drop ${_db_name}
 
