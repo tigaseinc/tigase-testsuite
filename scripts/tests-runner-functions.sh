@@ -35,12 +35,14 @@ function db_reload_mysql() {
 	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
 	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
 	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
+	[[ -z ${root_user} ]] && local _root_user="${root_user}" || local _root_user=${3}
+	[[ -z ${root_pass} ]] && local _root_pass="${root_pass}" || local _root_pass=${4}
 
-	mysqladmin -u root -p${_db_pass} -f drop ${_db_name}
+	mysqladmin -u ${_root_user} -p${_root_pass} -f drop ${_db_name}
 
 	tts_dir=`pwd`
 	cd ${_src_dir}
-        ./scripts/db-create-mysql.sh -y ${_db_user} ${_db_pass} ${_db_name} root ${_db_pass} localhost
+        ./scripts/db-create-mysql.sh -y ${_db_user} ${_db_pass} ${_db_name} ${_root_user} ${_root_pass} localhost
 	cd ${tts_dir}
 
 }
@@ -51,6 +53,8 @@ function db_reload_pgsql() {
 	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
 	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
 	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
+	[[ -z ${root_user} ]] && local _root_user="${root_user}" || local _root_user=${3}
+	[[ -z ${root_pass} ]] && local _root_pass="${root_pass}" || local _root_pass=${4}
 
 	dropdb -U ${_db_user} ${_db_name}
 
@@ -58,6 +62,28 @@ function db_reload_pgsql() {
         cd ${_src_dir}
 	./scripts/db-create-postgresql.sh -y ${_db_user} ${_db_pass} ${_db_name} localhost
         cd ${tts_dir}
+
+}
+
+function db_reload_sqlserver() {
+
+	[[ -z ${1} ]] && local _src_dir="${server_dir}" || local _src_dir=${1}
+	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
+	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
+	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
+	[[ ! -z ${root_user} ]] && local _root_user="${root_user}" || local _root_user=${3}
+	[[ ! -z ${root_pass} ]] && local _root_pass="${root_pass}" || local _root_pass=${4}
+
+
+	tts_dir=`pwd`
+	cd ${_src_dir}
+	# drop old database
+	
+	java -cp "jars/*" tigase.util.DBSchemaLoader -dbType sqlserver -dbName ${_db_name} -dbHostname sqlserverhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass}  -query "drop database ${_db_name}" > sqlserver.log
+
+	# create new database
+	java -cp "jars/*" tigase.util.DBSchemaLoader -dbType sqlserver -dbName ${_db_name} -dbHostname sqlserverhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user}  -rootPass ${_root_pass} >> sqlserver.log
+	cd ${tts_dir}
 
 }
 
@@ -178,13 +204,16 @@ function run_test() {
 	if [ -z "${SKIP_DB_RELOAD}" ] ; then
 	  echo "Re-creating database: ${_database}"
 		case ${_database} in
-			mysql|mysql-auth|sm-mysql|mysql-custom)
+			mysql)
 				db_reload_mysql
 				;;
-			pgsql|pgsql-auth|pgsql-custom)
+			pgsql)
 				db_reload_pgsql
 				;;
-			derby|derby-auth|derby-custom)
+			mssql)
+				db_reload_sqlserver
+				;;
+			derby)
 				db_reload_derby
 				;;
 			*)
@@ -200,7 +229,7 @@ function run_test() {
 	sleep 1
 	if [ -z "${SKIP_SERVER_START}" ] ; then
 		tig_start_server ${_server_dir} "etc/tigase-${_database}.conf"
-		sleep ${server_timeout}
+		sleep $(((${server_timeout} * 2)))
 	else
 		echo "Skipped Tigase server starting."
 	fi

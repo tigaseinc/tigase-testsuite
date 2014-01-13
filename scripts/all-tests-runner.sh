@@ -1,7 +1,7 @@
 #!/bin/bash
 ##
 ##  Tigase XMPP/Jabber Test Suite
-##  Copyright (C) 2004-2009 "Artur Hefczyc" <artur.hefczyc@tigase.org>
+##  Copyright (C) 2004-2013, "Tigase, Inc." <office@tigase.com>
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -16,10 +16,6 @@
 ##  along with this program. Look for COPYING file in the top folder.
 ##  If not, see http://www.gnu.org/licenses/.
 ##
-##  $Rev: $
-##  Last modified by $Author: $
-##  $Date: $
-##
 
 VERSION="2.0.0"
 
@@ -29,6 +25,7 @@ SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
 	echo "Can't find settings file: ${SETTINGS_FILE} using defaults"
 	server_dir="../tigase-server"
 	database="derby"
+	database_host="localhost"
 	server_ip="127.0.0.1"
 	server_timeout=15
 
@@ -52,16 +49,13 @@ function usage() {
 	echo "Version: ${VERSION}"
 	echo "----"
 	echo "  --help|-h	This help message"
-	echo "  --func [mysql|pgsql|derby]"
-	echo "              Run all functional tests for a single database"
-	echo "		          configuration"
-	echo "  --lmem [mysql|pgsql|derby]"
-	echo "              Run low memory tests for a single database"
-	echo "		          configuration"
-	echo "  --perf [mysql|pgsql|derby]"
-	echo "              Run all performance tests for a single database"
-	echo "              configuration"
-	echo "  --stab [mysql|pgsql|derby]"
+	echo "  --func [mysql|pgsql|derby|mssql]"
+	echo "              Run all functional tests for a single database configuration"
+	echo "  --lmem [mysql|pgsql|derby|mssql]"
+	echo "              Run low memory tests for a single database configuration"
+	echo "  --perf [mysql|pgsql|derby|mssql]"
+	echo "              Run all performance tests for a single database configuration"
+	echo "  --stab [mysql|pgsql|derby|mssql]"
 	echo "              Run all stability tests for a single database"
 	echo "              configuration"
 	echo "  --func-all  Run all functional tests for all database"
@@ -158,21 +152,11 @@ case "${1}" in
 		echo "<tr><th>${ver}</th>" >> func-rep.html
 		run_functional_test derby ${server_dir} ${IPS[0]}
 		sleep 30
-		run_functional_test derby-auth ${server_dir} ${IPS[0]}
-		sleep 30
-		run_functional_test derby-custom ${server_dir} ${IPS[0]}
-		sleep 30
 		run_functional_test mysql ${server_dir} ${IPS[1]}
-		sleep 30
-		run_functional_test mysql-auth ${server_dir} ${IPS[1]}
-		sleep 30
-		run_functional_test mysql-custom ${server_dir} ${IPS[1]}
 		sleep 30
 		run_functional_test pgsql ${server_dir} ${IPS[2]}
 		sleep 30
-		run_functional_test pgsql-auth ${server_dir} ${IPS[2]}
-		sleep 30
-		run_functional_test pgsql-custom ${server_dir} ${IPS[2]}
+		run_functional_test mssql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> func-rep.html
 		;;
 	--lmem-all)
@@ -182,21 +166,15 @@ case "${1}" in
 		echo "<tr><th>${ver}</th>" >> func-rep.html
 		run_low_memory_test derby ${server_dir} ${IPS[0]}
 		sleep 30
-		run_low_memory_test derby-auth ${server_dir} ${IPS[0]}
-		sleep 30
-		run_low_memory_test derby-custom ${server_dir} ${IPS[0]}
-		sleep 30
 		run_low_memory_test mysql ${server_dir} ${IPS[1]}
 		sleep 30
-		run_low_memory_test mysql-auth ${server_dir} ${IPS[1]}
-		sleep 30
-		run_low_memory_test mysql-custom ${server_dir} ${IPS[1]}
-		sleep 30
 		run_low_memory_test pgsql ${server_dir} ${IPS[2]}
+		#sleep 30
+		#run_low_memory_test pgsql-auth ${server_dir} ${IPS[2]}
+		#sleep 30
+		#run_low_memory_test pgsql-custom ${server_dir} ${IPS[2]}
 		sleep 30
-		run_low_memory_test pgsql-auth ${server_dir} ${IPS[2]}
-		sleep 30
-		run_low_memory_test pgsql-custom ${server_dir} ${IPS[2]}
+		run_low_memory_test mssql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> lmem-rep.html
 		;;
 	--perf)
@@ -211,6 +189,7 @@ case "${1}" in
 		run_performance_test derby ${server_dir} ${IPS[0]}
 		run_performance_test mysql ${server_dir} ${IPS[1]}
 		run_performance_test pgsql ${server_dir} ${IPS[2]}
+		run_performance_test mssql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> perf-rep.html
 		;;
 	--stab-all)
@@ -219,6 +198,7 @@ case "${1}" in
 		run_stability_test derby ${server_dir} ${IPS[0]}
 		run_stability_test mysql ${server_dir} ${IPS[1]}
 		run_stability_test pgsql ${server_dir} ${IPS[2]}
+		run_stability_test mssql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> stab-rep.html
 		;;
 	--all-tests)
