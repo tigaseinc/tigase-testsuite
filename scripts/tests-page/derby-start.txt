@@ -1,3 +1,1 @@
-            <th>Derby default</th>
-            <th>Derby SP Auth&nbsp;</th>
-            <th>Derby Custom SQL</th>
+<th>Derby</th>

@@ -65,8 +65,6 @@ FIRST=true
       for tr in ${TEST_REPORTS} ; do
 
         MFILE1="${INDEX_DIR}/${REPORTS_LOC}/${ard}/${tt}/${tr}/"${MAIN_FILE[${tt}]}
-        MFILE2="${INDEX_DIR}/${REPORTS_LOC}/${ard}/${tt}/${tr}-auth/functional-tests.html"
-        MFILE3="${INDEX_DIR}/${REPORTS_LOC}/${ard}/${tt}/${tr}-custom/functional-tests.html"
         
         if [ -f ${MFILE1} ] || [ -f ${MFILE2} ] || [ -f ${MFILE3} ] ; then
           IS_TEST="${IS_TEST}${tr}"
@@ -76,43 +74,41 @@ FIRST=true
 
       if [ ! -z ${IS_TEST} ] ; then
 
-      echoindex "<tr><th>${ard}</th>"
+      DATE=`grep -iE "Test start time" ${INDEX_DIR}/${REPORTS_LOC}/${ard}/${tt}/mysql/${MAIN_FILE[${tt}]} | perl -pe "s|.*?<p>Test start time.*<b>(.*?) (.*?), (.*?) (.*?)</b.*|\3 \1 \2|"`
+
+      echoindex "<tr><th>${DATE}</th>"
+
+      echoindex "<th>${ard}</th>"
 
       bgcolor="#90FF90"
 
       for tr in ${TEST_REPORTS} ; do
 
         MFILE1="${REPORTS_LOC}/${ard}/${tt}/${tr}/"${MAIN_FILE[${tt}]}
-        MFILE2="${REPORTS_LOC}/${ard}/${tt}/${tr}-auth/"${MAIN_FILE[${tt}]}
-		MFILE3="${REPORTS_LOC}/${ard}/${tt}/${tr}-custom/"${MAIN_FILE[${tt}]}
 
-        MFILES="${MFILE1} ${MFILE2} ${MFILE3}"
-
-        for mf in ${MFILES} ; do
-
-          if [ -f ${INDEX_DIR}/${mf} ] ; then
-            bgcolor="#90FF90"
-            if grep "FAILURE" ${INDEX_DIR}/${mf} > /dev/null ; then
-              bgcolor="FF9090"
-            fi
-            SUCCESS=`grep -c success ${INDEX_DIR}/${mf}`
-            FAILURE=`grep -ic failure ${INDEX_DIR}/${mf} || true`
-            FAILURE_LIST=`egrep -iE ".*FAILURE.*" ${INDEX_DIR}/${mf} | perl -pe "s|.*?<td>(.*?)</td.*|\1,|"`
-            
-            if ${FIRST} ; then
-            	FAIL_CNT=$((${FAIL_CNT}+${FAILURE})) || true
-            	echo "${BASE_PATH}/${mf}: ${FAILURE}"
-            	echo "${FAILURE_LIST}"
-            fi
-
-            ttime=`gettesttime ${INDEX_DIR}/${mf}`
-            echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${mf}\">${SUCCESS} x Pass, ${FAILURE} x Fail, $((${SUCCESS} + ${FAILURE})) x Total in ${ttime}</a></td>"
-          else
-            echoindex "<td class=\"rtecenter\"> --- </td>"
-          fi
+        MFILES="${MFILE1}"
 
 
-        done
+		  if [ -f ${INDEX_DIR}/${MFILE1} ] ; then
+			bgcolor="#90FF90"
+			if grep "FAILURE" ${INDEX_DIR}/${MFILE1} > /dev/null ; then
+			  bgcolor="FF9090"
+			fi
+			SUCCESS=`grep -c success ${INDEX_DIR}/${MFILE1}`
+			FAILURE=`grep -ic failure ${INDEX_DIR}/${MFILE1} || true`
+			FAILURE_LIST=`egrep -iE ".*FAILURE.*" ${INDEX_DIR}/${MFILE1} | perl -pe "s|.*?<td>(.*?)</td.*|\1,|"`
+		
+			if ${FIRST} ; then
+				FAIL_CNT=$((${FAIL_CNT}+${FAILURE})) || true
+				echo "${BASE_PATH}/${MFILE1}: ${FAILURE}"
+				echo "${FAILURE_LIST}"
+			fi
+
+			ttime=`gettesttime ${INDEX_DIR}/${MFILE1}`
+			echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${MFILE1}\">${SUCCESS} x Pass,<br/>${FAILURE} x Fail,<br/>$((${SUCCESS} + ${FAILURE})) x Total<br/>in ${ttime}</a></td>"
+		  else
+			echoindex "<td class=\"rtecenter\"> --- </td>"
+		  fi
         
       done
 
