@@ -105,7 +105,7 @@ FIRST=true
 			fi
 
 			ttime=`gettesttime ${INDEX_DIR}/${MFILE1}`
-			echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${MFILE1}\">${SUCCESS} x Pass,<br/>${FAILURE} x Fail,<br/>$((${SUCCESS} + ${FAILURE})) x Total<br/>in ${ttime}</a></td>"
+			echoindex "<td class=\"rtecenter\" bgcolor=\"${bgcolor}\"><a href=\"${MFILE1}\">${SUCCESS} | ${FAILURE} | $((${SUCCESS} + ${FAILURE})) | ${ttime}</a></td>"
 		  else
 			echoindex "<td class=\"rtecenter\"> --- </td>"
 		  fi
