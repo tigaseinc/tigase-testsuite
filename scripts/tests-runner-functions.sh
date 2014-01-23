@@ -114,10 +114,10 @@ function db_reload_derby() {
 
 	cd ${_src_dir}
 
-	./scripts/db-create-derby.sh ${tts_dir}/${_db_name}
-
+	java -cp "jars/*" tigase.util.DBSchemaLoader -dbType derby -dbName ${tts_dir}/${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass}
+	
 	# load PubSub 3.0.0 schema	
-	java -cp "jars/*" tigase.util.DBSchemaLoader -dbType derby -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/derby-pubsub-schema-3.0.0.sql
+	java -cp "jars/*" tigase.util.DBSchemaLoader -dbType derby -dbName ${tts_dir}/${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/derby-pubsub-schema-3.0.0.sql
 
 	cd ${tts_dir}
 
