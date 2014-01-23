@@ -58,18 +58,21 @@ function db_reload_pgsql() {
 	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
 	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
 	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
-	[[ -z ${root_user} ]] && local _root_user="${root_user}" || local _root_user=${3}
-	[[ -z ${root_pass} ]] && local _root_pass="${root_pass}" || local _root_pass=${4}
+	[[ ! -z ${root_user} ]] && local _root_user="${root_user}" || local _root_user=${3}
+	[[ ! -z ${root_pass} ]] && local _root_pass="${root_pass}" || local _root_pass=${4}
 
 	dropdb -U ${_db_user} ${_db_name}
 
 	tts_dir=`pwd`
 	cd ${_src_dir}
 
-	./scripts/db-create-postgresql.sh -y ${_db_user} ${_db_pass} ${_db_name} localhost
+	java -cp "jars/*" tigase.util.DBSchemaLoader -dbType postgresql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass}
 
 	# load PubSub 3.0.0 schema	
 	java -cp "jars/*" tigase.util.DBSchemaLoader -dbType postgresql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/postgresql-pubsub-schema-3.0.0.sql
+
+	# apply permissions to pubsub schema
+	java -cp "jars/*" tigase.util.DBSchemaLoader -dbType postgresql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/postgresql-installer-post.sql
 
 	cd ${tts_dir}
 
@@ -104,13 +107,14 @@ function db_reload_sqlserver() {
 function db_reload_derby() {
 
 	[[ -z ${1} ]] && local _src_dir="${server_dir}" || local _src_dir=${1}
+	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
 
-	rm -fr tigasetest/
+	rm -fr ${_db_name}/
 	tts_dir=`pwd`
 
 	cd ${_src_dir}
 
-	./scripts/db-create-derby.sh ${tts_dir}/tigasetest
+	./scripts/db-create-derby.sh ${tts_dir}/${_db_name}
 
 	# load PubSub 3.0.0 schema	
 	java -cp "jars/*" tigase.util.DBSchemaLoader -dbType derby -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/derby-pubsub-schema-3.0.0.sql
