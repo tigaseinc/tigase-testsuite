@@ -151,11 +151,11 @@ case "${1}" in
 		cp -f func-rep.html_tmp func-rep.html
 		echo "<tr><th>${ver}</th>" >> func-rep.html
 		run_functional_test derby ${server_dir} ${IPS[0]}
-		sleep 30
+		sleep $(((${server_timeout} * 2)))
 		run_functional_test mysql ${server_dir} ${IPS[1]}
-		sleep 30
+		sleep $(((${server_timeout} * 2)))
 		run_functional_test pgsql ${server_dir} ${IPS[2]}
-		sleep 30
+		sleep $(((${server_timeout} * 2)))
 		run_functional_test mssql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> func-rep.html
 		;;
@@ -165,15 +165,11 @@ case "${1}" in
 		cp -f lmem-rep.html_tmp lmem-rep.html
 		echo "<tr><th>${ver}</th>" >> func-rep.html
 		run_low_memory_test derby ${server_dir} ${IPS[0]}
-		sleep 30
+		sleep $(((${server_timeout} * 2)))
 		run_low_memory_test mysql ${server_dir} ${IPS[1]}
-		sleep 30
+		sleep $(((${server_timeout} * 2)))
 		run_low_memory_test pgsql ${server_dir} ${IPS[2]}
-		#sleep 30
-		#run_low_memory_test pgsql-auth ${server_dir} ${IPS[2]}
-		#sleep 30
-		#run_low_memory_test pgsql-custom ${server_dir} ${IPS[2]}
-		sleep 30
+		sleep $(((${server_timeout} * 2)))
 		run_low_memory_test mssql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> lmem-rep.html
 		;;
@@ -187,8 +183,11 @@ case "${1}" in
 		cp -f perf-rep.html_tmp perf-rep.html
 		echo "<tr><th>${ver}</th>" >> perf-rep.html
 		run_performance_test derby ${server_dir} ${IPS[0]}
+		sleep $(((${server_timeout} * 2)))
 		run_performance_test mysql ${server_dir} ${IPS[1]}
+		sleep $(((${server_timeout} * 2)))
 		run_performance_test pgsql ${server_dir} ${IPS[2]}
+		sleep $(((${server_timeout} * 2)))
 		run_performance_test mssql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> perf-rep.html
 		;;
@@ -196,13 +195,17 @@ case "${1}" in
 		cp -f stab-rep.html_tmp stab-rep.html
 		echo "<tr><th>${ver}</th>" >> stab-rep.html
 		run_stability_test derby ${server_dir} ${IPS[0]}
+		sleep $(((${server_timeout} * 2)))
 		run_stability_test mysql ${server_dir} ${IPS[1]}
+		sleep $(((${server_timeout} * 2)))
 		run_stability_test pgsql ${server_dir} ${IPS[2]}
+		sleep $(((${server_timeout} * 2)))
 		run_stability_test mssql ${server_dir} ${IPS[3]}
 		echo "</tr>" >> stab-rep.html
 		;;
 	--all-tests)
 		${0} --func-all ${server_dir}
+		sleep $(((${server_timeout} * 2)))
 		${0} --perf-all ${server_dir}
 		#${0} --stab-all ${server_dir}
 		;;
