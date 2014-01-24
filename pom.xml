@@ -53,7 +53,7 @@
 	<build>
 		<defaultGoal>install</defaultGoal>
 		<directory>${basedir}/jars</directory>
-		<finalName>${artifactId}</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
