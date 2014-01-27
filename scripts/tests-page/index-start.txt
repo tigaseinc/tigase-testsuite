@@ -13,3 +13,8 @@
     <li>Load tests - we run them occasionally when we have an access to proper equipment as we don't own hardware good enough to run load tests. The last load tests results are published on a separate page. Click on the 'Load tests' link in the menu on the left hand side of the page.</li>
     <li>Clustering tests - we run them during our development process to make sure the server works correctly in the cluster mode. The results are not directly related to any public release yet and they are available on a separate page. To find the report please click 'Clustering tests' link in the menu on the left hand side of the page.</li>
 </ol>
+
+<ul>
+<li><a href="#func">Functional tests</a></li>
+<li><a href="#lmem">Low memory tests</a></li>
+</ul>
