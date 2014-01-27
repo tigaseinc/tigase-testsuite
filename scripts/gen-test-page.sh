@@ -66,7 +66,7 @@ FIRST=true
 
         MFILE1="${INDEX_DIR}/${REPORTS_LOC}/${ard}/${tt}/${tr}/"${MAIN_FILE[${tt}]}
         
-        if [ -f ${MFILE1} ] || [ -f ${MFILE2} ] || [ -f ${MFILE3} ] ; then
+        if [ -f ${MFILE1} ] ; then
           IS_TEST="${IS_TEST}${tr}"
         fi
 
