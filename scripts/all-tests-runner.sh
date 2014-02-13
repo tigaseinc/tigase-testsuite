@@ -134,6 +134,7 @@ output_dir="${ROOT_DIR}files/static/tests/${ver}"
 
 echo "Tigase server home directory: ${server_dir}"
 echo "Version: ${ver}"
+echo "Output dir: ${output_dir}"
 
 case "${1}" in
 	--help|-h)
