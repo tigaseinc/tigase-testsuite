@@ -100,7 +100,7 @@ FIRST=true
 		
 			if ${FIRST} ; then
 				FAIL_CNT=$((${FAIL_CNT}+${FAILURE})) || true
-				echo "${BASE_PATH}/${MFILE1}: ${FAILURE}"
+				echo "${BASE_PATH}/${MFILE1} : ${FAILURE}"
 				echo "${FAILURE_LIST}"
 			fi
 
