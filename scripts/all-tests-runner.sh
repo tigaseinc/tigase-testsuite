@@ -49,13 +49,13 @@ function usage() {
 	echo "Version: ${VERSION}"
 	echo "----"
 	echo "  --help|-h	This help message"
-	echo "  --func [mysql|pgsql|derby|mssql]"
+	echo "  --func [mysql|pgsql|derby|mssql|mongodb]"
 	echo "              Run all functional tests for a single database configuration"
-	echo "  --lmem [mysql|pgsql|derby|mssql]"
+	echo "  --lmem [mysql|pgsql|derby|mssql|mongodb]"
 	echo "              Run low memory tests for a single database configuration"
-	echo "  --perf [mysql|pgsql|derby|mssql]"
+	echo "  --perf [mysql|pgsql|derby|mssql|mongodb]"
 	echo "              Run all performance tests for a single database configuration"
-	echo "  --stab [mysql|pgsql|derby|mssql]"
+	echo "  --stab [mysql|pgsql|derby|mssql|mongodb]"
 	echo "              Run all stability tests for a single database"
 	echo "              configuration"
 	echo "  --func-all  Run all functional tests for all database"
@@ -158,6 +158,8 @@ case "${1}" in
 		run_functional_test pgsql ${server_dir} ${IPS[2]}
 		sleep $(((${server_timeout} * 2)))
 		run_functional_test mssql ${server_dir} ${IPS[3]}
+		sleep $(((${server_timeout} * 2)))
+		run_functional_test mongodb ${server_dir} ${IPS[4]}
 		echo "</tr>" >> func-rep.html
 		;;
 	--lmem-all)
@@ -172,6 +174,8 @@ case "${1}" in
 		run_low_memory_test pgsql ${server_dir} ${IPS[2]}
 		sleep $(((${server_timeout} * 2)))
 		run_low_memory_test mssql ${server_dir} ${IPS[3]}
+		sleep $(((${server_timeout} * 2)))
+		run_low_memory_test mongodb ${server_dir} ${IPS[4]}
 		echo "</tr>" >> lmem-rep.html
 		;;
 	--perf)
@@ -190,6 +194,8 @@ case "${1}" in
 		run_performance_test pgsql ${server_dir} ${IPS[2]}
 		sleep $(((${server_timeout} * 2)))
 		run_performance_test mssql ${server_dir} ${IPS[3]}
+		sleep $(((${server_timeout} * 2)))
+		run_performance_test mongodb ${server_dir} ${IPS[4]}
 		echo "</tr>" >> perf-rep.html
 		;;
 	--stab-all)
@@ -202,6 +208,8 @@ case "${1}" in
 		run_stability_test pgsql ${server_dir} ${IPS[2]}
 		sleep $(((${server_timeout} * 2)))
 		run_stability_test mssql ${server_dir} ${IPS[3]}
+		sleep $(((${server_timeout} * 2)))
+		run_stability_test mongodb ${server_dir} ${IPS[4]}
 		echo "</tr>" >> stab-rep.html
 		;;
 	--all-tests)
