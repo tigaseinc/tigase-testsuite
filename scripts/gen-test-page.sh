@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TEST_REPORTS="mysql pgsql derby mssql"
+TEST_REPORTS="mysql pgsql derby mssql mongodb"
 TEST_TYPES="func lmem"
 declare -A MAIN_FILE
 MAIN_FILE=( [func]="functional-tests.html" [lmem]="low-memory-tests.html" )
