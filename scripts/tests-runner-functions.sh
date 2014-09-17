@@ -52,6 +52,14 @@ function db_reload_mysql() {
 
 }
 
+function db_reload_mongodb() {
+
+	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
+
+	mongo ${_db_name} --eval "printjson(db.dropDatabase())"
+
+}
+
 function db_reload_pgsql() {
 
 	[[ -z ${1} ]] && local _src_dir="${server_dir}" || local _src_dir=${1}
@@ -239,6 +247,9 @@ function run_test() {
 				;;
 			derby)
 				db_reload_derby
+				;;
+			mongodb)
+				db_reload_mongodb
 				;;
 			*)
 				echo "Not supported database: '${database}'"
