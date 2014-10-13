@@ -1,5 +1,7 @@
 <html>
-
+	<head>
+		<title>Tigase XMPP Server automated tests reports</title>
+	</head>
 <body>
 
 <h1>Tigase XMPP Server automated tests reports</h1>

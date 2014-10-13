@@ -1,4 +1,7 @@
 <html>
+	<head>
+		<title>Tigase XMPP Server automated tests reports - Nightlies</title>
+	</head>
 
 <body>
 
