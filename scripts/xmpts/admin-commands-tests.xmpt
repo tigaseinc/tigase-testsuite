@@ -692,7 +692,7 @@ Global settings:
     # sending announcement as server-admin
     AdminAdHoc 4_23-1@common:  {
         #-debug
-        -delay = 500
+        -delay = 1500
 
         Prep-deamon 1@user-register: {
             -no-record
