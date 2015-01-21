@@ -28,6 +28,11 @@ SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
 	database_host="localhost"
 	server_ip="127.0.0.1"
 	server_timeout=15
+	db_user="tigase_user"
+	db_pass="tigase_pwd"
+	db_name="tigase_test"
+	root_user="root"
+	root_pass="root"	
 
 	MS_MEM=100
 	MX_MEM=1000
