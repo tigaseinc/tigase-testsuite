@@ -117,6 +117,11 @@ function db_reload_derby() {
 	[[ -z ${1} ]] && local _src_dir="${server_dir}" || local _src_dir=${1}
 	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
 
+	if [ -z ${_db_name} ] ; then 
+		echo "No DB name set - Stopping - This would cause the attempt to delete /"
+		exit 1
+	fi
+
 	rm -fr ${_db_name}/
 	tts_dir=`pwd`
 
