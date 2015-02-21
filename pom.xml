@@ -8,7 +8,7 @@
 	<artifactId>tigase-testsuite</artifactId>
 	<packaging>jar</packaging>
 	<name>Tigase Test Suite</name>
-	<version>2.2.1</version>
+	<version>2.3.0-SNAPSHOT</version>
 	<description>Tigase Test Suite - automated testing framework for Tigase Jabber/XMPP Server.</description>
 	<url>http://www.tigase.org</url>
 	<issueManagement>
@@ -45,7 +45,7 @@
 		<connection>scm:git:https://repository.tigase.org/git/tigase-testsuite.git</connection>
 		<developerConnection>scm:git:https://repository.tigase.org/git/tigase-testsuite.git</developerConnection>
 		<url>https://projects.tigase.org/projects/tigase-testsuite/repository</url>
-	  <tag>tigase-testsuite-2.2.1</tag>
+	  <tag>HEAD</tag>
   </scm>
 	<organization>
 		<name>Tigase</name>
@@ -145,45 +145,45 @@
 						<id>copy-dependencies</id>
 						<phase>package</phase>
 						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/libs</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<stripVersion>true</stripVersion>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-        <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.1</version>
-        </plugin>
-		</plugins>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh-external</artifactId>
-				<version>2.2</version>
-			</extension>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>2.2</version>
-			</extension>
-		</extensions>
-	</build>
-	<dependencies>
+						<goal>copy-dependencies</goal>
+					</goals>
+					<configuration>
+						<outputDirectory>${basedir}/libs</outputDirectory>
+						<overWriteReleases>false</overWriteReleases>
+						<overWriteSnapshots>true</overWriteSnapshots>
+						<stripVersion>true</stripVersion>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+<plugin>
+  <artifactId>maven-release-plugin</artifactId>
+  <version>2.5.1</version>
+</plugin>
+	</plugins>
+	<extensions>
+		<extension>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-ssh-external</artifactId>
+			<version>2.2</version>
+		</extension>
+		<extension>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-ssh</artifactId>
+			<version>2.2</version>
+		</extension>
+	</extensions>
+</build>
+<dependencies>
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>tigase-utils</artifactId>
-			<version>3.4.4</version>
+			<version>3.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>tigase-xmltools</artifactId>
-			<version>3.4.5</version>
+			<version>3.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
