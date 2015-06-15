@@ -118,7 +118,7 @@ public class TestCommon
 	public TestCommon() {
 		super(new String[] { "jabber:client" }, new String[] { "common" },
 					new String[] { "stream-open",
-												 "auth", "xmpp-bind", "presence" }, new String[] { "tls-init" });
+												 "auth", "xmpp-bind" }, new String[] { "tls-init" });
 	}
 
 	/**
