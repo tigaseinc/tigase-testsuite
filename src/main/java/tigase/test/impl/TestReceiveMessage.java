@@ -76,7 +76,7 @@ public class TestReceiveMessage
 	public TestReceiveMessage() {
 		super(new String[] { "jabber:client" }, new String[] { "msg-listen" },
 					new String[] { "stream-open",
-												 "auth", "xmpp-bind" }, new String[] { "tls-init",
+												 "auth", "xmpp-bind", "presence" }, new String[] { "tls-init",
 												 "privacy-block-msg",
 						"privacy-long-list" });
 	}
