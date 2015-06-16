@@ -90,6 +90,7 @@ Global settings:
 
   PubSub 5@common: {
 #    -user-resr   = res-2
+    -presence
     -source-file = "tests/data/PubsubCollectionTest.cot"
    } >> Create a collection node in the pubsub component. <<
 

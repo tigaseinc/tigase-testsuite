@@ -93,6 +93,7 @@ Global settings:
 
     Prep 3@msg-listen: {
       -daemon
+      -presence
 
       -socket-wait = 0
       -user-name   = $(daemon-user)
