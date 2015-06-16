@@ -260,7 +260,6 @@ public class Test {
 		long socket_wait = test_params.get("-socket-wait", 5000);
 		DaemonTest dt = new DaemonTest(suite, test_params, this, vars);
 		if (daemon) {
-			test_params.putIfAbsent( "-presence", null);
 			runThread(dt, true);
 			++tests_ok;
 			latch.countDown();
