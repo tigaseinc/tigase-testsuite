@@ -77,6 +77,7 @@ Global settings:
 
     Prep 3@msg-listen: {
       -daemon
+      -presence
 
       -socket-wait = 0
       -user-name   = $(daemon-user)
@@ -113,6 +114,7 @@ Global settings:
   } >> Message send to correct/available full JID: $(daemon-user)@$(server-host)/def-user-resource, expecting response <<
 
   Basic 8@common: {
+    -presence
     -to-jid = "$(daemon-user)@$(server-host)/def-user-resource"
     -source-file = "tests/data/MessageSendBareJidOK.cot"
   } >> Message send to correct/available bare JID: $(daemon-user)@$(server-host), expecting response <<

@@ -28,8 +28,9 @@ import javax.management.Attribute;
 
 public class TestPresence extends TestAbstract {
 
-  private String[] elems = {"iq"};
+  private String[] elems = {"presence"};
   private int counter = 0;
+	private boolean sendPresence = false;
 
 	public TestPresence() {
 		super(
@@ -42,7 +43,8 @@ public class TestPresence extends TestAbstract {
 
 	@Override
 	public String nextElementName( final Element element ) throws Exception {
-    if (counter < elems.length) {
+		debug( "nextElementName: " + element + "\n" );
+		if ( sendPresence && counter < elems.length ){
       return elems[counter++];
     } // end of if (counter < elems.length)
 		return null;
@@ -50,11 +52,14 @@ public class TestPresence extends TestAbstract {
 
 	@Override
 	public String getElementData( final String string ) throws Exception {
+		debug( "getElementData: " + string + "\n" );
 		switch ( counter ) {
 			case 1:
-				return "<presence>"
-							 + "<priority>1</priority>"
-							 + "</presence>";
+				if ( sendPresence ){
+					return "<presence>"
+								 + "<priority>1</priority>"
+								 + "</presence>";
+				}
 			default:
 				return null;
 		}
@@ -62,21 +67,27 @@ public class TestPresence extends TestAbstract {
 
 	@Override
 	public String[] getRespElementNames( final String string ) throws Exception {
+		debug( "getRespElementNames: " + string + "\n" );
 		return new String[] { "presence" };
 	}
 
 	@Override
 	public String[] getRespOptionalNames( final String string ) throws Exception {
+		debug( "getRespOptionalNames: " + string + "\n" );
 		return null;
 	}
 
 	@Override
 	public Attribute[] getRespElementAttributes( final String string ) throws Exception {
+		debug( "getRespElementAttributes: " + string + "\n" );
 		return null;
 	}
 
 	@Override
 	public void init( final Params map, Map<String, String> vars ) {
 		super.init( map, vars );
+		sendPresence = params.containsKey( "-presence" );
+		debug( "\n" );
+		debug( "init: " + sendPresence + "\n" );
 	}
 }

@@ -114,6 +114,9 @@ public class Test {
 	}
 
 	public void runTest(HistoryCollectorIfc historyColl) {
+				if ( debug ){
+					debug( "\n\n\n===========================", debug );
+				}
 		this.historyColl = historyColl;
 		initParams();
 		debug = main_params.containsKey("-debug");
@@ -257,6 +260,7 @@ public class Test {
 		long socket_wait = test_params.get("-socket-wait", 5000);
 		DaemonTest dt = new DaemonTest(suite, test_params, this, vars);
 		if (daemon) {
+			test_params.putIfAbsent( "-presence", null);
 			runThread(dt, true);
 			++tests_ok;
 			latch.countDown();
@@ -487,6 +491,9 @@ public class Test {
 			TestIfc tmptest = null;
 			try {
 				for (TestIfc test : suite) {
+					if ( debug ){
+						debug( "\n", debug );
+					}
 					test.setHistoryCollector(this);
 					debug("Testing: " + toStringArrayNS(test.implemented(), "..."), debug);
 					tmptest = test;
