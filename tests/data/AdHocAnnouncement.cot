@@ -116,10 +116,6 @@ send: {
 expect: {
 <message>
 </message>
-}
-
-
-expect: {
 <iq id="announce-2"
     from="$(to-jid)"
     to="$(from-jid)"

@@ -742,7 +742,7 @@ Global settings:
     # only domain-users should receive announcement
     AdminAdHoc 4_23-2@common: {
         #-debug
-        -delay = 500
+        -delay = 1500
 
 
         Prep-deamon 1@user-register: {
