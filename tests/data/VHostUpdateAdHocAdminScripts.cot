@@ -57,6 +57,9 @@ send: {
 				<field type="text-single" var="Administrators">
 					<value>$(domain-admin-user)@$(virtual-host)</value>
 				</field>
+				<field var="S2S secret">
+					<value>some-secret</value>
+				</field>			
 				<field type="hidden" var="command-marker">
 					<value>command-marker</value>
 				</field>
