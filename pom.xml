@@ -8,7 +8,7 @@
 	<artifactId>tigase-testsuite</artifactId>
 	<packaging>jar</packaging>
 	<name>Tigase Test Suite</name>
-	<version>2.2.1</version>
+	<version>2.2.2-SNAPSHOT</version>
 	<description>Tigase Test Suite - automated testing framework for Tigase Jabber/XMPP Server.</description>
 	<url>http://www.tigase.org</url>
 	<issueManagement>
