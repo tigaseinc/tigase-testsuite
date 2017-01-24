@@ -45,8 +45,8 @@ function db_reload_mysql() {
 
 	./scripts/db-create-mysql.sh -y ${_db_user} ${_db_pass} ${_db_name} ${_root_user} ${_root_pass} localhost
 
-	# load PubSub 3.0.0 schema	
-	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType mysql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/mysql-pubsub-schema-3.0.0.sql
+	# load PubSub 3.2.0 schema
+	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType mysql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/mysql-pubsub-schema-3.2.0.sql
 	
 	cd ${tts_dir}
 
@@ -76,8 +76,8 @@ function db_reload_pgsql() {
 
 	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType postgresql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass}
 
-	# load PubSub 3.0.0 schema	
-	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType postgresql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/postgresql-pubsub-schema-3.0.0.sql
+	# load PubSub 3.2.0 schema
+	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType postgresql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/postgresql-pubsub-schema-3.2.0.sql
 
 	# apply permissions to pubsub schema
 	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType postgresql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/postgresql-installer-post.sql
@@ -108,6 +108,12 @@ function db_reload_sqlserver() {
 	# load PubSub 3.0.0 schema	
 	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType sqlserver -dbName ${_db_name} -dbHostname sqlserverhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user}  -rootPass ${_root_pass} -file database/sqlserver-pubsub-schema-3.0.0.sql
 	
+	# load PubSub 3.1.0 schema	
+	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType sqlserver -dbName ${_db_name} -dbHostname sqlserverhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user}  -rootPass ${_root_pass} -file database/sqlserver-pubsub-schema-3.1.0.sql
+
+	# load PubSub 3.2.0 schema
+	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType sqlserver -dbName ${_db_name} -dbHostname sqlserverhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user}  -rootPass ${_root_pass} -file database/sqlserver-pubsub-schema-3.2.0.sql
+
 	cd ${tts_dir}
 
 }
@@ -129,8 +135,8 @@ function db_reload_derby() {
 
 	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType derby -dbName ${tts_dir}/${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass}
 	
-	# load PubSub 3.0.0 schema	
-	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType derby -dbName ${tts_dir}/${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/derby-pubsub-schema-3.0.0.sql
+	# load PubSub 3.2.0 schema
+	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType derby -dbName ${tts_dir}/${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/derby-pubsub-schema-3.2.0.sql
 
 	cd ${tts_dir}
 

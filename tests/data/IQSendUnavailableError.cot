@@ -40,5 +40,5 @@ expect: {
     <service-unavailable xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
     <text xmlns="urn:ietf:params:xml:ns:xmpp-stanzas" xml:lang="en">Service not available.</text>
   </error>
-</message>
+</iq>
 }

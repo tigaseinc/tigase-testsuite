@@ -48,7 +48,7 @@ expect: {
             <field type="jid-single" label="From address" var="from-jid">
                 <value>$(hostname)</value>
             </field>
-            <field type="Subject" var="subject">
+            <field type="text-single" label="Subject" var="subject">
                 <value>Message from administrators</value>
             </field>
             <field type="list-single" label="Type" var="msg-type">

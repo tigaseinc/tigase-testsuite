@@ -179,11 +179,11 @@ public class ScriptFileLoader {
 			}
 			buffr.close();
 		} catch (IOException e) {
-			throw new RuntimeException("Can't read source file: " + file, e);
+			throw new RuntimeException("Can't read source file: " + file + " due to exception: " + e.getMessage(), e);
 		}
 	}
 
-	private Element[] parseXMLData(String data) {
+	private Element[] parseXMLData(String data) throws IOException {
 
 		// Replace a few "variables"
 		if (replace != null) {
@@ -193,8 +193,17 @@ public class ScriptFileLoader {
 			}
 		}
 
-		DomBuilderHandler domHandler = new DomBuilderHandler();
+		final StringBuilder sb = new StringBuilder();
+		DomBuilderHandler domHandler = new DomBuilderHandler() {
+			@Override
+			public void error(String errorMessage) {
+				super.error(errorMessage);
+				sb.append(errorMessage);
+			}
+		};
 		parser.parse(domHandler, data.toCharArray(), 0, data.length());
+		if (sb.length() > 0)
+			throw new IOException(sb.toString());
 		Queue<Element> elems = domHandler.getParsedElements();
 		if (elems != null && elems.size() > 0) {
 			return elems.toArray(new Element[elems.size()]);

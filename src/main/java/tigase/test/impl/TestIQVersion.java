@@ -64,9 +64,11 @@ public class TestIQVersion
 	 *
 	 */
 	public TestIQVersion() {
-		super(new String[] { "jabber:client" }, new String[] { "iq-version" },
-					new String[] { "stream-open" }, new String[] { "stream-open",
-						"auth", "user-register", "tls-init" });
+		super( new String[] { "jabber:client" },
+					 new String[] { "iq-version" },
+					 new String[] { "stream-open", "auth", "xmpp-bind" },
+					 new String[] { "stream-open", "auth", "user-register", "tls-init" }
+		);
 	}
 
 	//~--- methods --------------------------------------------------------------

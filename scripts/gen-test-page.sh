@@ -114,7 +114,7 @@ FIRST=true
 
 	#check only latest version
 	if ${FIRST} ; then
-	  if [[ ${FAIL_CNT} > 0 ]] || ${FAILED}  ; then 
+	  if [[ ${FAIL_CNT} > 5 ]] || ${FAILED}  ; then 
 		FAILED=true
 	  fi
 	  echo ${FAIL_CNT}
