@@ -43,11 +43,11 @@ function db_reload_mysql() {
 	tts_dir=`pwd`
 	cd ${_src_dir}
 
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -logLevel ALL -dbType mysql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass}
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader --logLevel ALL --dbType mysql --dbName ${_db_name} --dbHostname localhost --dbUser ${_db_user} --dbPass ${_db_pass} --rootUser ${_root_user} --rootPass ${_root_pass}
 
 	# load component schemas
 	DB_TYPE=mysql
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -logLevel ALL -dbType mysql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql,database/${DB_TYPE}-schema-7-2.sql
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader --logLevel ALL --dbType mysql --dbName ${_db_name} --dbHostname localhost --dbUser ${_db_user} --dbPass ${_db_pass} --rootUser ${_root_user} --rootPass ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql,database/${DB_TYPE}-schema-7-2.sql
 	
 	cd ${tts_dir}
 
@@ -75,14 +75,14 @@ function db_reload_pgsql() {
 	tts_dir=`pwd`
 	cd ${_src_dir}
 
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -logLevel ALL -dbType postgresql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass}
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader --logLevel ALL --dbType postgresql --dbName ${_db_name} --dbHostname localhost --dbUser ${_db_user} --dbPass ${_db_pass} --rootUser ${_root_user} --rootPass ${_root_pass}
 
 	# load component schemas
 	DB_TYPE=postgresql
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -logLevel ALL -dbType mysql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql,database/${DB_TYPE}-schema-7-2.sql
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader --logLevel ALL --dbType mysql --dbName ${_db_name} --dbHostname localhost --dbUser ${_db_user} --dbPass ${_db_pass} --rootUser ${_root_user} --rootPass ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql,database/${DB_TYPE}-schema-7-2.sql
 
 	# apply permissions to pubsub schema
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -logLevel ALL -dbType postgresql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -file database/postgresql-installer-post.sql
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader --logLevel ALL --dbType postgresql --dbName ${_db_name} --dbHostname localhost --dbUser ${_db_user} --dbPass ${_db_pass} --rootUser ${_root_user} --rootPass ${_root_pass} --file database/postgresql-installer-post.sql
 
 	cd ${tts_dir}
 
@@ -102,14 +102,14 @@ function db_reload_sqlserver() {
 	cd ${_src_dir}
 	# drop old database
 	
-	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType sqlserver -dbName ${_db_name} -dbHostname sqlserverhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass}  -query "drop database ${_db_name}"
+	java -cp "jars/*" tigase.util.DBSchemaLoader --logLevel ALL --dbType sqlserver --dbName ${_db_name} --dbHostname sqlserverhost --dbUser ${_db_user} --dbPass ${_db_pass} --rootUser ${_root_user} --rootPass ${_root_pass}  --query "drop database ${_db_name}"
 
 	# create new database
-	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType sqlserver -dbName ${_db_name} -dbHostname sqlserverhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user}  -rootPass ${_root_pass}
+	java -cp "jars/*" tigase.util.DBSchemaLoader --logLevel ALL --dbType sqlserver --dbName ${_db_name} --dbHostname sqlserverhost --dbUser ${_db_user} --dbPass ${_db_pass} --rootUser ${_root_user}  --rootPass ${_root_pass}
 	
 	# load component schemas
 	DB_TYPE=sqlserver
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -logLevel ALL -dbType mysql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql,database/${DB_TYPE}-schema-7-2.sql
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader --logLevel ALL --dbType mysql --dbName ${_db_name} --dbHostname localhost --dbUser ${_db_user} --dbPass ${_db_pass} --rootUser ${_root_user} --rootPass ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql,database/${DB_TYPE}-schema-7-2.sql
 
 	cd ${tts_dir}
 
@@ -130,11 +130,11 @@ function db_reload_derby() {
 
 	cd ${_src_dir}
 
-	java -cp "jars/*" tigase.util.DBSchemaLoader -logLevel ALL -dbType derby -dbName ${tts_dir}/${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass}
+	java -cp "jars/*" tigase.util.DBSchemaLoader --logLevel ALL --dbType derby --dbName ${tts_dir}/${_db_name} --dbHostname localhost --dbUser ${_db_user} --dbPass ${_db_pass} --rootUser ${_root_user} --rootPass ${_root_pass}
 
 	# load component schemas
 	DB_TYPE=derby
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -logLevel ALL -dbType mysql -dbName ${_db_name} -dbHostname localhost -dbUser ${_db_user} -dbPass ${_db_pass} -rootUser ${_root_user} -rootPass ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql,database/${DB_TYPE}-schema-7-2.sql
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader --logLevel ALL --dbType mysql --dbName ${_db_name} --dbHostname localhost --dbUser ${_db_user} --dbPass ${_db_pass} --rootUser ${_root_user} --rootPass ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql,database/${DB_TYPE}-schema-7-2.sql
 
 	cd ${tts_dir}
 
