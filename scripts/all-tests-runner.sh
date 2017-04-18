@@ -28,9 +28,9 @@ SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
 	database_host="localhost"
 	server_ip="127.0.0.1"
 	server_timeout=30
-	db_user="tigase_user"
-	db_pass="tigase_pwd"
-	db_name="tigase_test"
+	export db_user="tigase_user"
+	export db_pass="tigase_pwd"
+	export db_name="tigase_test"
 	root_user="root"
 	root_pass="root"	
 
