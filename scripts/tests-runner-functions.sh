@@ -159,7 +159,7 @@ function tig_start_server() {
 	rm -f ${_src_dir}/logs/tigase.pid
 	#killall java
 	sleep 2
-	bash -ex ${_src_dir}/scripts/tigase.sh start ${_config_file}
+	${_src_dir}/scripts/tigase.sh start ${_config_file}
 
 }
 
