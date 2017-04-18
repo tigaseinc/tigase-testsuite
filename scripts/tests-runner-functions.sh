@@ -113,7 +113,7 @@ function db_reload_sqlserver() {
 	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H sqlserverhost -U ${_db_user} -P ${_db_pass} -R ${_root_user}  -A ${_root_pass}
 	
 	# load component schemas
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H sqlserverhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql
 
 	cd ${tts_dir}
 
