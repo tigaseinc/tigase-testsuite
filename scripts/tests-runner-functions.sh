@@ -1,7 +1,7 @@
 #!/bin/bash
 ##
 ##  Tigase XMPP/Jabber Test Suite
-##  Copyright (C) 2004-2009 "Artur Hefczyc" <artur.hefczyc@tigase.org>
+##  Copyright (C) 2004-2017  "Tigase, Inc." <office@tigase.com>
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -16,10 +16,6 @@
 ##  along with this program. Look for COPYING file in the top folder.
 ##  If not, see http://www.gnu.org/licenses/.
 ##
-##  $Rev: $
-##  Last modified by $Author: $
-##  $Date: $
-##
 
 # This file contains functions definition used
 # in all other scripts.
@@ -29,27 +25,31 @@ _properties="-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dcom.sun.management
 #_options=" -agentlib:yjpagent -server -Xmx400M"
 _options=" -server -Xmx600M"
 
-function db_reload_mysql() {
+function db_reload_sql() {
 
-	[[ -z ${1} ]] && local _src_dir="${server_dir}" || local _src_dir=${1}
-	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
-	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
-	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
-	[[ ! -z ${root_user} ]] && local _root_user="${root_user}" || local _root_user=${3}
-	[[ ! -z ${root_pass} ]] && local _root_pass="${root_pass}" || local _root_pass=${4}
+	[[ -z ${1} ]] && local _db_type="${db_type}" || local _db_type=${1}
+	[[ -z ${2} ]] && local _src_dir="${server_dir}" || local _src_dir=${2}
+	[[ -z ${3} ]] && local _db_name="${db_name}" || local _db_name=${3}
+	[[ -z ${4} ]] && local _db_user="${db_user}" || local _db_user=${4}
+	[[ -z ${5} ]] && local _db_pass="${db_pass}" || local _db_pass=${5}
+	[[ -z ${6} ]] && local _db_root_user="${db_root_user}" || local _db_root_user=${6}
+	[[ -z ${7} ]] && local _db_root_pass="${db_root_pass}" || local _db_root_pass=${7}
 
 	tts_dir=`pwd`
 	cd ${_src_dir}
 
-	DB_TYPE=mysql
+    echo java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -Q "drop database ${_db_name}"
 
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass} -Q "drop database ${_db_name}"
 
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass}
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -Q "drop database ${_db_name}"
+
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass}
 
 	# load component schemas
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql
-	
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -F database/${_db_type}-message-archiving-schema-1.3.0.sql,database/${_db_type}-pubsub-schema-3.3.0.sql,database/${_db_type}-muc-schema-2.5.0.sql,database/${_db_type}-socks5-schema.sql
+
+	export JDBC_URI="$(java -cp "jars/*" tigase.db.util.DBSchemaLoader --getURI -L OFF -T ${_db_type} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass})"
+
 	cd ${tts_dir}
 
 }
@@ -62,69 +62,12 @@ function db_reload_mongodb() {
 
 }
 
-function db_reload_pgsql() {
-
-	[[ -z ${1} ]] && local _src_dir="${server_dir}" || local _src_dir=${1}
-	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
-	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
-	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
-	[[ ! -z ${root_user} ]] && local _root_user="${root_user}" || local _root_user=${3}
-	[[ ! -z ${root_pass} ]] && local _root_pass="${root_pass}" || local _root_pass=${4}
-
-	tts_dir=`pwd`
-	cd ${_src_dir}
-
-	DB_TYPE=postgresql
-
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass} -Q "drop database ${_db_name}"
-
-
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass}
-
-	# load component schemas
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql
-
-	# apply permissions to pubsub schema
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass} --file database/postgresql-installer-post.sql
-
-	cd ${tts_dir}
-
-}
-
-function db_reload_sqlserver() {
-
-	[[ -z ${1} ]] && local _src_dir="${server_dir}" || local _src_dir=${1}
-	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
-	[[ -z ${3} ]] && local _db_user="${db_user}" || local _db_user=${3}
-	[[ -z ${4} ]] && local _db_pass="${db_pass}" || local _db_pass=${4}
-	[[ ! -z ${root_user} ]] && local _root_user="${root_user}" || local _root_user=${3}
-	[[ ! -z ${root_pass} ]] && local _root_pass="${root_pass}" || local _root_pass=${4}
-
-
-	tts_dir=`pwd`
-	cd ${_src_dir}
-	# drop old database
-	
-	DB_TYPE=sqlserver
-
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H sqlserverhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass} -Q "drop database ${_db_name}"
-
-	# create new database
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H sqlserverhost -U ${_db_user} -P ${_db_pass} -R ${_root_user}  -A ${_root_pass}
-	
-	# load component schemas
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H sqlserverhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql
-
-	cd ${tts_dir}
-
-}
-
 function db_reload_derby() {
 
 	[[ -z ${1} ]] && local _src_dir="${server_dir}" || local _src_dir=${1}
 	[[ -z ${2} ]] && local _db_name="${db_name}" || local _db_name=${2}
 
-	if [ -z ${_db_name} ] ; then 
+	if [ -z ${_db_name} ] ; then
 		echo "No DB name set - Stopping - This would cause the attempt to delete /"
 		exit 1
 	fi
@@ -135,19 +78,17 @@ function db_reload_derby() {
 	cd ${_src_dir}
 
 	DB_TYPE=derby
+	DATABASE_PATH=${tts_dir}/${_db_name}
 
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${tts_dir}/${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass}
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${DATABASE_PATH}
 
 	# load component schemas
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_root_user} -A ${_root_pass} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${DB_TYPE} -D ${DATABASE_PATH} -F database/${DB_TYPE}-message-archiving-schema-1.3.0.sql,database/${DB_TYPE}-pubsub-schema-3.3.0.sql,database/${DB_TYPE}-muc-schema-2.5.0.sql,database/${DB_TYPE}-socks5-schema.sql
+
+	export JDBC_URI="$(java -cp "jars/*" tigase.db.util.DBSchemaLoader --getURI -L OFF -T ${DB_TYPE} -D ${DATABASE_PATH})"
 
 	cd ${tts_dir}
 
-}
-
-function fs_prepare_files() {
-	rm -f etc/*.xml
-	#cp -f ${server_dir}/database/* database/
 }
 
 function tig_start_server() {
@@ -244,22 +185,20 @@ function run_test() {
 	echo "Server IP:        ${_server_ip}"
 	echo "Extra parameters: ${_extra_par}"
 
-
-	fs_prepare_files
-
 	if [ -z "${SKIP_DB_RELOAD}" ] ; then
 	  echo "Re-creating database: ${_database}"
 		case ${_database} in
 			mysql)
-				db_reload_mysql
+				db_reload_sql mysql
 				;;
 			pgsql)
-				db_reload_pgsql
+				db_reload_sql postgresql
 				;;
 			mssql)
-				db_reload_sqlserver
+				db_reload_sql sqlserver
 				;;
 			derby)
+#				db_reload_sql derby
 				db_reload_derby
 				;;
 			mongodb)
@@ -282,91 +221,34 @@ function run_test() {
 	else
 		echo "Skipped Tigase server starting."
 	fi
+
 	if [ -z "${SKIP_DB_RELOAD}" ] ; then
 		ts_start scripts/add-admin.xmpt ${_server_ip}
 		sleep 1
 	else
 		echo "Skipped adming account reloading."
 	fi
+
 	mkdir -p "${_output_dir}"
+
 	echo -e "\nRunning: ${ver}-${_database} test, IP ${_server_ip}..."
 	start_test=`date +%s`
 	ts_start ${_script_file} ${_server_ip} ${_output_file} ${_extra_params}
 	end_test=`date +%s`
 	total_time=$((end_test-start_test))
+
 	if [[ "$(uname -s)" == "Darwin" ]] ; then
 		total_str=`date -u -r $total_time +%H:%M:%S`
 	else
-	        total_str=`date -u -d @$total_time +%H:%M:%S`
+        total_str=`date -u -d @$total_time +%H:%M:%S`
 	fi
+
 	echo "<td><a href=\"/${_output_file}\">${total_str}</a></td>" >> "${_test_type}-rep.html"
 	echo "Test finished after: ${total_str}"
+
 	sleep 1
+
 	if [ -z "${SKIP_SERVER_START}" ] ; then
-	        tig_stop_server ${_server_dir} "etc/tigase-${_database}.conf"
-        fi
-
-}
-
-function run_functional_test() {
-
-	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
-	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
-	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
-
-	run_test "func" ${_database} ${_server_dir} ${_server_ip}
-
-}
-
-function run_low_memory_test() {
-
-	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
-	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
-	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
-
-	run_test "lmem" ${_database} ${_server_dir} ${_server_ip}
-
-}
-
-function run_performance_test() {
-
-	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
-	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
-	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
-
-	run_test "perf" ${_database} ${_server_dir} ${_server_ip}
-
-}
-
-function run_stability_test() {
-
-	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
-	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
-	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
-
-	run_test "stab" ${_database} ${_server_dir} ${_server_ip}
-
-}
-
-function run_single_test() {
-
-	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
-	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
-	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
-	[[ -z ${4} ]] && local _stanza_file="" || local _stanza_file=${4}
-
-	run_test "sing" ${_database} ${_server_dir} ${_server_ip} ${_stanza_file}
-
-}
-
-function run_other_test() {
-
-	[[ -z ${1} ]] && local _database=${database} || local _database=${1}
-	[[ -z ${2} ]] && local _server_dir=${server_dir} || local _server_dir=${2}
-	[[ -z ${3} ]] && local _server_ip=${server_ip} || local _server_ip=${3}
-	[[ -z ${4} ]] && local _script_file="scripts/load-xmpp-test.xmpt" \
-		|| local _script_file=${4}
-
-	run_test "other" ${_database} ${_server_dir} ${_server_ip} ${_script_file}
-
+        tig_stop_server ${_server_dir} "etc/tigase-${_database}.conf"
+    fi
 }

@@ -24,15 +24,21 @@ SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
   || {
 	echo "Can't find settings file: ${SETTINGS_FILE} using defaults"
 	server_dir="../tigase-server"
-	database="derby"
-	database_host="localhost"
 	server_ip="127.0.0.1"
 	server_timeout=30
-	export db_user="tigase_user"
-	export db_pass="tigase_pwd"
-	export db_name="tigase_test"
-	root_user="root"
-	root_pass="root"	
+
+    DATABASES=("derby" "mysql" "pgsql" "mssql" mongodb)
+    IPS=("127.0.0.1" "127.0.0.1" "127.0.0.1" "127.0.0.1" "127.0.0.1")
+
+	database="derby"
+	database_host="localhost"
+
+	db_user="tigase_test_user"
+	db_pass="tigase_test_pass"
+	db_name="tigase_test_db"
+
+    db_root_user="root"
+    db_root_pass="root"
 
 	MS_MEM=100
 	MX_MEM=1000
@@ -50,8 +56,7 @@ FUNCTIONS_FILE=`dirname ${0}`/tests-runner-functions.sh
 function usage() {
 	echo "Run selected or all tests for Tigase server"
 	echo "----"
-	echo "Author: Artur Hefczyc <artur_hefczyc@vnu.co.uk>"
-	echo "Version: ${VERSION}"
+	echo "Author: Artur Hefczyc"
 	echo "----"
 	echo "  --help|-h	This help message"
 	echo "  --func [mysql|pgsql|derby|mssql|mongodb]"
@@ -156,15 +161,14 @@ case "${1}" in
 	--func-all)
 		cp -f func-rep.html_tmp func-rep.html
 		echo "<tr><th>${ver}</th>" >> func-rep.html
-		run_functional_test derby ${server_dir} ${IPS[0]}
-		sleep $(((${server_timeout} * 2)))
-		run_functional_test mysql ${server_dir} ${IPS[1]}
-		sleep $(((${server_timeout} * 2)))
-		run_functional_test pgsql ${server_dir} ${IPS[2]}
-		sleep $(((${server_timeout} * 2)))
-		run_functional_test mssql ${server_dir} ${IPS[3]}
-		sleep $(((${server_timeout} * 2)))
-		run_functional_test mongodb ${server_dir} ${IPS[4]}
+
+        idx=0
+		for database in ${TESTS[*]} ; do
+		    run_test "func" ${database} ${server_dir} ${IPS[idx]}
+		    idx=$(expr $idx + 1)
+            sleep $(((${server_timeout} * 2)))
+        done
+
 		echo "</tr>" >> func-rep.html
 		;;
 	--lmem-all)
@@ -172,49 +176,40 @@ case "${1}" in
 		export MAX_MEM=$SMALL_MX_MEM
 		cp -f lmem-rep.html_tmp lmem-rep.html
 		echo "<tr><th>${ver}</th>" >> func-rep.html
-		run_low_memory_test derby ${server_dir} ${IPS[0]}
-		sleep $(((${server_timeout} * 2)))
-		run_low_memory_test mysql ${server_dir} ${IPS[1]}
-		sleep $(((${server_timeout} * 2)))
-		run_low_memory_test pgsql ${server_dir} ${IPS[2]}
-		sleep $(((${server_timeout} * 2)))
-		run_low_memory_test mssql ${server_dir} ${IPS[3]}
-		sleep $(((${server_timeout} * 2)))
-		run_low_memory_test mongodb ${server_dir} ${IPS[4]}
+
+        idx=0
+		for database in ${TESTS[*]} ; do
+		    run_test "lmem" ${database} ${server_dir} ${IPS[idx]}
+		    idx=$(expr $idx + 1)
+            sleep $(((${server_timeout} * 2)))
+        done
 		echo "</tr>" >> lmem-rep.html
 		;;
 	--perf)
-		run_performance_test ${database} ${server_dir} ${server_ip}
+		run_test "perf" ${database} ${server_dir} ${server_ip}
 		;;
 	--stab)
-		run_stability_test ${database} ${server_dir} ${server_ip}
+		run_test "stab" ${database} ${server_dir} ${server_ip}
 		;;
 	--perf-all)
 		cp -f perf-rep.html_tmp perf-rep.html
 		echo "<tr><th>${ver}</th>" >> perf-rep.html
-		run_performance_test derby ${server_dir} ${IPS[0]}
-		sleep $(((${server_timeout} * 2)))
-		run_performance_test mysql ${server_dir} ${IPS[1]}
-		sleep $(((${server_timeout} * 2)))
-		run_performance_test pgsql ${server_dir} ${IPS[2]}
-		sleep $(((${server_timeout} * 2)))
-		run_performance_test mssql ${server_dir} ${IPS[3]}
-		sleep $(((${server_timeout} * 2)))
-		run_performance_test mongodb ${server_dir} ${IPS[4]}
+        idx=0
+		for database in ${TESTS[*]} ; do
+		    run_test "perf" ${database} ${server_dir} ${IPS[idx]}
+		    idx=$(expr $idx + 1)
+            sleep $(((${server_timeout} * 2)))
+        done
 		echo "</tr>" >> perf-rep.html
 		;;
 	--stab-all)
 		cp -f stab-rep.html_tmp stab-rep.html
 		echo "<tr><th>${ver}</th>" >> stab-rep.html
-		run_stability_test derby ${server_dir} ${IPS[0]}
-		sleep $(((${server_timeout} * 2)))
-		run_stability_test mysql ${server_dir} ${IPS[1]}
-		sleep $(((${server_timeout} * 2)))
-		run_stability_test pgsql ${server_dir} ${IPS[2]}
-		sleep $(((${server_timeout} * 2)))
-		run_stability_test mssql ${server_dir} ${IPS[3]}
-		sleep $(((${server_timeout} * 2)))
-		run_stability_test mongodb ${server_dir} ${IPS[4]}
+		for database in ${TESTS[*]} ; do
+		    run_test "stab" ${database} ${server_dir} ${IPS[idx]}
+		    idx=$(expr $idx + 1)
+            sleep $(((${server_timeout} * 2)))
+        done
 		echo "</tr>" >> stab-rep.html
 		;;
 	--all-tests)
@@ -224,10 +219,10 @@ case "${1}" in
 		#${0} --stab-all ${server_dir}
 		;;
 	--single)
-		run_single_test ${database} ${server_dir} ${server_ip} ${2}
+		run_test "sing" ${database} ${server_dir} ${server_ip} ${2}
 		;;
 	--other)
-		run_other_test ${database} ${server_dir} ${server_ip} ${2}
+		run_test "other" ${database} ${server_dir} ${server_ip} ${2}
 		;;
 	*)
 		[[ -z "${1}" ]] || echo "Invalid command '$1'"
