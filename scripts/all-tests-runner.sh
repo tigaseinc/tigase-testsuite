@@ -151,12 +151,12 @@ case "${1}" in
 		usage
 		;;
 	--func)
-		run_functional_test ${database} ${server_dir} ${server_ip}
+		run_test "func" ${database} ${server_dir} ${server_ip}
 		;;
 	--lmem)
 		export MIN_MEM=$SMALL_MS_MEM
 		export MAX_MEM=$SMALL_MX_MEM
-		run_low_memory_test ${database} ${server_dir} ${server_ip}
+		run_test "lmem" ${database} ${server_dir} ${server_ip}
 		;;
 	--func-all)
 		cp -f func-rep.html_tmp func-rep.html
