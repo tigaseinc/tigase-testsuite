@@ -27,28 +27,33 @@ _options=" -server -Xmx600M"
 
 function db_reload_sql() {
 
+    echo "reload db! ${database_host}, ${_database_host}, ${8}"
+
 	[[ -z ${1} ]] && local _db_type="${db_type}" || local _db_type=${1}
-	[[ -z ${2} ]] && local _src_dir="${server_dir}" || local _src_dir=${2}
-	[[ -z ${3} ]] && local _db_name="${db_name}" || local _db_name=${3}
-	[[ -z ${4} ]] && local _db_user="${db_user}" || local _db_user=${4}
-	[[ -z ${5} ]] && local _db_pass="${db_pass}" || local _db_pass=${5}
-	[[ -z ${6} ]] && local _db_root_user="${db_root_user}" || local _db_root_user=${6}
-	[[ -z ${7} ]] && local _db_root_pass="${db_root_pass}" || local _db_root_pass=${7}
+	[[ -z ${2} ]] && local _database_host="${database_host}" || local _database_host=${2}
+	[[ -z ${3} ]] && local _src_dir="${server_dir}" || local _src_dir=${3}
+	[[ -z ${4} ]] && local _db_name="${db_name}" || local _db_name=${4}
+	[[ -z ${5} ]] && local _db_user="${db_user}" || local _db_user=${5}
+	[[ -z ${6} ]] && local _db_pass="${db_pass}" || local _db_pass=${6}
+	[[ -z ${7} ]] && local _db_root_user="${db_root_user}" || local _db_root_user=${7}
+	[[ -z ${8} ]] && local _db_root_pass="${db_root_pass}" || local _db_root_pass=${8}
+
+    echo "reload db! ${database_host}, ${_database_host}, ${8}"
 
 	tts_dir=`pwd`
 	cd ${_src_dir}
 
-    echo java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -Q "drop database ${_db_name}"
+    echo java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -Q "drop database ${_db_name}"
 
 
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -Q "drop database ${_db_name}"
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -Q "drop database ${_db_name}"
 
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass}
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass}
 
 	# load component schemas
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -F database/${_db_type}-message-archiving-schema-1.3.0.sql,database/${_db_type}-pubsub-schema-3.3.0.sql,database/${_db_type}-muc-schema-2.5.0.sql,database/${_db_type}-socks5-schema.sql
+	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -F database/${_db_type}-message-archiving-schema-1.3.0.sql,database/${_db_type}-pubsub-schema-3.3.0.sql,database/${_db_type}-muc-schema-2.5.0.sql,database/${_db_type}-socks5-schema.sql
 
-	export JDBC_URI="$(java -cp "jars/*" tigase.db.util.DBSchemaLoader --getURI -L OFF -T ${_db_type} -D ${_db_name} -H localhost -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass})"
+	export JDBC_URI="$(java -cp "jars/*" tigase.db.util.DBSchemaLoader --getURI -L OFF -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass})"
 
 	cd ${tts_dir}
 
@@ -94,13 +99,27 @@ function db_reload_derby() {
 function tig_start_server() {
 
 	[[ -z ${1} ]] && local _src_dir="../server" || local _src_dir=${1}
-	[[ -z ${2} ]] && local _config_file="etc/tigase-mysql.conf" \
-		|| local _config_file=${2}
+	[[ -z ${2} ]] && local _config_file="etc/tigase-mysql.conf" || local _config_file=${2}
 
 	rm -f ${_src_dir}/logs/tigase.pid
 	#killall java
 	sleep 2
+	${_src_dir}/scripts/tigase.sh clear ${_config_file}
 	${_src_dir}/scripts/tigase.sh start ${_config_file}
+
+	_PID=$(cat ${_src_dir}/logs/tigase.pid)
+	sleep $(((${server_timeout} * 2)))
+
+    echo "$(ps -p ${_PID} -o pid=)"
+
+	if ! ps -p"${_PID}" -o "pid=" >/dev/null 2>&1; then
+	    echo "Process is NOT running... output of ${_src_dir}/logs/tigase-console.log";
+
+	    cat ${_src_dir}/logs/tigase-console.log
+
+        ${_src_dir}/scripts/tigase.sh stop ${_config_file}
+	    exit 1
+    fi
 
 }
 
@@ -139,7 +158,10 @@ function run_test() {
 	[[ -z ${2} ]] && local _database=${database} || local _database=${2}
 	[[ -z ${3} ]] && local _server_dir=${server_dir} || local _server_dir=${3}
 	[[ -z ${4} ]] && local _server_ip=${server_ip} || local _server_ip=${4}
-	[[ -z ${5} ]] && local _extra_par="" || local _extra_par=${5}
+	[[ -z ${5} ]] && local _database_host=${database_host} || local _database_host=${5}
+	[[ -z ${6} ]] && local _extra_par="" || local _extra_par=${6}
+
+    echo "run test:  ${database_host}, ${_database_host}, ${5}"
 
 	local _output_dir="${output_dir}/${_test_type}/${_database}"
 
@@ -181,6 +203,7 @@ function run_test() {
 
 	echo "Test type:        ${_test_type}"
 	echo "Database:         ${_database}"
+	echo "Database IP:      ${_database_host}"
 	echo "Server directory: ${_server_dir}"
 	echo "Server IP:        ${_server_ip}"
 	echo "Extra parameters: ${_extra_par}"
@@ -189,13 +212,13 @@ function run_test() {
 	  echo "Re-creating database: ${_database}"
 		case ${_database} in
 			mysql)
-				db_reload_sql mysql
+				db_reload_sql mysql ${_database_host}
 				;;
 			pgsql)
-				db_reload_sql postgresql
+				db_reload_sql postgresql ${_database_host}
 				;;
 			mssql)
-				db_reload_sql sqlserver
+				db_reload_sql sqlserver ${_database_host}
 				;;
 			derby)
 #				db_reload_sql derby
@@ -217,7 +240,6 @@ function run_test() {
 	sleep 1
 	if [ -z "${SKIP_SERVER_START}" ] ; then
 		tig_start_server ${_server_dir} "etc/tigase-${_database}.conf"
-		sleep $(((${server_timeout} * 2)))
 	else
 		echo "Skipped Tigase server starting."
 	fi
@@ -251,4 +273,9 @@ function run_test() {
 	if [ -z "${SKIP_SERVER_START}" ] ; then
         tig_stop_server ${_server_dir} "etc/tigase-${_database}.conf"
     fi
+
+    echo "\n\n\n\nAfter test server logs from: ${_server_dir}/logs/tigase-console.log";
+    cat ${_server_dir}/logs/tigase-console.log
+
+
 }

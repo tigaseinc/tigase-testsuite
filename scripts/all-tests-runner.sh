@@ -28,6 +28,7 @@ SETTINGS_FILE=`dirname ${0}`/tests-runner-settings.sh
 	server_timeout=30
 
     DATABASES=("derby" "mysql" "pgsql" "mssql" mongodb)
+    DATABASES_IPS=("127.0.0.1" "127.0.0.1" "127.0.0.1" "127.0.0.1" "127.0.0.1")
     IPS=("127.0.0.1" "127.0.0.1" "127.0.0.1" "127.0.0.1" "127.0.0.1")
 
 	database="derby"
@@ -94,7 +95,7 @@ function usage() {
 found=1
 while [ "${found}" == "1" ] ; do
 	case "${1}" in
-    --debug|-d)
+        --debug|-d)
 			set -x
 			shift
 			;;
@@ -151,12 +152,12 @@ case "${1}" in
 		usage
 		;;
 	--func)
-		run_test "func" ${database} ${server_dir} ${server_ip}
+		run_test "func" ${database} ${server_dir} ${server_ip} ${database_host}
 		;;
 	--lmem)
 		export MIN_MEM=$SMALL_MS_MEM
 		export MAX_MEM=$SMALL_MX_MEM
-		run_test "lmem" ${database} ${server_dir} ${server_ip}
+		run_test "lmem" ${database} ${server_dir} ${server_ip} ${database_host}
 		;;
 	--func-all)
 		cp -f func-rep.html_tmp func-rep.html
@@ -164,7 +165,7 @@ case "${1}" in
 
         idx=0
 		for database in ${TESTS[*]} ; do
-		    run_test "func" ${database} ${server_dir} ${IPS[idx]}
+		    run_test "func" ${database} ${server_dir} ${IPS[idx]} ${DATABASES_IPS[idx]}
 		    idx=$(expr $idx + 1)
             sleep $(((${server_timeout} * 2)))
         done
@@ -179,24 +180,24 @@ case "${1}" in
 
         idx=0
 		for database in ${TESTS[*]} ; do
-		    run_test "lmem" ${database} ${server_dir} ${IPS[idx]}
+		    run_test "lmem" ${database} ${server_dir} ${IPS[idx]} ${DATABASES_IPS[idx]}
 		    idx=$(expr $idx + 1)
             sleep $(((${server_timeout} * 2)))
         done
 		echo "</tr>" >> lmem-rep.html
 		;;
 	--perf)
-		run_test "perf" ${database} ${server_dir} ${server_ip}
+		run_test "perf" ${database} ${server_dir} ${server_ip} ${database_host}
 		;;
 	--stab)
-		run_test "stab" ${database} ${server_dir} ${server_ip}
+		run_test "stab" ${database} ${server_dir} ${server_ip} ${database_host}
 		;;
 	--perf-all)
 		cp -f perf-rep.html_tmp perf-rep.html
 		echo "<tr><th>${ver}</th>" >> perf-rep.html
         idx=0
 		for database in ${TESTS[*]} ; do
-		    run_test "perf" ${database} ${server_dir} ${IPS[idx]}
+		    run_test "perf" ${database} ${server_dir} ${IPS[idx]} ${DATABASES_IPS[idx]}
 		    idx=$(expr $idx + 1)
             sleep $(((${server_timeout} * 2)))
         done
@@ -206,7 +207,7 @@ case "${1}" in
 		cp -f stab-rep.html_tmp stab-rep.html
 		echo "<tr><th>${ver}</th>" >> stab-rep.html
 		for database in ${TESTS[*]} ; do
-		    run_test "stab" ${database} ${server_dir} ${IPS[idx]}
+		    run_test "stab" ${database} ${server_dir} ${IPS[idx]} ${DATABASES_IPS[idx]}
 		    idx=$(expr $idx + 1)
             sleep $(((${server_timeout} * 2)))
         done
@@ -219,10 +220,10 @@ case "${1}" in
 		#${0} --stab-all ${server_dir}
 		;;
 	--single)
-		run_test "sing" ${database} ${server_dir} ${server_ip} ${2}
+		run_test "sing" ${database} ${server_dir} ${server_ip} ${database_host} ${2}
 		;;
 	--other)
-		run_test "other" ${database} ${server_dir} ${server_ip} ${2}
+		run_test "other" ${database} ${server_dir} ${server_ip} ${database_host} ${2}
 		;;
 	*)
 		[[ -z "${1}" ]] || echo "Invalid command '$1'"
