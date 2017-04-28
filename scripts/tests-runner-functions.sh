@@ -27,8 +27,6 @@ _options=" -server -Xmx600M"
 
 function db_reload_sql() {
 
-    echo "reload db! ${database_host}, ${_database_host}, ${8}"
-
 	[[ -z ${1} ]] && local _db_type="${db_type}" || local _db_type=${1}
 	[[ -z ${2} ]] && local _database_host="${database_host}" || local _database_host=${2}
 	[[ -z ${3} ]] && local _src_dir="${server_dir}" || local _src_dir=${3}
@@ -37,8 +35,6 @@ function db_reload_sql() {
 	[[ -z ${6} ]] && local _db_pass="${db_pass}" || local _db_pass=${6}
 	[[ -z ${7} ]] && local _db_root_user="${db_root_user}" || local _db_root_user=${7}
 	[[ -z ${8} ]] && local _db_root_pass="${db_root_pass}" || local _db_root_pass=${8}
-
-    echo "reload db! ${database_host}, ${_database_host}, ${8}"
 
 	tts_dir=`pwd`
 	cd ${_src_dir}
@@ -106,21 +102,6 @@ function tig_start_server() {
 	sleep 2
 	${_src_dir}/scripts/tigase.sh clear ${_config_file}
 	${_src_dir}/scripts/tigase.sh start ${_config_file}
-
-	_PID=$(cat ${_src_dir}/logs/tigase.pid)
-	sleep $(((${server_timeout} * 2)))
-
-    echo "$(ps -p ${_PID} -o pid=)"
-
-	if ! ps -p"${_PID}" -o "pid=" >/dev/null 2>&1; then
-	    echo "Process is NOT running... output of ${_src_dir}/logs/tigase-console.log";
-
-	    cat ${_src_dir}/logs/tigase-console.log
-
-        ${_src_dir}/scripts/tigase.sh stop ${_config_file}
-	    exit 1
-    fi
-
 }
 
 function tig_stop_server() {
@@ -160,8 +141,6 @@ function run_test() {
 	[[ -z ${4} ]] && local _server_ip=${server_ip} || local _server_ip=${4}
 	[[ -z ${5} ]] && local _database_host=${database_host} || local _database_host=${5}
 	[[ -z ${6} ]] && local _extra_par="" || local _extra_par=${6}
-
-    echo "run test:  ${database_host}, ${_database_host}, ${5}"
 
 	local _output_dir="${output_dir}/${_test_type}/${_database}"
 
@@ -240,6 +219,18 @@ function run_test() {
 	sleep 1
 	if [ -z "${SKIP_SERVER_START}" ] ; then
 		tig_start_server ${_server_dir} "etc/tigase-${_database}.conf"
+
+        _PID=$(cat ${_server_dir}/logs/tigase.pid)
+        sleep $(((${server_timeout} * 2)))
+
+        if ! ps -p"${_PID}" -o "pid=" >/dev/null 2>&1; then
+            echo "Process is NOT running... output of ${_server_dir}/logs/tigase-console.log";
+
+            cat ${_server_dir}/logs/tigase-console.log
+
+            ${_server_dir}/scripts/tigase.sh stop ${_config_file}
+            return
+        fi
 	else
 		echo "Skipped Tigase server starting."
 	fi
