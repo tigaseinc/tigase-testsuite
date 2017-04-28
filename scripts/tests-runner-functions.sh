@@ -187,6 +187,9 @@ function run_test() {
 	echo "Server IP:        ${_server_ip}"
 	echo "Extra parameters: ${_extra_par}"
 
+    # to clear variables from other tests
+    unset JDBC_URI
+
 	if [ -z "${SKIP_DB_RELOAD}" ] ; then
 	  echo "Re-creating database: ${_database}"
 		case ${_database} in
@@ -265,7 +268,7 @@ function run_test() {
         tig_stop_server ${_server_dir} "etc/tigase-${_database}.conf"
     fi
 
-    echo "\n\n\n\nAfter test server logs from: ${_server_dir}/logs/tigase-console.log";
+    echo -e "\n\n\n\nAfter test server logs from: ${_server_dir}/logs/tigase-console.log";
     cat ${_server_dir}/logs/tigase-console.log
 
 
