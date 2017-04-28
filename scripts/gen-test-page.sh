@@ -74,7 +74,9 @@ FIRST=true
 
       if [ ! -z ${IS_TEST} ] ; then
 
-      DATE=`grep -iE "Test start time" ${INDEX_DIR}/${REPORTS_LOC}/${ard}/${tt}/mysql/${MAIN_FILE[${tt}]} | perl -pe "s|.*?<p>Test start time.*<b>(.*?) (.*?), (.*?) (.*?)</b.*|\3 \1 \2|"`
+      DATABASE_DIRS=($(ls /home/jenkins/nightlies/tests/files/static/tests/7.2.0-SNAPSHOT-b4803/func/))
+
+      DATE=`grep -iE "Test start time" ${INDEX_DIR}/${REPORTS_LOC}/${ard}/${tt}/${DATABASE_DIRS}/${MAIN_FILE[${tt}]} | perl -pe "s|.*?<p>Test start time.*<b>(.*?) (.*?), (.*?) (.*?)</b.*|\3 \1 \2|"`
 
       echoindex "<tr><th>${DATE}</th>"
 
