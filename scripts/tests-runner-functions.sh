@@ -39,20 +39,16 @@ function db_reload_sql() {
 	tts_dir=`pwd`
 	cd ${_src_dir}
 
-    echo java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -Q "drop database ${_db_name}"
+	if [[ "${_db_type}" == "derby" ]] ; then
+		_db_name="${tts_dir}/${_db_name}"
+	fi
 
 
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -Q "drop database ${_db_name}"
+    ./scripts/tigase.sh destroy-schema etc/tigase.conf -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass}
 
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass}
-
-	# load component schemas
-	java -cp "jars/*" tigase.db.util.DBSchemaLoader -L ALL -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass} -F database/${_db_type}-message-archiving-schema-1.3.0.sql,database/${_db_type}-pubsub-schema-3.3.0.sql,database/${_db_type}-muc-schema-2.5.0.sql,database/${_db_type}-socks5-schema.sql
-
-	export JDBC_URI="$(java -cp "jars/*" tigase.db.util.DBSchemaLoader --getURI -L OFF -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass})"
+    ./scripts/tigase.sh install-schema etc/tigase.conf -T ${_db_type} -D ${_db_name} -H ${_database_host} -U ${_db_user} -P ${_db_pass} -R ${_db_root_user} -A ${_db_root_pass}
 
 	cd ${tts_dir}
-
 }
 
 function db_reload_mongodb() {
@@ -193,21 +189,8 @@ function run_test() {
 	if [ -z "${SKIP_DB_RELOAD}" ] ; then
 	  echo "Re-creating database: ${_database}"
 		case ${_database} in
-			mysql)
+			derby|mongodb|mysql|postgresql|sqlserver)
 				db_reload_sql mysql ${_database_host}
-				;;
-			pgsql)
-				db_reload_sql postgresql ${_database_host}
-				;;
-			mssql)
-				db_reload_sql sqlserver ${_database_host}
-				;;
-			derby)
-#				db_reload_sql derby
-				db_reload_derby
-				;;
-			mongodb)
-				db_reload_mongodb
 				;;
 			*)
 				echo "Not supported database: '${database}'"
