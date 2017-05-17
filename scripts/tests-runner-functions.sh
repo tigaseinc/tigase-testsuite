@@ -25,6 +25,42 @@ _properties="-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dcom.sun.management
 #_options=" -agentlib:yjpagent -server -Xmx400M"
 _options=" -server -Xmx600M"
 
+function get_database_uri() {
+	[[ -z ${1} ]] && local _db_type="${db_type}" || local _db_type=${1}
+	[[ -z ${2} ]] && local _database_host="${database_host}" || local _database_host=${2}
+	[[ -z ${3} ]] && local _src_dir="${server_dir}" || local _src_dir=${3}
+	[[ -z ${4} ]] && local _db_name="${db_name}" || local _db_name=${4}
+	[[ -z ${5} ]] && local _db_user="${db_user}" || local _db_user=${5}
+	[[ -z ${6} ]] && local _db_pass="${db_pass}" || local _db_pass=${6}
+	[[ -z ${7} ]] && local _db_root_user="${db_root_user}" || local _db_root_user=${7}
+	[[ -z ${8} ]] && local _db_root_pass="${db_root_pass}" || local _db_root_pass=${8}
+
+    case ${_db_type} in
+        mysql)
+            export JDBC_URI="jdbc:mysql://${_database_host}/${_db_name}?user=${_db_user}&password=${_db_pass}&useSSL=false&useUnicode=true"
+            ;;
+        postgresql)
+            export JDBC_URI="jdbc:postgresql://${_database_host}/${_db_name}?user=${_db_user}"
+            ;;
+        sqlserver)
+            export JDBC_URI="jdbc:jtds:sqlserver://${_database_host}:1433;databaseName=${_db_name};user=${_db_user};password=${_db_pass};schema=dbo;lastUpdateCount=false"
+            ;;
+        derby)
+            export JDBC_URI="jdbc:derby:"`pwd`"/${_db_name};create=true"
+            ;;
+        mongodb)
+            export JDBC_URI="mongodb://${_database_host}/${_db_name}"
+            ;;
+        *)
+            echo "Unknown db: ${_db_type}"
+            ;;
+
+    esac
+
+	echo "JDBC uri: ${JDBC_URI}"
+
+}
+
 function db_reload_sql() {
 
 	[[ -z ${1} ]] && local _db_type="${db_type}" || local _db_type=${1}
@@ -189,8 +225,14 @@ function run_test() {
 	if [ -z "${SKIP_DB_RELOAD}" ] ; then
 	  echo "Re-creating database: ${_database}"
 		case ${_database} in
-			derby|mongodb|mysql|postgresql|sqlserver)
-				db_reload_sql mysql ${_database_host}
+			mysql|derby|mongodb)
+ 				db_reload_sql ${_database} ${_database_host}
+ 				;;
+			pgsql)
+				db_reload_sql postgresql ${_database_host}
+				;;
+			mssql)
+				db_reload_sql sqlserver ${_database_host}
 				;;
 			*)
 				echo "Not supported database: '${database}'"
@@ -201,6 +243,8 @@ function run_test() {
 	else
 		echo "Skipped database reloading."
 	fi
+
+	get_database_uri ${_database} ${_database_host}
 
 	sleep 1
 	if [ -z "${SKIP_SERVER_START}" ] ; then
