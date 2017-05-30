@@ -30,19 +30,17 @@ import tigase.test.ResultsDontMatchException;
 import tigase.test.StatItem;
 import tigase.test.TestAbstract;
 import tigase.test.util.Params;
-
 import tigase.xml.Element;
 import tigase.xml.XMLUtils;
 
-import static tigase.util.JIDUtils.*;
-
-//~--- JDK imports ------------------------------------------------------------
-
+import javax.management.Attribute;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.Attribute;
+import static tigase.util.JIDUtils.getNodeNick;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Describe class TestIQCommandGetConfig here.
@@ -76,9 +74,8 @@ public class TestIQCommandGetConfig
 	 *
 	 */
 	public TestIQCommandGetConfig() {
-		super(new String[] { "jabber:client" }, new String[] { "command-get-config" },
-					new String[] { "stream-open",
-												 "auth", "xmpp-bind" }, new String[] { "tls-init" });
+		super(new String[]{"jabber:client"}, new String[]{"command-get-config"},
+		      new String[]{"stream-open", "auth", "xmpp-bind"}, new String[]{"tls-init"});
 	}
 
 	//~--- get methods ----------------------------------------------------------
@@ -96,29 +93,22 @@ public class TestIQCommandGetConfig
 															 new Attribute("id", "config-get"),
 															 new Attribute("to", jid), };
 		switch (counter) {
-		case 1 :
-			expected_result = new Element("iq",
-																		new Element[] {
-																			new Element("command",
-																				new Element[] {
-																					new Element("x", new String[] { "xmlns",
-							"type" }, new String[] { "jabber:x:data", "result" }) }, new String[] {
-								"xmlns",
-								"status", "node" }, new String[] { xmlns, "completed",
-								"config-list" }) }, new String[] { "type",
-							"id", "from" }, new String[] { "result", "config-get",
-							"basic-conf@" + hostname });
-			resp_name = new String[] { "iq" };
+			case 1:
+				expected_result = new Element("iq", new Element[]{new Element("command", new Element[]{
+						new Element("x", new String[]{"xmlns", "type"}, new String[]{"jabber:x:data", "result"})},
+				                                                              new String[]{"xmlns", "status", "node"},
+				                                                              new String[]{xmlns, "completed",
+				                                                                           "get-config-file"})},
+				                              new String[]{"type", "id", "from"},
+				                              new String[]{"result", "config-get", "message-router@" + hostname});
+				resp_name = new String[]{"iq"};
 
-			return "<iq type=\"set\" to=\"basic-conf@" + hostname + "\"" +
-						 " id=\"config-get\">" + "<command xmlns=\"" + xmlns + "\"" +
-						 " node=\"config-list\">" + "<x xmlns=\"jabber:x:data\" type=\"submit\">" +
-						 "<field type=\"list-single\" var=\"comp-name\">" +
-						 "<value>sess-man</value></field></x></command></iq>";
-
-//  "<iq type=\"set\" to=\"basic-conf@" + hostname + "\" id=\"command_1\" >"
-//  + "<command xmlns=\"http://jabber.org/protocol/commands\""
-//  + "node=\"config/list/sess-man\" /></iq>";
+				return "<iq type=\"set\" to=\"message-router@" + hostname + "\"" + " id=\"config-get\">" +
+						"<command xmlns=\"" + xmlns + "\"" + " node=\"get-config-file\">" +
+						"<x xmlns=\"jabber:x:data\" type=\"submit\">" +
+						"<field type=\"list-single\" var=\"config-file\">" +
+						"<value>init.properties</value>" +
+						"</field></x></command></iq>";
 		default :
 			return null;
 		}    // end of switch (counter)

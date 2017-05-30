@@ -813,235 +813,233 @@ Global settings:
 ## XEP-0133: 4.31. Shut Down Service
 ## http://xmpp.org/extensions/xep-0133.html#shutdown
 
-
-
-################################################################################################################################################
-################ non XEP functionality
-
+#################################################################################################################################################
+################# non XEP functionality
+#
 ## Monitor/LoadErrors
-    # executing script as admin
-    AdminAdHoc Monitor_1_1@common: {
-        -user-name = $(stats-user)
-        -user-pass = $(stats-pass)
-        #-to-jid = "$(server-host)" # specs!
-        -to-jid = "monitor@$(server-host)"
-        -source-file = "tests/data/AdHocMonitorLoadErrors.cot"
-    } >> Execute script monitor/LoadErrors as (server-admin) <<
+#    # executing script as admin
+#    AdminAdHoc Monitor_1_1@common: {
+#        -user-name = $(stats-user)
+#        -user-pass = $(stats-pass)
+#        #-to-jid = "$(server-host)" # specs!
+#        -to-jid = "monitor@$(server-host)"
+#        -source-file = "tests/data/AdHocMonitorLoadErrors.cot"
+#    } >> Execute script monitor/LoadErrors as (server-admin) <<
+#
+#    # # executing script as domain-admin
+#    AdminAdHoc Monitor_1_2@common: {
+#        -user-name = $(domain-admin-user)
+#        #-to-jid = "$(virtual-host)" # specs!
+#        -to-jid = "monitor@$(virtual-host)"
+#        -host = $(virtual-host)
+#        #-expect-type = error
+#        -source-file = "tests/data/AdHocMonitorLoadErrorsError.cot"
+#    } >> Execute script monitor/LoadErrors as (domain-admin) [expecting error] <<
+#
+### BasicConf/ListConfiguration
+#    # executing script as admin
+#    AdminAdHoc BasicConf_1_1@common: {
+#        #-debug
+#        -user-name = $(stats-user)
+#        -user-pass = $(stats-pass)
+#        #-to-jid = "$(server-host)" # specs!
+#        -to-jid = "basic-conf@$(server-host)"
+#        -source-file = "tests/data/AdHocBasicConfListConfiguration.cot"
+#    } >> Execute script basic-conf/ListConfiguration as (server-admin) <<
+#
+#    # executing script as domain-admin
+#    AdminAdHoc BasicConf_1_2@common: {
+#        #-debug
+#        -user-name = $(domain-admin-user)
+#        #-to-jid = "$(virtual-host)" # specs!
+#        -to-jid = "basic-conf@$(virtual-host)"
+#        -host = $(virtual-host)
+#        #-expect-type = error
+#        -source-file = "tests/data/AdHocBasicConfListConfigurationError.cot"
+#    } >> Execute script basic-conf/ListConfiguration as (domain-admin) [expecting error] <<
+#
+#
+### BasicConf/UpdateConfiguration
+#    # executing script as admin
+#    AdminAdHoc BasicConf_2_1@common: {
+#        #-debug
+#        -user-name = $(stats-user)
+#        -user-pass = $(stats-pass)
+#        #-to-jid = "$(server-host)" # specs!
+#        -to-jid = "basic-conf@$(server-host)"
+#        -source-file = "tests/data/AdHocBasicConfUpdateConfiguration.cot"
+#    } >> Execute script basic-conf/UpdateConfiguration as (server-admin) <<
+#
+#    # executing script as domain-admin
+#    AdminAdHoc BasicConf_2_2@common: {
+#        #-debug
+#        -user-name = $(domain-admin-user)
+#        #-to-jid = "$(virtual-host)" # specs!
+#        -to-jid = "basic-conf@$(virtual-host)"
+#        -host = $(virtual-host)
+#        #-expect-type = error
+#        -source-file = "tests/data/AdHocBasicConfUpdateConfigurationError.cot"
+#    } >> Execute script basic-conf/UpdateConfiguration as (domain-admin) [expecting error] <<
+#
+#
+### BasicConf/GetAnyFile
+#    # executing script as admin
+#    AdminAdHoc BasicConf_3_1@common: {
+#        #-debug
+#        -user-name = $(stats-user)
+#        -user-pass = $(stats-pass)
+#        #-to-jid = "$(server-host)" # specs!
+#        -to-jid = "basic-conf@$(server-host)"
+#        -source-file = "tests/data/AdHocBasicConfGetAnyFile.cot"
+#    } >> Execute script basic-conf/GetAnyFile as (server-admin) <<
+#
+#    # executing script as domain-admin
+#    AdminAdHoc BasicConf_3_2@common: {
+#        #-debug
+#        -user-name = $(domain-admin-user)
+#        #-to-jid = "$(virtual-host)" # specs!
+#        -to-jid = "basic-conf@$(virtual-host)"
+#        -host = $(virtual-host)
+#        #-expect-type = error
+#        -source-file = "tests/data/AdHocBasicConfGetAnyFileError.cot"
+#    } >> Execute script basic-conf/GetAnyFile as (domain-admin) [expecting error] <<
+#
+#
+### BasicConf/GetConfigurationFile
+#    # executing script as admin
+#    AdminAdHoc BasicConf_4_1@common: {
+#        #-debug
+#        -user-name = $(stats-user)
+#        -user-pass = $(stats-pass)
+#        #-to-jid = "$(server-host)" # specs!
+#        -to-jid = "basic-conf@$(server-host)"
+#        -source-file = "tests/data/AdHocBasicConfGetConfigurationFile.cot"
+#    } >> Execute script basic-conf/GetConfigurationFile as (server-admin) <<
+#
+#    # executing script as domain-admin
+#    AdminAdHoc BasicConf_4_2@common: {
+#        #-debug
+#        -user-name = $(domain-admin-user)
+#        #-to-jid = "$(virtual-host)" # specs!
+#        -to-jid = "basic-conf@$(virtual-host)"
+#        -host = $(virtual-host)
+#        #-expect-type = error
+#        -source-file = "tests/data/AdHocBasicConfGetConfigurationFileError.cot"
+#    } >> Execute script basic-conf/GetConfigurationFile as (domain-admin) [expecting error] <<
+#
+#
+### BasicConf/Get_init.properties_configuration
+#    # executing script as admin
+#    AdminAdHoc BasicConf_5_1@common: {
+#        #-debug
+#        -user-name = $(stats-user)
+#        -user-pass = $(stats-pass)
+#        #-to-jid = "$(server-host)" # specs!
+#        -to-jid = "basic-conf@$(server-host)"
+#        -source-file = "tests/data/AdHocBasicConfGet_init.properties_configuration.cot"
+#    } >> Execute script basic-conf/Get_init.properties_configuration as (server-admin) <<
+#
+#    # executing script as domain-admin
+#    AdminAdHoc BasicConf_5_2@common: {
+#        #-debug
+#        -user-name = $(domain-admin-user)
+#        #-to-jid = "$(virtual-host)" # specs!
+#        -to-jid = "basic-conf@$(virtual-host)"
+#        -host = $(virtual-host)
+#        #-expect-type = error
+#        -source-file = "tests/data/AdHocBasicConfGet_init.properties_configurationError.cot"
+#    } >> Execute script basic-conf/Get_init.properties_configuration as (domain-admin) [expecting error] <<
+#
+#
+#
+### BasicConf/Manage active server components - List
+#    # executing script as admin
+#    AdminAdHoc BasicConf_6_1@common: {
+#        #-debug
+#        -user-name = $(stats-user)
+#        -user-pass = $(stats-pass)
+#        #-to-jid = "$(server-host)" # specs!
+#        -to-jid = "basic-conf@$(server-host)"
+#        -source-file = "tests/data/AdHocBasicConfManageComponentList.cot"
+#    } >> Execute script basic-conf/Manage active server components: List as (server-admin) <<
+#
+#    # executing script as domain-admin
+#    AdminAdHoc BasicConf_6_2@common: {
+#        #-debug
+#        -user-name = $(domain-admin-user)
+#        #-to-jid = "$(virtual-host)" # specs!
+#        -to-jid = "basic-conf@$(virtual-host)"
+#        -host = $(virtual-host)
+#        #-expect-type = error
+#        -source-file = "tests/data/AdHocBasicConfManageComponentListError.cot"
+#    } >> Execute script basic-conf/Manage active server components: List as (domain-admin) [expecting error] <<
 
-    # # executing script as domain-admin
-    AdminAdHoc Monitor_1_2@common: {
-        -user-name = $(domain-admin-user)
-        #-to-jid = "$(virtual-host)" # specs!
-        -to-jid = "monitor@$(virtual-host)"
-        -host = $(virtual-host)
-        #-expect-type = error
-        -source-file = "tests/data/AdHocMonitorLoadErrorsError.cot"
-    } >> Execute script monitor/LoadErrors as (domain-admin) [expecting error] <<
-
-## BasicConf/ListConfiguration
-    # executing script as admin
-    AdminAdHoc BasicConf_1_1@common: {
-        #-debug
-        -user-name = $(stats-user)
-        -user-pass = $(stats-pass)
-        #-to-jid = "$(server-host)" # specs!
-        -to-jid = "basic-conf@$(server-host)"
-        -source-file = "tests/data/AdHocBasicConfListConfiguration.cot"
-    } >> Execute script basic-conf/ListConfiguration as (server-admin) <<
-
-    # executing script as domain-admin
-    AdminAdHoc BasicConf_1_2@common: {
-        #-debug
-        -user-name = $(domain-admin-user)
-        #-to-jid = "$(virtual-host)" # specs!
-        -to-jid = "basic-conf@$(virtual-host)"
-        -host = $(virtual-host)
-        #-expect-type = error
-        -source-file = "tests/data/AdHocBasicConfListConfigurationError.cot"
-    } >> Execute script basic-conf/ListConfiguration as (domain-admin) [expecting error] <<
-
-
-## BasicConf/UpdateConfiguration
-    # executing script as admin
-    AdminAdHoc BasicConf_2_1@common: {
-        #-debug
-        -user-name = $(stats-user)
-        -user-pass = $(stats-pass)
-        #-to-jid = "$(server-host)" # specs!
-        -to-jid = "basic-conf@$(server-host)"
-        -source-file = "tests/data/AdHocBasicConfUpdateConfiguration.cot"
-    } >> Execute script basic-conf/UpdateConfiguration as (server-admin) <<
-
-    # executing script as domain-admin
-    AdminAdHoc BasicConf_2_2@common: {
-        #-debug
-        -user-name = $(domain-admin-user)
-        #-to-jid = "$(virtual-host)" # specs!
-        -to-jid = "basic-conf@$(virtual-host)"
-        -host = $(virtual-host)
-        #-expect-type = error
-        -source-file = "tests/data/AdHocBasicConfUpdateConfigurationError.cot"
-    } >> Execute script basic-conf/UpdateConfiguration as (domain-admin) [expecting error] <<
-
-
-## BasicConf/GetAnyFile
-    # executing script as admin
-    AdminAdHoc BasicConf_3_1@common: {
-        #-debug
-        -user-name = $(stats-user)
-        -user-pass = $(stats-pass)
-        #-to-jid = "$(server-host)" # specs!
-        -to-jid = "basic-conf@$(server-host)"
-        -source-file = "tests/data/AdHocBasicConfGetAnyFile.cot"
-    } >> Execute script basic-conf/GetAnyFile as (server-admin) <<
-
-    # executing script as domain-admin
-    AdminAdHoc BasicConf_3_2@common: {
-        #-debug
-        -user-name = $(domain-admin-user)
-        #-to-jid = "$(virtual-host)" # specs!
-        -to-jid = "basic-conf@$(virtual-host)"
-        -host = $(virtual-host)
-        #-expect-type = error
-        -source-file = "tests/data/AdHocBasicConfGetAnyFileError.cot"
-    } >> Execute script basic-conf/GetAnyFile as (domain-admin) [expecting error] <<
-
-
-## BasicConf/GetConfigurationFile
-    # executing script as admin
-    AdminAdHoc BasicConf_4_1@common: {
-        #-debug
-        -user-name = $(stats-user)
-        -user-pass = $(stats-pass)
-        #-to-jid = "$(server-host)" # specs!
-        -to-jid = "basic-conf@$(server-host)"
-        -source-file = "tests/data/AdHocBasicConfGetConfigurationFile.cot"
-    } >> Execute script basic-conf/GetConfigurationFile as (server-admin) <<
-
-    # executing script as domain-admin
-    AdminAdHoc BasicConf_4_2@common: {
-        #-debug
-        -user-name = $(domain-admin-user)
-        #-to-jid = "$(virtual-host)" # specs!
-        -to-jid = "basic-conf@$(virtual-host)"
-        -host = $(virtual-host)
-        #-expect-type = error
-        -source-file = "tests/data/AdHocBasicConfGetConfigurationFileError.cot"
-    } >> Execute script basic-conf/GetConfigurationFile as (domain-admin) [expecting error] <<
-
-
-## BasicConf/Get_init.properties_configuration
-    # executing script as admin
-    AdminAdHoc BasicConf_5_1@common: {
-        #-debug
-        -user-name = $(stats-user)
-        -user-pass = $(stats-pass)
-        #-to-jid = "$(server-host)" # specs!
-        -to-jid = "basic-conf@$(server-host)"
-        -source-file = "tests/data/AdHocBasicConfGet_init.properties_configuration.cot"
-    } >> Execute script basic-conf/Get_init.properties_configuration as (server-admin) <<
-
-    # executing script as domain-admin
-    AdminAdHoc BasicConf_5_2@common: {
-        #-debug
-        -user-name = $(domain-admin-user)
-        #-to-jid = "$(virtual-host)" # specs!
-        -to-jid = "basic-conf@$(virtual-host)"
-        -host = $(virtual-host)
-        #-expect-type = error
-        -source-file = "tests/data/AdHocBasicConfGet_init.properties_configurationError.cot"
-    } >> Execute script basic-conf/Get_init.properties_configuration as (domain-admin) [expecting error] <<
-
-
-
-## BasicConf/Manage active server components - List
-    # executing script as admin
-    AdminAdHoc BasicConf_6_1@common: {
-        #-debug
-        -user-name = $(stats-user)
-        -user-pass = $(stats-pass)
-        #-to-jid = "$(server-host)" # specs!
-        -to-jid = "basic-conf@$(server-host)"
-        -source-file = "tests/data/AdHocBasicConfManageComponentList.cot"
-    } >> Execute script basic-conf/Manage active server components: List as (server-admin) <<
-
-    # executing script as domain-admin
-    AdminAdHoc BasicConf_6_2@common: {
-        #-debug
-        -user-name = $(domain-admin-user)
-        #-to-jid = "$(virtual-host)" # specs!
-        -to-jid = "basic-conf@$(virtual-host)"
-        -host = $(virtual-host)
-        #-expect-type = error
-        -source-file = "tests/data/AdHocBasicConfManageComponentListError.cot"
-    } >> Execute script basic-conf/Manage active server components: List as (domain-admin) [expecting error] <<
-
-## BasicConf/Manage active server components - Edit
-    # executing script as admin
-    AdminAdHoc BasicConf_7_1@common: {
-        #-debug
-        -user-name = $(stats-user)
-        -user-pass = $(stats-pass)
-        #-to-jid = "$(server-host)" # specs!
-        -to-jid = "basic-conf@$(server-host)"
-        -source-file = "tests/data/AdHocBasicConfManageComponentEdit.cot"
-    } >> Execute script basic-conf/Manage active server components: Edit as (server-admin) <<
-
-    # executing script as domain-admin
-    AdminAdHoc BasicConf_7_2@common: {
-        #-debug
-        -user-name = $(domain-admin-user)
-        #-to-jid = "$(virtual-host)" # specs!
-        -to-jid = "basic-conf@$(virtual-host)"
-        -host = $(virtual-host)
-        #-expect-type = error
-        -source-file = "tests/data/AdHocBasicConfManageComponentEditError.cot"
-    } >> Execute script basic-conf/Manage active server components: Edit as (domain-admin) [expecting error] <<
-
+### BasicConf/Manage active server components - Edit
+#    # executing script as admin
+#    AdminAdHoc BasicConf_7_1@common: {
+#        #-debug
+#        -user-name = $(stats-user)
+#        -user-pass = $(stats-pass)
+#        #-to-jid = "$(server-host)" # specs!
+#        -to-jid = "basic-conf@$(server-host)"
+#        -source-file = "tests/data/AdHocBasicConfManageComponentEdit.cot"
+#    } >> Execute script basic-conf/Manage active server components: Edit as (server-admin) <<
+#
+#    # executing script as domain-admin
+#    AdminAdHoc BasicConf_7_2@common: {
+#        #-debug
+#        -user-name = $(domain-admin-user)
+#        #-to-jid = "$(virtual-host)" # specs!
+#        -to-jid = "basic-conf@$(virtual-host)"
+#        -host = $(virtual-host)
+#        #-expect-type = error
+#        -source-file = "tests/data/AdHocBasicConfManageComponentEditError.cot"
+#    } >> Execute script basic-conf/Manage active server components: Edit as (domain-admin) [expecting error] <<
+#
 ## BasicConf/Manage active server components - Remove
-    # executing script as admin
-    AdminAdHoc BasicConf_8_1@common: {
-        #-debug
-        -user-name = $(stats-user)
-        -user-pass = $(stats-pass)
-        #-to-jid = "$(server-host)" # specs!
-        -to-jid = "basic-conf@$(server-host)"
-        -source-file = "tests/data/AdHocBasicConfManageComponentRemove.cot"
-    } >> Execute script basic-conf/Manage active server components: Remove as (server-admin) <<
-
-    # executing script as domain-admin
-    AdminAdHoc BasicConf_8_2@common: {
-        #-debug
-        -user-name = $(domain-admin-user)
-        #-to-jid = "$(virtual-host)" # specs!
-        -to-jid = "basic-conf@$(virtual-host)"
-        -host = $(virtual-host)
-        #-expect-type = error
-        -source-file = "tests/data/AdHocBasicConfManageComponentRemoveError.cot"
-    } >> Execute script basic-conf/Manage active server components: Remove as (domain-admin) [expecting error] <<
-
-
-## BasicConf/Manage active server components - Add
-    # executing script as admin
-    AdminAdHoc BasicConf_9_1@common: {
-        #-debug
-        -user-name = $(stats-user)
-        -user-pass = $(stats-pass)
-        #-to-jid = "$(server-host)" # specs!
-        -to-jid = "basic-conf@$(server-host)"
-        -source-file = "tests/data/AdHocBasicConfManageComponentAdd.cot"
-    } >> Execute script basic-conf/Manage active server components: Add as (server-admin) <<
-
-    # executing script as domain-admin
-    AdminAdHoc BasicConf_9_2@common: {
-        #-debug
-        -user-name = $(domain-admin-user)
-        #-to-jid = "$(virtual-host)" # specs!
-        -to-jid = "basic-conf@$(virtual-host)"
-        -host = $(virtual-host)
-        #-expect-type = error
-        -source-file = "tests/data/AdHocBasicConfManageComponentAddError.cot"
-    } >> Execute script basic-conf/Manage active server components: Add as (domain-admin) [expecting error] <<
+#    # executing script as admin
+#    AdminAdHoc BasicConf_8_1@common: {
+#        #-debug
+#        -user-name = $(stats-user)
+#        -user-pass = $(stats-pass)
+#        #-to-jid = "$(server-host)" # specs!
+#        -to-jid = "basic-conf@$(server-host)"
+#        -source-file = "tests/data/AdHocBasicConfManageComponentRemove.cot"
+#    } >> Execute script basic-conf/Manage active server components: Remove as (server-admin) <<
+#
+#    # executing script as domain-admin
+#    AdminAdHoc BasicConf_8_2@common: {
+#        #-debug
+#        -user-name = $(domain-admin-user)
+#        #-to-jid = "$(virtual-host)" # specs!
+#        -to-jid = "basic-conf@$(virtual-host)"
+#        -host = $(virtual-host)
+#        #-expect-type = error
+#        -source-file = "tests/data/AdHocBasicConfManageComponentRemoveError.cot"
+#    } >> Execute script basic-conf/Manage active server components: Remove as (domain-admin) [expecting error] <<
+#
+#
+### BasicConf/Manage active server components - Add
+#    # executing script as admin
+#    AdminAdHoc BasicConf_9_1@common: {
+#        #-debug
+#        -user-name = $(stats-user)
+#        -user-pass = $(stats-pass)
+#        #-to-jid = "$(server-host)" # specs!
+#        -to-jid = "basic-conf@$(server-host)"
+#        -source-file = "tests/data/AdHocBasicConfManageComponentAdd.cot"
+#    } >> Execute script basic-conf/Manage active server components: Add as (server-admin) <<
+#
+#    # executing script as domain-admin
+#    AdminAdHoc BasicConf_9_2@common: {
+#        #-debug
+#        -user-name = $(domain-admin-user)
+#        #-to-jid = "$(virtual-host)" # specs!
+#        -to-jid = "basic-conf@$(virtual-host)"
+#        -host = $(virtual-host)
+#        #-expect-type = error
+#        -source-file = "tests/data/AdHocBasicConfManageComponentAddError.cot"
+#    } >> Execute script basic-conf/Manage active server components: Add as (domain-admin) [expecting error] <<
 
 
 ## s2s/Bad State Connections
