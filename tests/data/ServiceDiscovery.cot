@@ -55,7 +55,7 @@ send: {
 expect: {
 <iq from="$(hostname)" type="result" id="disco_2" >
   <query xmlns="http://jabber.org/protocol/disco#items">
-    <item name="Configuration management" jid="message-router@$(hostname)" />
+    <item jid="message-router@$(hostname)" />
     <item node="stats" name="Server statistics" jid="stats@$(hostname)" />
   </query>
 </iq>
