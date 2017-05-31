@@ -39,10 +39,10 @@ function get_database_uri() {
         mysql)
             export JDBC_URI="jdbc:mysql://${_database_host}/${_db_name}?user=${_db_user}&password=${_db_pass}&useSSL=false&useUnicode=true"
             ;;
-        postgresql)
+        pgsql)
             export JDBC_URI="jdbc:postgresql://${_database_host}/${_db_name}?user=${_db_user}"
             ;;
-        sqlserver)
+        mssql)
             export JDBC_URI="jdbc:jtds:sqlserver://${_database_host}:1433;databaseName=${_db_name};user=${_db_user};password=${_db_pass};schema=dbo;lastUpdateCount=false"
             ;;
         derby)
