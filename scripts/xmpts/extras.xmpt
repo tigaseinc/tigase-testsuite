@@ -73,7 +73,7 @@ Global settings:
      -def-stream  = stream-ext-comp
      -secret = very-secret
 
-    -host      = "test.$(server-host)"
+    -host      = "ext-cmp-test.$(server-host)"
     -user-name = $(stats-user)
     -user-pass = $(stats-pass)
     -to-jid = "$(def-user)@$(server-host)/$(def-user-resr)"
@@ -85,7 +85,7 @@ Global settings:
      -def-stream  = stream-ext-comp
      -secret = very-secret
 
-    -host      = "test.$(server-host)"
+    -host      = "ext-cmp-test.$(server-host)"
     -user-name = $(def-user)
     -user-pass = $(def-user-pass)
     -to-jid = "$(stats-user)@$(server-host)/$(def-user-resr)"
