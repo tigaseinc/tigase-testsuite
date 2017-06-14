@@ -30,7 +30,7 @@
 
 $(server-host) = test-d
 $(virtual-host) = test-domain
-$(def-user)    = all-xmpp-test
+$(def-user)    = all-xmpp-test-pubsub
 $(def-user-pass) = all-xmpp-test-password
 $(def-user-resr) = def-user-resource
 $(daemon-user) = all-xmpp-test_1
