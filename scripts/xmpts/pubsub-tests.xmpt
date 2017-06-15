@@ -30,7 +30,7 @@
 
 $(server-host) = test-d
 $(virtual-host) = test-domain
-$(def-user)    = all-xmpp-test-pubsub
+$(def-user)      = all-xmpp-test-pubsub
 $(def-user-pass) = all-xmpp-test-password
 $(def-user-resr) = def-user-resource
 $(daemon-user) = all-xmpp-test_1
@@ -45,7 +45,7 @@ $(number) = 1
 
 -serverip    = "127.0.0.1"
 -host        = $(server-host)
--user-name   = $(def-user)
+-user-name   = all-xmpp-test-pubsub
 -user-pass   = $(def-user-pass)
 -user-resr   = $(def-user-resr)
 -number      = $(number)
