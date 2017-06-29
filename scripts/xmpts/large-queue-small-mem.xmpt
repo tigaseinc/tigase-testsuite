@@ -74,14 +74,14 @@ Global settings:
     #-delay = 1000
     -on-one-socket
     -loop=10
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -to-jid = "$(tester-user)@test.$(server-host)"
     -source-file = "tests/data/TesterMessage10.cot"
   } >> Send a message to $(tester-user) user to check whether it responds. <<
 
   Load 1@common: Check whether the tester user account responds {
 #      -debug
     #-delay = 1000
-    -to-jid = "$(tester-user)@srecv.$(server-host)"
+    -to-jid = "$(tester-user)@test.$(server-host)"
     -source-file = "tests/data/TesterMessage.cot"
   } >> Send a message to $(tester-user) user to check whether it responds. <<
 
@@ -90,7 +90,7 @@ Global settings:
    #-delay = 1000
    -on-one-socket
    $(number) = 10
-   -to-jid = "$(tester-user)@srecv.$(server-host)"
+   -to-jid = "$(tester-user)@test.$(server-host)"
    -source-file = "tests/data/TesterGenTraffic.cot"
  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
@@ -99,7 +99,7 @@ Global settings:
    #-delay = 1000
    -on-one-socket
    $(number) = 100
-   -to-jid = "$(tester-user)@srecv.$(server-host)"
+   -to-jid = "$(tester-user)@test.$(server-host)"
    -source-file = "tests/data/TesterGenTraffic.cot"
  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
@@ -108,7 +108,7 @@ Global settings:
    #-delay = 1000
    -on-one-socket
    $(number) = 1000
-   -to-jid = "$(tester-user)@srecv.$(server-host)"
+   -to-jid = "$(tester-user)@test.$(server-host)"
    -source-file = "tests/data/TesterGenTraffic.cot"
  } >> Send a command to $(tester-user) user to generate $(number) messages on the server. <<
 
@@ -117,7 +117,7 @@ Global settings:
    #-delay = 5000
    -on-one-socket
    $(number) = 10000
-   -to-jid = "$(tester-user)@srecv.$(server-host)"
+   -to-jid = "$(tester-user)@test.$(server-host)"
    -source-file = "tests/data/TesterGenTraffic.cot"
    # We expect timeout here as a result of queue overfill, the point is to check whether
    # the server continues to run after that correctly
