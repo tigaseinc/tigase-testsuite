@@ -251,16 +251,29 @@ function run_test() {
 		tig_start_server ${_server_dir} "etc/tigase-${_database}.conf"
 
         _PID=$(cat ${_server_dir}/logs/tigase.pid)
-        sleep $(((${server_timeout} * 2)))
 
-        if ! ps -p"${_PID}" -o "pid=" >/dev/null 2>&1; then
-            echo "Process is NOT running... output of ${_server_dir}/logs/tigase-console.log";
+        sleep $(((${server_timeout} / 5)))
 
-            cat ${_server_dir}/logs/tigase-console.log
+        counter=$(((${server_timeout} * 15)))
+        while [ $counter -gt 0 ] ; do
+            if ! ps -p"${_PID}" -o "pid=" >/dev/null 2>&1; then
+                echo "Process is NOT running... output of ${_server_dir}/logs/tigase-console.log";
 
-            ${_server_dir}/scripts/tigase.sh stop ${_config_file}
-            return
-        fi
+                cat ${_server_dir}/logs/tigase-console.log
+
+                ${_server_dir}/scripts/tigase.sh stop ${_config_file}
+                return
+            fi
+
+            if ! nc -z ${_server_ip} 5222 ; then
+                echo -ne "waiting for server: ${counter}\r"
+                sleep $(((${server_timeout} / 10)))
+                counter=$((counter-5))
+            else
+                break;
+            fi
+        done
+
 	else
 		echo "Skipped Tigase server starting."
 	fi
