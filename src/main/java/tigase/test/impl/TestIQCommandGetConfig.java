@@ -63,6 +63,7 @@ public class TestIQCommandGetConfig
 	private String user_name        = "test_user@localhost";
 	private String user_resr        = "xmpp-test";
 	private String xmlns            = "http://jabber.org/protocol/commands";
+	private String config_filename = "config.tdsl";
 
 	//~--- constructors ---------------------------------------------------------
 
@@ -104,7 +105,7 @@ public class TestIQCommandGetConfig
 						"<command xmlns=\"" + xmlns + "\"" + " node=\"get-config-file\">" +
 						"<x xmlns=\"jabber:x:data\" type=\"submit\">" +
 						"<field type=\"list-single\" var=\"config-file\">" +
-						"<value>init.properties</value>" +
+						"<value>" + config_filename + "</value>" +
 						"</field></x></command></iq>";
 		default :
 			return null;
@@ -164,6 +165,7 @@ public class TestIQCommandGetConfig
 		user_resr = params.get("-user-resr", user_resr);
 		user_emil = params.get("-user-emil", user_emil);
 		hostname  = params.get("-host", hostname);
+		config_filename  = params.get("-config-config_filename", config_filename);
 
 		String name = getNodeNick(user_name);
 
