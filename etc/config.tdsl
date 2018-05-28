@@ -1,0 +1,151 @@
+admins = [ 'admin@test-d' ]
+'cluster-mode' = true
+'config-type' = '--gen-config-def'
+external = [ 'ext-cmp-test.test-d:very-secret:listen:5678' ]
+'max-queue-size' = 10000
+'priority-queue-implementation' = 'tigase.util.workqueue.PriorityQueueStrict'
+'sm-threads-pool' = 'custom:200'
+trusted = [ 'admin@ext-cmp-test.test-d' ]
+'vhost-disable-dns-check' = true
+dataSource {
+    default {
+        uri = env('JDBC_URI')
+    }
+}
+'basic-conf' {
+    commands {
+        'comp-repo-item-update' = 'LOCAL'
+        'config-list' = 'LOCAL'
+        'get-any-file' = 'LOCAL'
+        'get-config-file' = 'LOCAL'
+        'get-init-properties' = 'LOCAL'
+    }
+}
+bosh {
+    connections {
+        5280 {
+            'new-connections-throttling' = 1000L
+        }
+    }
+    seeOtherHost {}
+}
+c2s {
+    connections {
+        5222 {
+            'new-connections-throttling' = 250L
+        }
+    }
+    seeOtherHost {}
+}
+'cl-comp' {
+    commands {
+        'force-stop-service' = 'LOCAL'
+        'service-keys' = 'LOCAL'
+        'sim-serv-stopped' = 'LOCAL'
+    }
+}
+echo (class: tigase.server.test.EchoComponent) {}
+ext (class: tigase.server.ext.ComponentProtocol) {}
+logging {
+    rootLevel = WARNING
+}
+'message-router' {
+    components {
+        'msg-receivers' {
+            'ssend.active' = false
+        }
+    }
+}
+monitor {
+    commands {
+        'load-errors' = 'LOCAL'
+    }
+}
+muc () {
+    'muc-lock-new-room' = false
+}
+pubsub () {}
+s2s {
+    commands {
+        's2s-bad-state-conns' = 'LOCAL'
+        's2s-get-cid-connection' = 'LOCAL'
+        's2s-reset-bad-state-conns' = 'LOCAL'
+    }
+}
+'sess-man' {
+    amp {
+        'msg-offline' = 'false'
+    }
+    commands {
+        'connection-time' = 'LOCAL'
+        'http://jabber.org/protocol/admin#add-user' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#add-user-tracker' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#announce' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#change-user-password' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#delete-user' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#get-active-users' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#get-active-users-num' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#get-idle-users' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#get-idle-users-num' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#get-online-users-list' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#get-registered-users-list' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#get-top-active-users' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#get-user-roster' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#remove-user-tracker' = 'DOMAIN_OWNER'
+        'http://jabber.org/protocol/admin#user-stats' = 'DOMAIN_OWNER'
+        'roster-fixer' = 'LOCAL'
+        'roster-fixer-cluster' = 'LOCAL'
+        'user-domain-perm' = 'LOCAL'
+        'user-roster-management' = 'LOCAL'
+        'user-roster-management-ext' = 'LOCAL'
+    }
+    'dynamic-rosters' () {
+        DynamicRosterTest (class: tigase.xmpp.impl.roster.DynamicRosterTest) {}
+    }
+}
+stats {
+    commands {
+        stats = 'LOCAL'
+    }
+}
+test (class: tigase.server.test.TestComponent) {
+    'processing-in-threads' = 1
+    'processing-out-threads' = 1
+    'test-spam-module' (active: false) {}
+}
+'vhost-man' {
+    'domains-per-user-limit' = 100000
+    commands {
+        'comp-repo-item-add' = 'LOCAL'
+        'comp-repo-item-remove' = 'LOCAL'
+        'comp-repo-item-update' = 'LOCAL'
+        'ssl-certificate-add' = 'LOCAL'
+    }
+}
+'virtual-hosts' {
+    'test-d' {
+        anonymous = true
+        'domain-filter' = ALL
+        enabled = true
+        'max-users' = 0L
+        register = true
+        's2s-secret' = '97a382ea-6217-4f32-9a46-2855da204106'
+    }
+    'test-domain' {
+        anonymous = true
+        'domain-filter' = ALL
+        enabled = true
+        'max-users' = 0L
+        register = true
+        's2s-secret' = '61b5a7c7-6d85-473c-bc9e-89cf945c1531'
+    }
+    'tls-required.com' {
+        anonymous = true
+        'domain-filter' = ALL
+        enabled = true
+        'max-users' = 0L
+        register = true
+        's2s-secret' = 'e55c8a9c-e1c4-4999-8d2f-84e21239075d'
+        'tls-required' = true
+    }
+}
