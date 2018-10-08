@@ -28,9 +28,9 @@ send: {
 <value>1</value>
 </field>
 <field type="boolean" var="Anonymous enabled" >
-<value>true</value>
+<value>1</value>
 </field>
-<field type="boolean" var="In-band registration">
+<field type="boolean" var="In-band registration" >
 <value>true</value>
 </field>
 <field type="text-single" var="Max users" >
@@ -38,6 +38,9 @@ send: {
 </field>
 <field type="text-single" var="Other parameters" >
 <value></value>
+</field>
+<field type="boolean" var="TLS required">
+<value>true</value>
 </field>
 <field var="S2S secret">
 <value>some-secret</value>

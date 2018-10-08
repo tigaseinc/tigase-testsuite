@@ -68,6 +68,15 @@ Global settings:
   $(vhost-1) = vhost-1
   $(vhosts-number) = 200
 
+
+    PrepVHost1@common: {
+        -no-record
+        -user-name = $(stats-user)
+        -user-pass = $(stats-pass)
+        -cdata = $(virtual-host)
+        -source-file = "tests/data/VHostAddSimple.cot"
+    } >> Adding VHost '$(vhost-1)' from admin account <<
+
   Prepare@user-register: >> XEP-0077 - In-Band Registration, register <<
 
   VHost 1@common: {

@@ -62,6 +62,13 @@ Global settings:
 {
   -loop = 1
 
+    PrepVHostTLS@common: {
+        -user-name = $(stats-user)
+        -user-pass = $(stats-pass)
+        -cdata = "tls-required.com"
+        -source-file = "tests/data/VHostAddTlsRequired.cot"
+    } >> Adding VHost '$(vhost-1)' from admin account <<
+
   TLS Required 1@common-no-bind: {
     -host        = "tls-required.com"
     -source-file = "tests/data/RegisterNoTLSError.cot"

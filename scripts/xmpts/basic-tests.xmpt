@@ -84,6 +84,13 @@ Global settings:
       -delay       = 500
     } >> Setup a user daemon wating for messages <<
 
+    PrepVHost1@common: {
+        -user-name = $(stats-user)
+        -user-pass = $(stats-pass)
+        -cdata = $(virtual-host)
+        -source-file = "tests/data/VHostAddSimple.cot"
+    } >> Adding VHost '$(vhost-1)' from admin account <<
+
   } >> Basic setup <<
 
 #  Basic 1@socket: >> Plain socket connect. <<

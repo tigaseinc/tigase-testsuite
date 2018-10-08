@@ -129,6 +129,8 @@ function tig_start_server() {
 	[[ -z ${1} ]] && local _src_dir="../server" || local _src_dir=${1}
 	[[ -z ${2} ]] && local _config_file="etc/tigase-mysql.conf" || local _config_file=${2}
 
+    cp etc/externalComponentItems ${_src_dir}/etc/ 2>/dev/null || :
+
 	rm -f ${_src_dir}/logs/tigase.pid
 	#killall java
 	sleep 2

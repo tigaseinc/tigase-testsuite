@@ -89,6 +89,14 @@ Global settings:
 
         #-delay = 500
 
+        PrepVHost1@common: {
+            -no-record
+            -user-name = $(stats-user)
+            -user-pass = $(stats-pass)
+            -cdata = $(virtual-host)
+            -source-file = "tests/data/VHostAddSimple.cot"
+        } >> Adding VHost '$(vhost-1)' from admin account <<
+
         # Admin AdHoc script specific preps
         Prep 2@user-register: {
             -no-record

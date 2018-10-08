@@ -1,7 +1,6 @@
 admins = [ 'admin@test-d' ]
 'cluster-mode' = true
 'config-type' = '--gen-config-def'
-external = [ 'ext-cmp-test.test-d:very-secret:listen:5678' ]
 'max-queue-size' = 10000
 'priority-queue-implementation' = 'tigase.util.workqueue.PriorityQueueStrict'
 'sm-threads-pool' = 'custom:200'
@@ -47,7 +46,7 @@ c2s {
 echo (class: tigase.server.test.EchoComponent) {}
 ext (class: tigase.server.ext.ComponentProtocol) {}
 logging {
-    rootLevel = WARNING
+    rootLevel = 'WARNING'
 }
 'message-router' {
     components {
@@ -78,26 +77,26 @@ s2s {
     }
     commands {
         'connection-time' = 'LOCAL'
-        'http://jabber.org/protocol/admin#add-user' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#add-user-tracker' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#announce' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#change-user-password' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#delete-user' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#get-active-users' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#get-active-users-num' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#get-idle-users' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#get-idle-users-num' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#get-online-users-list' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#get-registered-users-list' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#get-top-active-users' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#get-user-roster' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#remove-user-tracker' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'http://jabber.org/protocol/admin#user-stats' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'roster-fixer' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'roster-fixer-cluster' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'user-domain-perm' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'user-roster-management' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'user-roster-management-ext' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
+        'http://jabber.org/protocol/admin#add-user' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#add-user-tracker' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#announce' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#change-user-password' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#delete-user' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#get-active-users' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#get-active-users-num' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#get-idle-users' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#get-idle-users-num' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#get-online-users-list' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#get-registered-users-list' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#get-top-active-users' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#get-user-roster' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#remove-user-tracker' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'http://jabber.org/protocol/admin#user-stats' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'roster-fixer' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'roster-fixer-cluster' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'user-domain-perm' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'user-roster-management' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'user-roster-management-ext' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
     }
     'dynamic-rosters' () {
         DynamicRosterTest (class: tigase.xmpp.impl.roster.DynamicRosterTest) {}
@@ -105,7 +104,7 @@ s2s {
 }
 stats {
     commands {
-        stats = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
+        stats = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
     }
 }
 test (class: tigase.server.test.TestComponent) {
@@ -116,36 +115,10 @@ test (class: tigase.server.test.TestComponent) {
 'vhost-man' {
     'domains-per-user-limit' = 100000
     commands {
-        'comp-repo-item-add' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'comp-repo-item-remove' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'comp-repo-item-update' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
-        'ssl-certificate-add' = ['DOMAIN_OWNER', 'DOMAIN_ADMIN']
+        'comp-repo-item-add' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'comp-repo-item-remove' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'comp-repo-item-update' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
+        'ssl-certificate-add' = [ 'DOMAIN_OWNER', 'DOMAIN_ADMIN' ]
     }
 }
-'virtual-hosts' {
-    'test-d' {
-        anonymous = true
-        'domain-filter' = ALL
-        enabled = true
-        'max-users' = 0L
-        register = true
-        's2s-secret' = '97a382ea-6217-4f32-9a46-2855da204106'
-    }
-    'test-domain' {
-        anonymous = true
-        'domain-filter' = ALL
-        enabled = true
-        'max-users' = 0L
-        register = true
-        's2s-secret' = '61b5a7c7-6d85-473c-bc9e-89cf945c1531'
-    }
-    'tls-required.com' {
-        anonymous = true
-        'domain-filter' = ALL
-        enabled = true
-        'max-users' = 0L
-        register = true
-        's2s-secret' = 'e55c8a9c-e1c4-4999-8d2f-84e21239075d'
-        'tls-required' = true
-    }
-}
+'default-virtual-host' = 'test-d'
