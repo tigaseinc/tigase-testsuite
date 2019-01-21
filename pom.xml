@@ -8,10 +8,14 @@
         <relativePath/>
     </parent>
 
+    <properties>
+        <license.inlineHeader>${inlineHeader_agpl3}</license.inlineHeader>
+    </properties>
+
     <artifactId>tigase-testsuite</artifactId>
 
     <name>Tigase Test Suite</name>
-    <description>Tigase Test Suite - automated testing framework for Tigase Jabber/XMPP Server.</description>
+    <description>Automated testing framework for Tigase Jabber/XMPP Server.</description>
 
     <packaging>jar</packaging>
     <version>2.3.0</version>
@@ -105,6 +109,31 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*.cot</exclude>
+                        <exclude>**/*.xmpt</exclude>
+                        <exclude>**/COPYING</exclude>
+                        <exclude>tigasetest/**/*</exclude>
+                        <exclude>**/LICENSE</exclude>
+                        <exclude>**/README</exclude>
+                        <exclude>**/License.html</exclude>
+                        <exclude>**/package.html</exclude>
+                        <exclude>**/*.txt</exclude>
+                        <exclude>**/*.tdsl</exclude>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/pom.xml</exclude>
+                        <exclude>**/build.xml</exclude>
+                        <exclude>**/ant-definitions.xml</exclude>
+                        <exclude>src/test/resources/**</exclude>
+                        <exclude>src/main/resources/**</exclude>
+                        <exclude>src/main/asciidoc/**/*</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
