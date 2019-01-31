@@ -146,6 +146,9 @@
                         <exclude>src/main/resources/**</exclude>
                         <exclude>src/main/asciidoc/**/*</exclude>
                         <exclude>scripts/tests-runner-settings.*</exclude>
+                        <exclude>files/**/*</exclude>
+                        <exclude>jars/**/*</exclude>
+                        <exclude>*.html</exclude>
                     </excludes>
                 </configuration>
             </plugin>
