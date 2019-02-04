@@ -78,6 +78,7 @@
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
+                    <outputDirectory>${basedir}/jars</outputDirectory>
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
