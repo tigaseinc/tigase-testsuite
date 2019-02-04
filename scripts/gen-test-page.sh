@@ -155,7 +155,6 @@ cat ${SRC_DIR}/${INDEX_END} >> ${INDEX_DIR}/index.html
 
 if  ${FAILED} ; then
 	echo "ERROR: BUILD FAILED"
-	exit 1
 else
 	echo "BUILD SUCCEEDED"
 fi
