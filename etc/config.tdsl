@@ -11,6 +11,30 @@ dataSource {
         uri = env('JDBC_URI')
     }
 }
+
+#debug = [
+#          'server',
+#          'xmpp'
+#        ]
+#
+#logging () {
+#    'packet-debug-full' = true
+#    handlers = {
+#        ' java.util.logging.FileHandler' = {
+#            append = true
+#            count = 10
+#            limit = 100000000
+#        }
+#    }
+#}
+
+httpServer {
+    connections {
+        8080 (active: false) {}
+        8088 () {}
+    }
+}
+
 'basic-conf' {
     commands {
         'comp-repo-item-update' = 'LOCAL'
