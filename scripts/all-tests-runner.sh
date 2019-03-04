@@ -144,7 +144,7 @@ if [ -f "${server_dir}/jars/tigase-server-dist.jar" ] ; then
     server_binary="${server_dir}/jars/tigase-server-dist.jar"
 fi
 
-ver=`unzip -qc ${server_binary} | grep "Tigase-Version" | sed -e "s/Tigase-Version: \(.*\)/\\1/" | sed 's/[[:space:]]//'`
+ver=`unzip -qc ${server_binary} META-INF/MANIFEST.MF | grep "Tigase-Version" | sed -e "s/Tigase-Version: \(.*\)/\\1/" | sed 's/[[:space:]]//'`
 
 output_dir="${ROOT_DIR}files/static/tests/${ver}"
 
