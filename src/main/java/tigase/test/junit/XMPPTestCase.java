@@ -1,4 +1,4 @@
-/**
+/*
  * Tigase Test Suite - Tigase Test Suite - automated testing framework for Tigase Jabber/XMPP Server.
  * Copyright (C) 2005 Tigase, Inc. (office@tigase.com)
  *
@@ -15,7 +15,6 @@
  * along with this program. Look for COPYING file in the top folder.
  * If not, see http://www.gnu.org/licenses/.
  */
-
 
 package tigase.test.junit;
 
