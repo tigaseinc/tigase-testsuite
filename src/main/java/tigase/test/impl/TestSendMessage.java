@@ -1,4 +1,4 @@
-/**
+/*
  * Tigase Test Suite - Automated testing framework for Tigase Jabber/XMPP Server.
  * Copyright (C) 2005 Tigase, Inc. (office@tigase.com)
  *
