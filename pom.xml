@@ -5,7 +5,7 @@
         <groupId>tigase</groupId>
         <artifactId>tigase-projects-parent</artifactId>
         <version>1.0.3-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath />
     </parent>
 
     <properties>
@@ -55,10 +55,10 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:https://repository.tigase.org/git/tigase-testsuite.git</connection>
-        <developerConnection>scm:git:https://repository.tigase.org/git/tigase-testsuite.git</developerConnection>
-        <url>https://projects.tigase.org/projects/tigase-testsuite/repository</url>
-        <tag>tigase-testsuite-2.3.0</tag>
+        <connection>scm:git:https://github.com/tigase/tigase-testsuite.git</connection>
+        <developerConnection>scm:git:https://github.com/tigase/tigase-testsuite.git</developerConnection>
+        <url>https://github.com/tigase/tigase-testsuite/</url>
+        <tag>tigase-testsuite-2.3.1</tag>
     </scm>
 
     <profiles>
